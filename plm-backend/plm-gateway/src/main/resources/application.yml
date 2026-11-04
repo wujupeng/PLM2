@@ -1,0 +1,121 @@
+server:
+  port: 8080
+  netty:
+    connection-timeout: 5000
+
+spring:
+  application:
+    name: plm-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: product-data-service
+          uri: lb://plm-product-data
+          predicates:
+            - Path=/api/product-data/**
+          filters:
+            - StripPrefix=2
+        - id: bom-service
+          uri: lb://plm-bom
+          predicates:
+            - Path=/api/bom/**
+          filters:
+            - StripPrefix=2
+        - id: eco-service
+          uri: lb://plm-eco
+          predicates:
+            - Path=/api/eco/**
+          filters:
+            - StripPrefix=2
+        - id: document-service
+          uri: lb://plm-document
+          predicates:
+            - Path=/api/document/**
+          filters:
+            - StripPrefix=2
+        - id: cad-integration-service
+          uri: lb://plm-cad-integration
+          predicates:
+            - Path=/api/cad/**
+          filters:
+            - StripPrefix=2
+        - id: manufacturing-service
+          uri: lb://plm-manufacturing
+          predicates:
+            - Path=/api/manufacturing/**
+          filters:
+            - StripPrefix=2
+        - id: integration-service
+          uri: lb://plm-integration
+          predicates:
+            - Path=/api/integration/**
+          filters:
+            - StripPrefix=2
+        - id: auth-workflow-service
+          uri: lb://plm-auth-workflow
+          predicates:
+            - Path=/api/auth-workflow/**
+          filters:
+            - StripPrefix=2
+        - id: admin-service
+          uri: lb://plm-admin
+          predicates:
+            - Path=/api/admin/**
+          filters:
+            - StripPrefix=2
+        - id: notification-service
+          uri: lb://plm-notification
+          predicates:
+            - Path=/api/notification/**
+          filters:
+            - StripPrefix=2
+        - id: search-service
+          uri: lb://plm-search
+          predicates:
+            - Path=/api/search/**
+          filters:
+            - StripPrefix=2
+      default-filters:
+        - name: Retry
+          args:
+            retries: 3
+            statuses: BAD_GATEWAY,GATEWAY_TIMEOUT
+        - name: RequestSize
+          args:
+            maxSize: 52428800
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 3000ms
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          secret: plm-system-jwt-secret-key-for-hmac-sha256-signing-2024
+
+plm:
+  jwt:
+    secret: plm-system-jwt-secret-key-for-hmac-sha256-signing-2024
+    access-token-expiration: 3600
+    refresh-token-expiration: 86400
+  gateway:
+    auth:
+      enabled: true
+    rate-limit:
+      enabled: true
+      default-limit: 100
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,gateway
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  level:
+    com.huaweicloud.plm: INFO
+    org.springframework.cloud.gateway: INFO

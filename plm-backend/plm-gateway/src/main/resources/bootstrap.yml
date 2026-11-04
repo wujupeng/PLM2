@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: plm-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_ADDR:localhost:8848}
+        namespace: ${NACOS_NAMESPACE:plm-dev}
+        group: PLM_GROUP
+      config:
+        server-addr: ${NACOS_ADDR:localhost:8848}
+        namespace: ${NACOS_NAMESPACE:plm-dev}
+        group: PLM_GROUP
+        file-extension: yaml
+        refresh-enabled: true
