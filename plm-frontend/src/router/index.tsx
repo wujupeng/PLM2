@@ -410,6 +410,12 @@ const IntgSrmErpBatches = lazy(() => import('@/pages/intg/srm-erp/batches'));
 const IntgSrmErpReceipts = lazy(() => import('@/pages/intg/srm-erp/receipts'));
 const IntgSrmErpCompensations = lazy(() => import('@/pages/intg/srm-erp/compensations'));
 const IntgSrmErpReconciles = lazy(() => import('@/pages/intg/srm-erp/reconciles'));
+const IntgErpMesInterfaces = lazy(() => import('@/pages/intg/erp-mes/interfaces'));
+const IntgErpMesMappings = lazy(() => import('@/pages/intg/erp-mes/mappings'));
+const IntgErpMesBatches = lazy(() => import('@/pages/intg/erp-mes/batches'));
+const IntgErpMesReceipts = lazy(() => import('@/pages/intg/erp-mes/receipts'));
+const IntgErpMesCompensations = lazy(() => import('@/pages/intg/erp-mes/compensations'));
+const IntgErpMesReconciles = lazy(() => import('@/pages/intg/erp-mes/reconciles'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1617,6 +1623,30 @@ const routes: RouteObject[] = [
       {
         path: 'intg/srm-erp/reconciles',
         element: withPermission('intg:srm-erp:reconcile:list', <IntgSrmErpReconciles />),
+      },
+      {
+        path: 'intg/erp-mes/interfaces',
+        element: withPermission('intg:erp-mes:interface:list', <IntgErpMesInterfaces />),
+      },
+      {
+        path: 'intg/erp-mes/mappings',
+        element: withPermission('intg:erp-mes:mapping:list', <IntgErpMesMappings />),
+      },
+      {
+        path: 'intg/erp-mes/batches',
+        element: withPermission('intg:erp-mes:batch:list', <IntgErpMesBatches />),
+      },
+      {
+        path: 'intg/erp-mes/receipts',
+        element: withPermission('intg:erp-mes:receipt:list', <IntgErpMesReceipts />),
+      },
+      {
+        path: 'intg/erp-mes/compensations',
+        element: withPermission('intg:erp-mes:compensation:list', <IntgErpMesCompensations />),
+      },
+      {
+        path: 'intg/erp-mes/reconciles',
+        element: withPermission('intg:erp-mes:reconcile:list', <IntgErpMesReconciles />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },
