@@ -349,6 +349,26 @@ const menuRoute = {
       ],
     },
     {
+      path: '/intg',
+      name: '系统集成',
+      icon: 'ShareAltOutlined',
+      routes: [
+        {
+          path: '/intg-plm-erp',
+          name: 'PLM→ERP 集成',
+          icon: 'SwapRightOutlined',
+          routes: [
+            { path: '/intg/plm-erp/interfaces', name: '集成接口', icon: 'ApiOutlined' },
+            { path: '/intg/plm-erp/mappings', name: '字段映射', icon: 'PartitionOutlined' },
+            { path: '/intg/plm-erp/batches', name: '同步批次', icon: 'SyncOutlined' },
+            { path: '/intg/plm-erp/receipts', name: '接收回执', icon: 'AuditOutlined' },
+            { path: '/intg/plm-erp/compensations', name: '异常补偿', icon: 'ToolOutlined' },
+            { path: '/intg/plm-erp/reconciles', name: '对账', icon: 'BalanceOutlined' },
+          ],
+        },
+      ],
+    },
+    {
       path: '/mfg',
       name: '生产执行与追溯',
       icon: 'DeploymentUnitOutlined',
