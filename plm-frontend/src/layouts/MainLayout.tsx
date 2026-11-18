@@ -444,6 +444,19 @@ const menuRoute = {
             { path: '/intg/mes-erp/reconciles', name: '对账', icon: 'BalanceOutlined' },
           ],
         },
+        {
+          path: '/intg-erp-wms',
+          name: 'ERP↔WMS 集成',
+          icon: 'SwapOutlined',
+          routes: [
+            { path: '/intg/erp-wms/interfaces', name: '集成接口', icon: 'ApiOutlined' },
+            { path: '/intg/erp-wms/mappings', name: '字段映射', icon: 'PartitionOutlined' },
+            { path: '/intg/erp-wms/batches', name: '同步批次', icon: 'SyncOutlined' },
+            { path: '/intg/erp-wms/receipts', name: '接收回执', icon: 'AuditOutlined' },
+            { path: '/intg/erp-wms/compensations', name: '异常补偿', icon: 'ToolOutlined' },
+            { path: '/intg/erp-wms/reconciles', name: '对账', icon: 'BalanceOutlined' },
+          ],
+        },
       ],
     },
     {
