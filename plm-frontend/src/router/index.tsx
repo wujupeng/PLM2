@@ -297,6 +297,11 @@ const SrmSupplierQuotes = lazy(() => import('@/pages/srm/sourcing/quotes'));
 const SrmPriceCompares = lazy(() => import('@/pages/srm/sourcing/compares'));
 const SrmAwards = lazy(() => import('@/pages/srm/sourcing/awards'));
 const SrmPriceAgreements = lazy(() => import('@/pages/srm/sourcing/prices'));
+const SrmPoConfirmations = lazy(() => import('@/pages/srm/collab/po-confirms'));
+const SrmDeliveryCommitments = lazy(() => import('@/pages/srm/collab/commitments'));
+const SrmPoChanges = lazy(() => import('@/pages/srm/collab/changes'));
+const SrmDeliveryAppointments = lazy(() => import('@/pages/srm/collab/appointments'));
+const SrmAsns = lazy(() => import('@/pages/srm/collab/asns'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1052,6 +1057,26 @@ const routes: RouteObject[] = [
       {
         path: 'srm/sourcing/prices',
         element: withPermission('srm:sourcing:price:list', <SrmPriceAgreements />),
+      },
+      {
+        path: 'srm/collab/po-confirms',
+        element: withPermission('srm:collab:po-confirm:list', <SrmPoConfirmations />),
+      },
+      {
+        path: 'srm/collab/commitments',
+        element: withPermission('srm:collab:commitment:list', <SrmDeliveryCommitments />),
+      },
+      {
+        path: 'srm/collab/changes',
+        element: withPermission('srm:collab:change:list', <SrmPoChanges />),
+      },
+      {
+        path: 'srm/collab/appointments',
+        element: withPermission('srm:collab:appointment:list', <SrmDeliveryAppointments />),
+      },
+      {
+        path: 'srm/collab/asns',
+        element: withPermission('srm:collab:asn:list', <SrmAsns />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

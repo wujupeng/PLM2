@@ -543,6 +543,18 @@ const menuRoute = {
             { path: '/srm/sourcing/prices', name: '定点定价', icon: 'MoneyCollectOutlined' },
           ],
         },
+        {
+          path: '/srm/collab',
+          name: '采购协同',
+          icon: 'SwapOutlined',
+          routes: [
+            { path: '/srm/collab/po-confirms', name: '订单确认', icon: 'AuditOutlined' },
+            { path: '/srm/collab/commitments', name: '交期承诺', icon: 'FieldTimeOutlined' },
+            { path: '/srm/collab/changes', name: '变更确认', icon: 'DiffOutlined' },
+            { path: '/srm/collab/appointments', name: '送货预约', icon: 'CalendarOutlined' },
+            { path: '/srm/collab/asns', name: 'ASN发货通知', icon: 'CarOutlined' },
+          ],
+        },
       ],
     },
     {
