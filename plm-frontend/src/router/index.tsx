@@ -321,6 +321,9 @@ const WmsBaseStrategies = lazy(() => import('@/pages/wms/base/strategies'));
 const WmsInboundAsns = lazy(() => import('@/pages/wms/inbound/asns'));
 const WmsInboundReceipts = lazy(() => import('@/pages/wms/inbound/receipts'));
 const WmsInboundPutaways = lazy(() => import('@/pages/wms/inbound/putaways'));
+const WmsInventoryBatches = lazy(() => import('@/pages/wms/inventory/batches'));
+const WmsInventorySerials = lazy(() => import('@/pages/wms/inventory/serials'));
+const WmsInventoryFreezes = lazy(() => import('@/pages/wms/inventory/freezes'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1172,6 +1175,18 @@ const routes: RouteObject[] = [
       {
         path: 'wms/inbound/putaways',
         element: withPermission('wms:inbound:putaway:list', <WmsInboundPutaways />),
+      },
+      {
+        path: 'wms/inventory/batches',
+        element: withPermission('wms:inventory:batch:list', <WmsInventoryBatches />),
+      },
+      {
+        path: 'wms/inventory/serials',
+        element: withPermission('wms:inventory:serial:list', <WmsInventorySerials />),
+      },
+      {
+        path: 'wms/inventory/freezes',
+        element: withPermission('wms:inventory:freeze:list', <WmsInventoryFreezes />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

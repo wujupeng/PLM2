@@ -185,6 +185,16 @@ const menuRoute = {
       ],
     },
     {
+      path: '/wms-inventory',
+      name: '库存控制',
+      icon: 'DatabaseOutlined',
+      routes: [
+        { path: '/wms/inventory/batches', name: '库存批次', icon: 'DatabaseOutlined' },
+        { path: '/wms/inventory/serials', name: '序列号', icon: 'NumberOutlined' },
+        { path: '/wms/inventory/freezes', name: '库存冻结', icon: 'LockOutlined' },
+      ],
+    },
+    {
       path: '/mfg',
       name: '生产执行与追溯',
       icon: 'DeploymentUnitOutlined',
