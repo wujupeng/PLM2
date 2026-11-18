@@ -366,6 +366,19 @@ const menuRoute = {
             { path: '/intg/plm-erp/reconciles', name: '对账', icon: 'BalanceOutlined' },
           ],
         },
+        {
+          path: '/intg-plm-mes',
+          name: 'PLM→MES 集成',
+          icon: 'SwapRightOutlined',
+          routes: [
+            { path: '/intg/plm-mes/interfaces', name: '集成接口', icon: 'ApiOutlined' },
+            { path: '/intg/plm-mes/mappings', name: '字段映射', icon: 'PartitionOutlined' },
+            { path: '/intg/plm-mes/batches', name: '同步批次', icon: 'SyncOutlined' },
+            { path: '/intg/plm-mes/receipts', name: '接收回执', icon: 'AuditOutlined' },
+            { path: '/intg/plm-mes/compensations', name: '异常补偿', icon: 'ToolOutlined' },
+            { path: '/intg/plm-mes/reconciles', name: '对账', icon: 'BalanceOutlined' },
+          ],
+        },
       ],
     },
     {

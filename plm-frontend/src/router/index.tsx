@@ -386,6 +386,12 @@ const IntgPlmErpBatches = lazy(() => import('@/pages/intg/plm-erp/batches'));
 const IntgPlmErpReceipts = lazy(() => import('@/pages/intg/plm-erp/receipts'));
 const IntgPlmErpCompensations = lazy(() => import('@/pages/intg/plm-erp/compensations'));
 const IntgPlmErpReconciles = lazy(() => import('@/pages/intg/plm-erp/reconciles'));
+const IntgPlmMesInterfaces = lazy(() => import('@/pages/intg/plm-mes/interfaces'));
+const IntgPlmMesMappings = lazy(() => import('@/pages/intg/plm-mes/mappings'));
+const IntgPlmMesBatches = lazy(() => import('@/pages/intg/plm-mes/batches'));
+const IntgPlmMesReceipts = lazy(() => import('@/pages/intg/plm-mes/receipts'));
+const IntgPlmMesCompensations = lazy(() => import('@/pages/intg/plm-mes/compensations'));
+const IntgPlmMesReconciles = lazy(() => import('@/pages/intg/plm-mes/reconciles'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1497,6 +1503,30 @@ const routes: RouteObject[] = [
       {
         path: 'intg/plm-erp/reconciles',
         element: withPermission('intg:plm-erp:reconcile:list', <IntgPlmErpReconciles />),
+      },
+      {
+        path: 'intg/plm-mes/interfaces',
+        element: withPermission('intg:plm-mes:interface:list', <IntgPlmMesInterfaces />),
+      },
+      {
+        path: 'intg/plm-mes/mappings',
+        element: withPermission('intg:plm-mes:mapping:list', <IntgPlmMesMappings />),
+      },
+      {
+        path: 'intg/plm-mes/batches',
+        element: withPermission('intg:plm-mes:batch:list', <IntgPlmMesBatches />),
+      },
+      {
+        path: 'intg/plm-mes/receipts',
+        element: withPermission('intg:plm-mes:receipt:list', <IntgPlmMesReceipts />),
+      },
+      {
+        path: 'intg/plm-mes/compensations',
+        element: withPermission('intg:plm-mes:compensation:list', <IntgPlmMesCompensations />),
+      },
+      {
+        path: 'intg/plm-mes/reconciles',
+        element: withPermission('intg:plm-mes:reconcile:list', <IntgPlmMesReconciles />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },
