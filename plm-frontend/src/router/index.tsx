@@ -356,6 +356,14 @@ const MesEquipmentChecks = lazy(() => import('@/pages/mes/equipment/checks'));
 const MesEquipmentMaintenances = lazy(() => import('@/pages/mes/equipment/maintenances'));
 const MesEquipmentFaults = lazy(() => import('@/pages/mes/equipment/faults'));
 const MesToolLifes = lazy(() => import('@/pages/mes/equipment/tools'));
+const MesInspectionSpecs = lazy(() => import('@/pages/mes/quality/specs'));
+const MesIncomingInspections = lazy(() => import('@/pages/mes/quality/incomings'));
+const MesFirstInspections = lazy(() => import('@/pages/mes/quality/firsts'));
+const MesPatrolInspections = lazy(() => import('@/pages/mes/quality/patrols'));
+const MesLastInspections = lazy(() => import('@/pages/mes/quality/lasts'));
+const MesFinalInspections = lazy(() => import('@/pages/mes/quality/finals'));
+const MesInspectionJudges = lazy(() => import('@/pages/mes/quality/judges'));
+const MesQuarantines = lazy(() => import('@/pages/mes/quality/quarantines'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1347,6 +1355,38 @@ const routes: RouteObject[] = [
       {
         path: 'mes/equipment/tools',
         element: withPermission('mes:tool:life:list', <MesToolLifes />),
+      },
+      {
+        path: 'mes/quality/specs',
+        element: withPermission('mes:quality:spec:list', <MesInspectionSpecs />),
+      },
+      {
+        path: 'mes/quality/incomings',
+        element: withPermission('mes:quality:incoming:list', <MesIncomingInspections />),
+      },
+      {
+        path: 'mes/quality/firsts',
+        element: withPermission('mes:quality:first:list', <MesFirstInspections />),
+      },
+      {
+        path: 'mes/quality/patrols',
+        element: withPermission('mes:quality:patrol:list', <MesPatrolInspections />),
+      },
+      {
+        path: 'mes/quality/lasts',
+        element: withPermission('mes:quality:last:list', <MesLastInspections />),
+      },
+      {
+        path: 'mes/quality/finals',
+        element: withPermission('mes:quality:final:list', <MesFinalInspections />),
+      },
+      {
+        path: 'mes/quality/judges',
+        element: withPermission('mes:quality:judge:list', <MesInspectionJudges />),
+      },
+      {
+        path: 'mes/quality/quarantines',
+        element: withPermission('mes:quality:quarantine:list', <MesQuarantines />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

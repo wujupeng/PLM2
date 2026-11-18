@@ -294,6 +294,21 @@ const menuRoute = {
             { path: '/mes/equipment/tools', name: '工装寿命', icon: 'FieldTimeOutlined' },
           ],
         },
+        {
+          path: '/mes-quality',
+          name: '质量检验',
+          icon: 'SafetyCertificateOutlined',
+          routes: [
+            { path: '/mes/quality/specs', name: '检验规范', icon: 'FileProtectOutlined' },
+            { path: '/mes/quality/incomings', name: '来料检验', icon: 'ImportOutlined' },
+            { path: '/mes/quality/firsts', name: '首件检验', icon: 'CheckCircleOutlined' },
+            { path: '/mes/quality/patrols', name: '巡检记录', icon: 'ScanOutlined' },
+            { path: '/mes/quality/lasts', name: '末件检验', icon: 'CheckSquareOutlined' },
+            { path: '/mes/quality/finals', name: '终检记录', icon: 'SafetyCertificateOutlined' },
+            { path: '/mes/quality/judges', name: '检验判定', icon: 'AuditOutlined' },
+            { path: '/mes/quality/quarantines', name: '隔离记录', icon: 'StopOutlined' },
+          ],
+        },
       ],
     },
     {
