@@ -312,6 +312,12 @@ const SrmPortalAttachments = lazy(() => import('@/pages/srm/portal/attachments')
 const SrmEdiMessages = lazy(() => import('@/pages/srm/edi/messages'));
 const SrmEdiReceipts = lazy(() => import('@/pages/srm/edi/receipts'));
 const SrmEdiReconciles = lazy(() => import('@/pages/srm/edi/reconciles'));
+const WmsBaseWarehouses = lazy(() => import('@/pages/wms/base/warehouses'));
+const WmsBaseZones = lazy(() => import('@/pages/wms/base/zones'));
+const WmsBaseBins = lazy(() => import('@/pages/wms/base/bins'));
+const WmsBaseRacks = lazy(() => import('@/pages/wms/base/racks'));
+const WmsBaseContainers = lazy(() => import('@/pages/wms/base/containers'));
+const WmsBaseStrategies = lazy(() => import('@/pages/wms/base/strategies'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1127,6 +1133,30 @@ const routes: RouteObject[] = [
       {
         path: 'srm/edi/reconciles',
         element: withPermission('srm:edi:reconcile:list', <SrmEdiReconciles />),
+      },
+      {
+        path: 'wms/base/warehouses',
+        element: withPermission('wms:base:warehouse:list', <WmsBaseWarehouses />),
+      },
+      {
+        path: 'wms/base/zones',
+        element: withPermission('wms:base:zone:list', <WmsBaseZones />),
+      },
+      {
+        path: 'wms/base/bins',
+        element: withPermission('wms:base:bin:list', <WmsBaseBins />),
+      },
+      {
+        path: 'wms/base/racks',
+        element: withPermission('wms:base:rack:list', <WmsBaseRacks />),
+      },
+      {
+        path: 'wms/base/containers',
+        element: withPermission('wms:base:container:list', <WmsBaseContainers />),
+      },
+      {
+        path: 'wms/base/strategies',
+        element: withPermission('wms:base:strategy:list', <WmsBaseStrategies />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

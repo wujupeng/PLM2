@@ -162,6 +162,19 @@ const menuRoute = {
       ],
     },
     {
+      path: '/wms-base',
+      name: 'WMS 仓储管理',
+      icon: 'ClusterOutlined',
+      routes: [
+        { path: '/wms/base/warehouses', name: '仓库管理', icon: 'BankOutlined' },
+        { path: '/wms/base/zones', name: '库区管理', icon: 'PartitionOutlined' },
+        { path: '/wms/base/bins', name: '库位管理', icon: 'ClusterOutlined' },
+        { path: '/wms/base/racks', name: '货架管理', icon: 'BuildOutlined' },
+        { path: '/wms/base/containers', name: '容器管理', icon: 'InboxOutlined' },
+        { path: '/wms/base/strategies', name: '作业策略', icon: 'ControlOutlined' },
+      ],
+    },
+    {
       path: '/mfg',
       name: '生产执行与追溯',
       icon: 'DeploymentUnitOutlined',
