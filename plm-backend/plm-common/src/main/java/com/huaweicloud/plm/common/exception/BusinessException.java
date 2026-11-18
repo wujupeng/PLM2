@@ -1,26 +1,26 @@
 package com.huaweicloud.plm.common.exception;
 
+import com.huaweicloud.plm.common.api.ResultCode;
 import lombok.Getter;
 
+/**
+ * 业务异常，携带统一状态码。
+ */
 @Getter
 public class BusinessException extends RuntimeException {
 
     private final int code;
-    private final String module;
 
-    public BusinessException(String module, int code, String message) {
+    public BusinessException(String message) {
+        this(ResultCode.BAD_REQUEST, message);
+    }
+
+    public BusinessException(ResultCode resultCode) {
+        this(resultCode, resultCode.getMessage());
+    }
+
+    public BusinessException(ResultCode resultCode, String message) {
         super(message);
-        this.module = module;
-        this.code = code;
-    }
-
-    public BusinessException(String module, int code, String message, Throwable cause) {
-        super(message, cause);
-        this.module = module;
-        this.code = code;
-    }
-
-    public String getFullCode() {
-        return this.module + "-" + this.code;
+        this.code = resultCode.getCode();
     }
 }

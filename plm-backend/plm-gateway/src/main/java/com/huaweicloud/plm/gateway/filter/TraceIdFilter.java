@@ -26,11 +26,13 @@ public class TraceIdFilter implements GlobalFilter, Ordered {
         ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                 .header(TRACE_ID_HEADER, finalTraceId)
                 .build();
+        // 在响应提交前写入 traceId：此时下游响应头已复制完成，使用 set 可避免与下游重复的 X-Trace-Id
+        exchange.getResponse().beforeCommit(() -> {
+            exchange.getResponse().getHeaders().set(TRACE_ID_HEADER, finalTraceId);
+            return Mono.empty();
+        });
         ServerWebExchange mutatedExchange = exchange.mutate()
                 .request(mutatedRequest)
-                .response(exchange.getResponse().mutate()
-                        .header(TRACE_ID_HEADER, finalTraceId)
-                        .build())
                 .build();
         log.info("[请求入口] traceId={}, method={}, path={}",
                 finalTraceId,

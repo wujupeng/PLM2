@@ -22,3 +22,144 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+/* ---------------- 移动端门户（OA-DEV-061） ---------------- */
+
+body {
+  -webkit-text-size-adjust: 100%;
+}
+
+.mobile-viewport {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  background: #eceef1;
+}
+
+.mobile-shell {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #f5f6f8;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.08);
+}
+
+.mobile-header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: calc(48px + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) 14px 0;
+  background: #1677ff;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.mobile-header-title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mobile-header-user {
+  flex: none;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+}
+
+.mobile-content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px;
+}
+
+.mobile-tabbar {
+  flex: none;
+  display: flex;
+  border-top: 1px solid #eaecef;
+  background: #fff;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.mobile-tabbar-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 6px 0 7px;
+  font-size: 11px;
+  color: #8c8c8c;
+  cursor: pointer;
+  user-select: none;
+}
+
+.mobile-tabbar-item.active {
+  color: #1677ff;
+}
+
+.mobile-tabbar-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.mobile-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px 4px;
+}
+
+.mobile-quick-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.mobile-quick-item:active {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.mobile-list-item {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+}
+
+.mobile-list-item:last-child {
+  border-bottom: none;
+}
+
+.mobile-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mobile-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 560px) {
+  .mobile-shell {
+    box-shadow: none;
+  }
+}

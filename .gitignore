@@ -6,6 +6,13 @@ build/
 *.jar
 *.war
 
+# === tsc 对 vite.config.ts 的编译产物 ===
+plm-frontend/vite.config.js
+plm-frontend/vite.config.d.ts
+
+# === 运行时数据（本地上传文档/附件等，不入库）===
+/plm-backend/data/
+
 # === 前端 ===
 node_modules/
 *.local
@@ -32,10 +39,24 @@ deploy/
 
 # === 日志 ===
 *.log
-logs/
+/logs/
 
-# === 敏感信息（服务器凭据绝对不可提交）===
-*secret*
-*credential*
-*password*
+# === 敏感信息（服务器凭据绝对不可提交，仅限配置文件，避免误伤源码）===
+*secret*.yml
+*secret*.yaml
+*secret*.properties
+*secret*.json
+*secret*.env
+*credential*.yml
+*credential*.yaml
+*credential*.properties
+*credential*.json
+*credential*.env
+*password*.yml
+*password*.yaml
+*password*.properties
+*password*.json
+*password*.env
+*.secret
+*.secrets
 server-config/

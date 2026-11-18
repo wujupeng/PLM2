@@ -10,21 +10,18 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
+    /**
+     * 网关的 Spring Security 只负责 CSRF/Basic 等基础能力的关闭，请求鉴权统一由
+     * {@link com.huaweicloud.plm.gateway.filter.JwtAuthenticationFilter} 完成
+     * （校验 JWT 并向下游透传 X-User-Id / X-Username / X-User-Roles）。
+     */
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
-                .authorizeExchange(exchanges -> exchanges
-                        .pathMatchers("/actuator/**").permitAll()
-                        .pathMatchers("/api/auth/login").permitAll()
-                        .pathMatchers("/api/auth/refresh").permitAll()
-                        .pathMatchers("/doc.html").permitAll()
-                        .pathMatchers("/webjars/**").permitAll()
-                        .pathMatchers("/v3/api-docs/**").permitAll()
-                        .anyExchange().authenticated()
-                )
-                .oauth2ResourceServer(spec -> spec.jwt(jwt -> {}))
+                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+                .authorizeExchange(exchanges -> exchanges.anyExchange().permitAll())
                 .build();
     }
 }

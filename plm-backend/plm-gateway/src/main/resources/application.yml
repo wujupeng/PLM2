@@ -9,36 +9,150 @@ spring:
   cloud:
     gateway:
       routes:
+        # N1 统一平台基础能力：认证与系统管理均由 plm-system 提供
+        # plm-system 的控制器路径为 /auth/** 与 /system/**，因此仅剥离 /api 前缀
+        - id: system-auth-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=1
+        - id: system-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/system/**
+          filters:
+            - StripPrefix=1
+        # N2 产品、物料与多级 BOM 主数据：控制器路径为 /product-data/** 与 /bom/**，仅剥离 /api 前缀
         - id: product-data-service
-          uri: lb://plm-product-data
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
           predicates:
             - Path=/api/product-data/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=1
         - id: bom-service
-          uri: lb://plm-bom
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
           predicates:
             - Path=/api/bom/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=1
+        # N3 图文档、CAD 关联与工程变更：控制器路径为 /document/**、/cad/**、/eco/**，仅剥离 /api 前缀
         - id: eco-service
-          uri: lb://plm-eco
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
           predicates:
             - Path=/api/eco/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=1
         - id: document-service
-          uri: lb://plm-document
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
           predicates:
             - Path=/api/document/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=1
         - id: cad-integration-service
-          uri: lb://plm-cad-integration
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
           predicates:
             - Path=/api/cad/**
           filters:
-            - StripPrefix=2
+            - StripPrefix=1
+        # N4 技术规格、线束、环保、包装、工艺、检验与质量：控制器路径为 /spec/**、/harness/**、/compliance/**、
+        # /packaging/**、/process/**、/inspection/**、/quality/**，仅剥离 /api 前缀
+        - id: spec-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/spec/**
+          filters:
+            - StripPrefix=1
+        - id: harness-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/harness/**
+          filters:
+            - StripPrefix=1
+        - id: compliance-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/compliance/**
+          filters:
+            - StripPrefix=1
+        - id: packaging-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/packaging/**
+          filters:
+            - StripPrefix=1
+        - id: process-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/process/**
+          filters:
+            - StripPrefix=1
+        - id: inspection-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/inspection/**
+          filters:
+            - StripPrefix=1
+        - id: quality-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/quality/**
+          filters:
+            - StripPrefix=1
+        # N5 编码与标签：控制器路径为 /code/**、/relabel/**、/label/**，仅剥离 /api 前缀
+        - id: code-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/code/**
+          filters:
+            - StripPrefix=1
+        - id: relabel-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/relabel/**
+          filters:
+            - StripPrefix=1
+        - id: label-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/label/**
+          filters:
+            - StripPrefix=1
+        # N6 EDI 客户需求与供应商协同：控制器路径为 /edi/**，仅剥离 /api 前缀
+        - id: edi-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/edi/**
+          filters:
+            - StripPrefix=1
+        # N7 物料供应、Kanban、FIFO 与缺料管理：控制器路径为 /wms/**，仅剥离 /api 前缀
+        - id: wms-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/wms/**
+          filters:
+            - StripPrefix=1
+        # N8 生产执行与发货追溯：控制器路径为 /mfg/**，仅剥离 /api 前缀
+        - id: mfg-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/mfg/**
+          filters:
+            - StripPrefix=1
+        # N9 系统集成、迁移、性能安全与上线交付：控制器路径为 /int/**，仅剥离 /api 前缀
+        - id: int-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/int/**
+          filters:
+            - StripPrefix=1
+        # OA 2.0 统一门户与身份组织权限：控制器路径为 /oa/**，仅剥离 /api 前缀
+        - id: oa-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/oa/**
+          filters:
+            - StripPrefix=1
         - id: manufacturing-service
           uri: lb://plm-manufacturing
           predicates:
@@ -88,11 +202,6 @@ spring:
       host: localhost
       port: 6379
       timeout: 3000ms
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          secret: plm-system-jwt-secret-key-for-hmac-sha256-signing-2024
 
 plm:
   jwt:

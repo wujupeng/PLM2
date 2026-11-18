@@ -16,6 +16,8 @@ import reactor.core.publisher.Mono;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @Component
@@ -62,7 +64,7 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
             ServerHttpRequest mutatedRequest = request.mutate()
                     .header(USER_ID_HEADER, claims.getSubject())
                     .header(USERNAME_HEADER, claims.get("username", String.class))
-                    .header(USER_ROLES_HEADER, claims.get("roles", String.class))
+                    .header(USER_ROLES_HEADER, resolveRoles(claims))
                     .build();
 
             return chain.filter(exchange.mutate().request(mutatedRequest).build());
@@ -81,9 +83,22 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         return path.startsWith("/actuator")
                 || path.equals("/api/auth/login")
                 || path.equals("/api/auth/refresh")
+                // SSO 令牌签发入口：调用方以客户端凭证换取令牌，此时尚无平台登录态
+                || path.equals("/api/oa/sso-clients/token")
                 || path.startsWith("/doc.html")
                 || path.startsWith("/webjars/")
                 || path.startsWith("/v3/api-docs");
+    }
+
+    /** roles 声明为数组类型，需拼接为逗号分隔字符串后透传给下游 */
+    private String resolveRoles(Claims claims) {
+        Object roles = claims.get("roles");
+        if (roles instanceof Iterable<?> iterable) {
+            return StreamSupport.stream(iterable.spliterator(), false)
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(","));
+        }
+        return roles == null ? "" : String.valueOf(roles);
     }
 
     private Mono<Void> unauthorized(ServerWebExchange exchange, String message) {

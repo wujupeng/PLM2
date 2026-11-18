@@ -1,0 +1,14 @@
+package com.huaweicloud.plm.system.dto;
+
+import com.huaweicloud.plm.common.api.PageQuery;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class TaskQuery extends PageQuery {
+
+    private Long instanceId;
+
+    private String taskStatus;
+}

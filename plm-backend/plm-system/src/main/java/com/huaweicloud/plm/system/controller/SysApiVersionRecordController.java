@@ -1,0 +1,83 @@
+package com.huaweicloud.plm.system.controller;
+
+import com.huaweicloud.plm.common.api.ApiResponse;
+import com.huaweicloud.plm.common.api.PageResult;
+import com.huaweicloud.plm.system.dto.IntegrationQuery;
+import com.huaweicloud.plm.system.dto.SysApiVersionRecordSaveRequest;
+import com.huaweicloud.plm.system.entity.SysApiVersionRecord;
+import com.huaweicloud.plm.system.security.RequirePermission;
+import com.huaweicloud.plm.system.service.SysApiVersionRecordService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
+/**
+ * 接口版本记录接口（G1-N1 集成平台 T009）：版本变更登记、发布与生效。
+ */
+@RestController
+@RequestMapping("/platform/integration/api-versions")
+@RequiredArgsConstructor
+public class SysApiVersionRecordController {
+
+    private final SysApiVersionRecordService service;
+
+    @GetMapping
+    @RequirePermission("platform:integration:api:list")
+    public ApiResponse<PageResult<SysApiVersionRecord>> page(IntegrationQuery query) {
+        return ApiResponse.success(service.pageRecords(query));
+    }
+
+    @GetMapping("/stats")
+    @RequirePermission("platform:integration:api:list")
+    public ApiResponse<Map<String, Object>> stats() {
+        return ApiResponse.success(service.stats());
+    }
+
+    @GetMapping("/{id}")
+    @RequirePermission("platform:integration:api:list")
+    public ApiResponse<SysApiVersionRecord> detail(@PathVariable Long id) {
+        return ApiResponse.success(service.detail(id));
+    }
+
+    @PostMapping
+    @RequirePermission("platform:integration:api:manage")
+    public ApiResponse<Long> create(@Valid @RequestBody SysApiVersionRecordSaveRequest request) {
+        return ApiResponse.success(service.save(null, request));
+    }
+
+    @PutMapping("/{id}")
+    @RequirePermission("platform:integration:api:manage")
+    public ApiResponse<Long> update(@PathVariable Long id, @Valid @RequestBody SysApiVersionRecordSaveRequest request) {
+        return ApiResponse.success(service.save(id, request));
+    }
+
+    /** 发布版本。 */
+    @PostMapping("/{id}/publish")
+    @RequirePermission("platform:integration:api:manage")
+    public ApiResponse<SysApiVersionRecord> publish(@PathVariable Long id) {
+        return ApiResponse.success(service.publish(id));
+    }
+
+    /** 生效版本。 */
+    @PostMapping("/{id}/release")
+    @RequirePermission("platform:integration:api:manage")
+    public ApiResponse<SysApiVersionRecord> release(@PathVariable Long id) {
+        return ApiResponse.success(service.release(id));
+    }
+
+    @DeleteMapping("/{id}")
+    @RequirePermission("platform:integration:api:manage")
+    public ApiResponse<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ApiResponse.success();
+    }
+}

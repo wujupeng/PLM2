@@ -1,0 +1,19 @@
+{
+  "name": "PLM/OA 移动办公",
+  "short_name": "移动办公",
+  "description": "制造业 PLM 与 OA 协同平台移动端：工作台、待办、审批、邮件、文档与通知。",
+  "start_url": "/m/workbench",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f6f8",
+  "theme_color": "#1677ff",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
