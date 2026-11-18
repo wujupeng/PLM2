@@ -1,0 +1,61 @@
+package com.huaweicloud.plm.system.controller;
+
+import com.huaweicloud.plm.common.api.ApiResponse;
+import com.huaweicloud.plm.common.api.PageResult;
+import com.huaweicloud.plm.system.dto.IntgOaSystemsReconcileQuery;
+import com.huaweicloud.plm.system.dto.IntgOaSystemsReconcileSaveRequest;
+import com.huaweicloud.plm.system.entity.IntgOaSystemsReconcile;
+import com.huaweicloud.plm.system.security.RequirePermission;
+import com.huaweicloud.plm.system.service.IntgOaSystemsReconcileService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * OA↔六系统对账接口：OA 与六系统集成对象对账的登记、分页查询与删除。
+ */
+@RestController
+@RequestMapping("/intg/oa-systems/reconciles")
+@RequiredArgsConstructor
+public class IntgOaSystemsReconcileController {
+
+    private final IntgOaSystemsReconcileService service;
+
+    @GetMapping
+    @RequirePermission("intg:oa-systems:reconcile:list")
+    public ApiResponse<PageResult<IntgOaSystemsReconcile>> page(IntgOaSystemsReconcileQuery query) {
+        return ApiResponse.success(service.page(query));
+    }
+
+    @GetMapping("/{id}")
+    @RequirePermission("intg:oa-systems:reconcile:list")
+    public ApiResponse<IntgOaSystemsReconcile> detail(@PathVariable Long id) {
+        return ApiResponse.success(service.detail(id));
+    }
+
+    @PostMapping
+    @RequirePermission("intg:oa-systems:reconcile:manage")
+    public ApiResponse<Long> create(@Valid @RequestBody IntgOaSystemsReconcileSaveRequest request) {
+        return ApiResponse.success(service.save(null, request));
+    }
+
+    @PutMapping("/{id}")
+    @RequirePermission("intg:oa-systems:reconcile:manage")
+    public ApiResponse<Long> update(@PathVariable Long id, @Valid @RequestBody IntgOaSystemsReconcileSaveRequest request) {
+        return ApiResponse.success(service.save(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    @RequirePermission("intg:oa-systems:reconcile:manage")
+    public ApiResponse<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ApiResponse.success();
+    }
+}

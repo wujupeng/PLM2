@@ -470,6 +470,19 @@ const menuRoute = {
             { path: '/intg/wms-mes/reconciles', name: '对账', icon: 'BalanceOutlined' },
           ],
         },
+        {
+          path: '/intg-oa-systems',
+          name: 'OA↔六系统集成',
+          icon: 'SwapOutlined',
+          routes: [
+            { path: '/intg/oa-systems/interfaces', name: '集成接口', icon: 'ApiOutlined' },
+            { path: '/intg/oa-systems/mappings', name: '字段映射', icon: 'PartitionOutlined' },
+            { path: '/intg/oa-systems/batches', name: '同步批次', icon: 'SyncOutlined' },
+            { path: '/intg/oa-systems/receipts', name: '接收回执', icon: 'AuditOutlined' },
+            { path: '/intg/oa-systems/compensations', name: '异常补偿', icon: 'ToolOutlined' },
+            { path: '/intg/oa-systems/reconciles', name: '对账', icon: 'BalanceOutlined' },
+          ],
+        },
       ],
     },
     {

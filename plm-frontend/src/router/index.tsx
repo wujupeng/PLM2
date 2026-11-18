@@ -434,6 +434,12 @@ const IntgWmsMesBatches = lazy(() => import('@/pages/intg/wms-mes/batches'));
 const IntgWmsMesReceipts = lazy(() => import('@/pages/intg/wms-mes/receipts'));
 const IntgWmsMesCompensations = lazy(() => import('@/pages/intg/wms-mes/compensations'));
 const IntgWmsMesReconciles = lazy(() => import('@/pages/intg/wms-mes/reconciles'));
+const IntgOaSystemsInterfaces = lazy(() => import('@/pages/intg/oa-systems/interfaces'));
+const IntgOaSystemsMappings = lazy(() => import('@/pages/intg/oa-systems/mappings'));
+const IntgOaSystemsBatches = lazy(() => import('@/pages/intg/oa-systems/batches'));
+const IntgOaSystemsReceipts = lazy(() => import('@/pages/intg/oa-systems/receipts'));
+const IntgOaSystemsCompensations = lazy(() => import('@/pages/intg/oa-systems/compensations'));
+const IntgOaSystemsReconciles = lazy(() => import('@/pages/intg/oa-systems/reconciles'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1737,6 +1743,30 @@ const routes: RouteObject[] = [
       {
         path: 'intg/wms-mes/reconciles',
         element: withPermission('intg:wms-mes:reconcile:list', <IntgWmsMesReconciles />),
+      },
+      {
+        path: 'intg/oa-systems/interfaces',
+        element: withPermission('intg:oa-systems:interface:list', <IntgOaSystemsInterfaces />),
+      },
+      {
+        path: 'intg/oa-systems/mappings',
+        element: withPermission('intg:oa-systems:mapping:list', <IntgOaSystemsMappings />),
+      },
+      {
+        path: 'intg/oa-systems/batches',
+        element: withPermission('intg:oa-systems:batch:list', <IntgOaSystemsBatches />),
+      },
+      {
+        path: 'intg/oa-systems/receipts',
+        element: withPermission('intg:oa-systems:receipt:list', <IntgOaSystemsReceipts />),
+      },
+      {
+        path: 'intg/oa-systems/compensations',
+        element: withPermission('intg:oa-systems:compensation:list', <IntgOaSystemsCompensations />),
+      },
+      {
+        path: 'intg/oa-systems/reconciles',
+        element: withPermission('intg:oa-systems:reconcile:list', <IntgOaSystemsReconciles />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },
