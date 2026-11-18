@@ -245,6 +245,23 @@ const menuRoute = {
       ],
     },
     {
+      path: '/mes',
+      name: 'MES 制造执行',
+      icon: 'DeploymentUnitOutlined',
+      routes: [
+        {
+          path: '/mes-plan',
+          name: '生产计划执行',
+          icon: 'ScheduleOutlined',
+          routes: [
+            { path: '/mes/plan/orders', name: '生产工单', icon: 'ProfileOutlined' },
+            { path: '/mes/plan/schedules', name: '排产计划', icon: 'ScheduleOutlined' },
+            { path: '/mes/plan/dispatches', name: '派工任务', icon: 'TeamOutlined' },
+          ],
+        },
+      ],
+    },
+    {
       path: '/mfg',
       name: '生产执行与追溯',
       icon: 'DeploymentUnitOutlined',
