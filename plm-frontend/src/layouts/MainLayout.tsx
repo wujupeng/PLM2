@@ -225,6 +225,16 @@ const menuRoute = {
       ],
     },
     {
+      path: '/wms-stocktake',
+      name: '盘点与调拨',
+      icon: 'AuditOutlined',
+      routes: [
+        { path: '/wms/stocktake/orders', name: '盘点单', icon: 'AuditOutlined' },
+        { path: '/wms/stocktake/diffs', name: '盘点差异', icon: 'DiffOutlined' },
+        { path: '/wms/stocktake/transfers', name: '调拨单', icon: 'SwapOutlined' },
+      ],
+    },
+    {
       path: '/mfg',
       name: '生产执行与追溯',
       icon: 'DeploymentUnitOutlined',
