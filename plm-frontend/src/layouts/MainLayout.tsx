@@ -205,6 +205,16 @@ const menuRoute = {
       ],
     },
     {
+      path: '/wms-return',
+      name: '生产退补料',
+      icon: 'RollbackOutlined',
+      routes: [
+        { path: '/wms/return/returns', name: '生产退料', icon: 'RollbackOutlined' },
+        { path: '/wms/return/replenishes', name: '生产补料', icon: 'PlusSquareOutlined' },
+        { path: '/wms/return/diffs', name: '差异处理', icon: 'DiffOutlined' },
+      ],
+    },
+    {
       path: '/mfg',
       name: '生产执行与追溯',
       icon: 'DeploymentUnitOutlined',

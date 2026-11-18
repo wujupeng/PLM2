@@ -327,6 +327,9 @@ const WmsInventoryFreezes = lazy(() => import('@/pages/wms/inventory/freezes'));
 const WmsPickTasks = lazy(() => import('@/pages/wms/pick/tasks'));
 const WmsPickKittings = lazy(() => import('@/pages/wms/pick/kittings'));
 const WmsPickLineStocks = lazy(() => import('@/pages/wms/pick/line-stocks'));
+const WmsReturnOrders = lazy(() => import('@/pages/wms/return/returns'));
+const WmsReturnReplenishes = lazy(() => import('@/pages/wms/return/replenishes'));
+const WmsReturnDiffs = lazy(() => import('@/pages/wms/return/diffs'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1202,6 +1205,18 @@ const routes: RouteObject[] = [
       {
         path: 'wms/pick/line-stocks',
         element: withPermission('wms:pick:linestock:list', <WmsPickLineStocks />),
+      },
+      {
+        path: 'wms/return/returns',
+        element: withPermission('wms:return:return:list', <WmsReturnOrders />),
+      },
+      {
+        path: 'wms/return/replenishes',
+        element: withPermission('wms:return:replenish:list', <WmsReturnReplenishes />),
+      },
+      {
+        path: 'wms/return/diffs',
+        element: withPermission('wms:return:diff:list', <WmsReturnDiffs />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },
