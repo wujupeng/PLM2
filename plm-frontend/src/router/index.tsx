@@ -398,6 +398,12 @@ const IntgPlmSrmBatches = lazy(() => import('@/pages/intg/plm-srm/batches'));
 const IntgPlmSrmReceipts = lazy(() => import('@/pages/intg/plm-srm/receipts'));
 const IntgPlmSrmCompensations = lazy(() => import('@/pages/intg/plm-srm/compensations'));
 const IntgPlmSrmReconciles = lazy(() => import('@/pages/intg/plm-srm/reconciles'));
+const IntgErpSrmInterfaces = lazy(() => import('@/pages/intg/erp-srm/interfaces'));
+const IntgErpSrmMappings = lazy(() => import('@/pages/intg/erp-srm/mappings'));
+const IntgErpSrmBatches = lazy(() => import('@/pages/intg/erp-srm/batches'));
+const IntgErpSrmReceipts = lazy(() => import('@/pages/intg/erp-srm/receipts'));
+const IntgErpSrmCompensations = lazy(() => import('@/pages/intg/erp-srm/compensations'));
+const IntgErpSrmReconciles = lazy(() => import('@/pages/intg/erp-srm/reconciles'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1557,6 +1563,30 @@ const routes: RouteObject[] = [
       {
         path: 'intg/plm-srm/reconciles',
         element: withPermission('intg:plm-srm:reconcile:list', <IntgPlmSrmReconciles />),
+      },
+      {
+        path: 'intg/erp-srm/interfaces',
+        element: withPermission('intg:erp-srm:interface:list', <IntgErpSrmInterfaces />),
+      },
+      {
+        path: 'intg/erp-srm/mappings',
+        element: withPermission('intg:erp-srm:mapping:list', <IntgErpSrmMappings />),
+      },
+      {
+        path: 'intg/erp-srm/batches',
+        element: withPermission('intg:erp-srm:batch:list', <IntgErpSrmBatches />),
+      },
+      {
+        path: 'intg/erp-srm/receipts',
+        element: withPermission('intg:erp-srm:receipt:list', <IntgErpSrmReceipts />),
+      },
+      {
+        path: 'intg/erp-srm/compensations',
+        element: withPermission('intg:erp-srm:compensation:list', <IntgErpSrmCompensations />),
+      },
+      {
+        path: 'intg/erp-srm/reconciles',
+        element: withPermission('intg:erp-srm:reconcile:list', <IntgErpSrmReconciles />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },
