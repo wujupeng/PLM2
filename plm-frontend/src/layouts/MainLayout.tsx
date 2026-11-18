@@ -511,6 +511,27 @@ const menuRoute = {
       ],
     },
     {
+      path: '/srm',
+      name: 'SRM 供应商协同',
+      icon: 'ApartmentOutlined',
+      routes: [
+        {
+          path: '/srm/supplier',
+          name: '供应商全生命周期',
+          icon: 'TeamOutlined',
+          routes: [
+            { path: '/srm/supplier/archives', name: '供应商主档', icon: 'DatabaseOutlined' },
+            { path: '/srm/supplier/admissions', name: '供应商准入', icon: 'AuditOutlined' },
+            { path: '/srm/supplier/qualifications', name: '供应商资质', icon: 'SafetyCertificateOutlined' },
+            { path: '/srm/supplier/risks', name: '供应商风险', icon: 'WarningOutlined' },
+            { path: '/srm/supplier/grades', name: '供应商分级', icon: 'StarOutlined' },
+            { path: '/srm/supplier/blacklists', name: '供应商黑名单', icon: 'StopOutlined' },
+            { path: '/srm/supplier/reviews', name: '年度复审', icon: 'ReconciliationOutlined' },
+          ],
+        },
+      ],
+    },
+    {
       path: '/system',
       name: '系统管理',
       icon: 'SettingOutlined',

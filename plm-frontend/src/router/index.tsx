@@ -283,6 +283,13 @@ const ErpProcessRoutes = lazy(() => import('@/pages/erp/process/routes'));
 const ErpProcessPlans = lazy(() => import('@/pages/erp/process/plans'));
 const ErpProcessReports = lazy(() => import('@/pages/erp/process/reports'));
 const ErpProcessLaborFeedback = lazy(() => import('@/pages/erp/process/labor-feedback'));
+const SrmSupplierArchives = lazy(() => import('@/pages/srm/supplier/archives'));
+const SrmSupplierAdmissions = lazy(() => import('@/pages/srm/supplier/admissions'));
+const SrmSupplierQualifications = lazy(() => import('@/pages/srm/supplier/qualifications'));
+const SrmSupplierRisks = lazy(() => import('@/pages/srm/supplier/risks'));
+const SrmSupplierGrades = lazy(() => import('@/pages/srm/supplier/grades'));
+const SrmSupplierBlacklists = lazy(() => import('@/pages/srm/supplier/blacklists'));
+const SrmSupplierReviews = lazy(() => import('@/pages/srm/supplier/reviews'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -982,6 +989,34 @@ const routes: RouteObject[] = [
       {
         path: 'erp/process/labor-feedback',
         element: withPermission('erp:process:labor:list', <ErpProcessLaborFeedback />),
+      },
+      {
+        path: 'srm/supplier/archives',
+        element: withPermission('srm:supplier:archive:list', <SrmSupplierArchives />),
+      },
+      {
+        path: 'srm/supplier/admissions',
+        element: withPermission('srm:supplier:admission:list', <SrmSupplierAdmissions />),
+      },
+      {
+        path: 'srm/supplier/qualifications',
+        element: withPermission('srm:supplier:qualification:list', <SrmSupplierQualifications />),
+      },
+      {
+        path: 'srm/supplier/risks',
+        element: withPermission('srm:supplier:risk:list', <SrmSupplierRisks />),
+      },
+      {
+        path: 'srm/supplier/grades',
+        element: withPermission('srm:supplier:grade:list', <SrmSupplierGrades />),
+      },
+      {
+        path: 'srm/supplier/blacklists',
+        element: withPermission('srm:supplier:blacklist:list', <SrmSupplierBlacklists />),
+      },
+      {
+        path: 'srm/supplier/reviews',
+        element: withPermission('srm:supplier:review:list', <SrmSupplierReviews />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },
