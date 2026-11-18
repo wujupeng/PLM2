@@ -321,6 +321,19 @@ const menuRoute = {
             { path: '/mes/trace/records', name: '追溯记录', icon: 'ProfileOutlined' },
           ],
         },
+        {
+          path: '/mes-kanban',
+          name: '生产看板',
+          icon: 'DashboardOutlined',
+          routes: [
+            { path: '/mes/kanban/plans', name: '计划达成', icon: 'AimOutlined' },
+            { path: '/mes/kanban/outputs', name: '产量看板', icon: 'BarChartOutlined' },
+            { path: '/mes/kanban/yields', name: '良率看板', icon: 'RiseOutlined' },
+            { path: '/mes/kanban/downtimes', name: '停机看板', icon: 'FieldTimeOutlined' },
+            { path: '/mes/kanban/wips', name: '在制品看板', icon: 'DatabaseOutlined' },
+            { path: '/mes/kanban/andons', name: '异常安灯', icon: 'AlertOutlined' },
+          ],
+        },
       ],
     },
     {

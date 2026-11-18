@@ -369,6 +369,12 @@ const MesBatchTraces = lazy(() => import('@/pages/mes/trace/batches'));
 const MesTraceCodes = lazy(() => import('@/pages/mes/trace/codes'));
 const MesTraceLinks = lazy(() => import('@/pages/mes/trace/links'));
 const MesTraceRecords = lazy(() => import('@/pages/mes/trace/records'));
+const MesKanbanPlans = lazy(() => import('@/pages/mes/kanban/plans'));
+const MesKanbanOutputs = lazy(() => import('@/pages/mes/kanban/outputs'));
+const MesKanbanYields = lazy(() => import('@/pages/mes/kanban/yields'));
+const MesKanbanDowntimes = lazy(() => import('@/pages/mes/kanban/downtimes'));
+const MesKanbanWips = lazy(() => import('@/pages/mes/kanban/wips'));
+const MesKanbanAndons = lazy(() => import('@/pages/mes/kanban/andons'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1412,6 +1418,30 @@ const routes: RouteObject[] = [
       {
         path: 'mes/trace/records',
         element: withPermission('mes:trace:record:list', <MesTraceRecords />),
+      },
+      {
+        path: 'mes/kanban/plans',
+        element: withPermission('mes:kanban:plan:list', <MesKanbanPlans />),
+      },
+      {
+        path: 'mes/kanban/outputs',
+        element: withPermission('mes:kanban:output:list', <MesKanbanOutputs />),
+      },
+      {
+        path: 'mes/kanban/yields',
+        element: withPermission('mes:kanban:yield:list', <MesKanbanYields />),
+      },
+      {
+        path: 'mes/kanban/downtimes',
+        element: withPermission('mes:kanban:downtime:list', <MesKanbanDowntimes />),
+      },
+      {
+        path: 'mes/kanban/wips',
+        element: withPermission('mes:kanban:wip:list', <MesKanbanWips />),
+      },
+      {
+        path: 'mes/kanban/andons',
+        element: withPermission('mes:kanban:andon:list', <MesKanbanAndons />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },
