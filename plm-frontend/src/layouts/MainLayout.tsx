@@ -431,6 +431,19 @@ const menuRoute = {
             { path: '/intg/erp-mes/reconciles', name: '对账', icon: 'BalanceOutlined' },
           ],
         },
+        {
+          path: '/intg-mes-erp',
+          name: 'MES→ERP 集成',
+          icon: 'SwapRightOutlined',
+          routes: [
+            { path: '/intg/mes-erp/interfaces', name: '集成接口', icon: 'ApiOutlined' },
+            { path: '/intg/mes-erp/mappings', name: '字段映射', icon: 'PartitionOutlined' },
+            { path: '/intg/mes-erp/batches', name: '同步批次', icon: 'SyncOutlined' },
+            { path: '/intg/mes-erp/receipts', name: '接收回执', icon: 'AuditOutlined' },
+            { path: '/intg/mes-erp/compensations', name: '异常补偿', icon: 'ToolOutlined' },
+            { path: '/intg/mes-erp/reconciles', name: '对账', icon: 'BalanceOutlined' },
+          ],
+        },
       ],
     },
     {
