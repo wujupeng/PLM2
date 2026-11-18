@@ -195,6 +195,16 @@ const menuRoute = {
       ],
     },
     {
+      path: '/wms-pick',
+      name: '拣选发料',
+      icon: 'ScheduleOutlined',
+      routes: [
+        { path: '/wms/pick/tasks', name: '拣料单', icon: 'PullRequestOutlined' },
+        { path: '/wms/pick/kittings', name: '齐套检查', icon: 'CheckSquareOutlined' },
+        { path: '/wms/pick/line-stocks', name: '线边仓库存', icon: 'ShopOutlined' },
+      ],
+    },
+    {
       path: '/mfg',
       name: '生产执行与追溯',
       icon: 'DeploymentUnitOutlined',

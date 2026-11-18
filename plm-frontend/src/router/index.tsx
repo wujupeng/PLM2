@@ -324,6 +324,9 @@ const WmsInboundPutaways = lazy(() => import('@/pages/wms/inbound/putaways'));
 const WmsInventoryBatches = lazy(() => import('@/pages/wms/inventory/batches'));
 const WmsInventorySerials = lazy(() => import('@/pages/wms/inventory/serials'));
 const WmsInventoryFreezes = lazy(() => import('@/pages/wms/inventory/freezes'));
+const WmsPickTasks = lazy(() => import('@/pages/wms/pick/tasks'));
+const WmsPickKittings = lazy(() => import('@/pages/wms/pick/kittings'));
+const WmsPickLineStocks = lazy(() => import('@/pages/wms/pick/line-stocks'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1187,6 +1190,18 @@ const routes: RouteObject[] = [
       {
         path: 'wms/inventory/freezes',
         element: withPermission('wms:inventory:freeze:list', <WmsInventoryFreezes />),
+      },
+      {
+        path: 'wms/pick/tasks',
+        element: withPermission('wms:pick:task:list', <WmsPickTasks />),
+      },
+      {
+        path: 'wms/pick/kittings',
+        element: withPermission('wms:pick:kitting:list', <WmsPickKittings />),
+      },
+      {
+        path: 'wms/pick/line-stocks',
+        element: withPermission('wms:pick:linestock:list', <WmsPickLineStocks />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },
