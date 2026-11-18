@@ -302,6 +302,10 @@ const SrmDeliveryCommitments = lazy(() => import('@/pages/srm/collab/commitments
 const SrmPoChanges = lazy(() => import('@/pages/srm/collab/changes'));
 const SrmDeliveryAppointments = lazy(() => import('@/pages/srm/collab/appointments'));
 const SrmAsns = lazy(() => import('@/pages/srm/collab/asns'));
+const SrmIncomingQualities = lazy(() => import('@/pages/srm/quality/iqc'));
+const SrmSupplierAssessments = lazy(() => import('@/pages/srm/quality/assessments'));
+const SrmEightDReports = lazy(() => import('@/pages/srm/quality/eightd'));
+const SrmRectifications = lazy(() => import('@/pages/srm/quality/rectifications'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1077,6 +1081,22 @@ const routes: RouteObject[] = [
       {
         path: 'srm/collab/asns',
         element: withPermission('srm:collab:asn:list', <SrmAsns />),
+      },
+      {
+        path: 'srm/quality/iqc',
+        element: withPermission('srm:quality:iqc:list', <SrmIncomingQualities />),
+      },
+      {
+        path: 'srm/quality/assessments',
+        element: withPermission('srm:quality:assessment:list', <SrmSupplierAssessments />),
+      },
+      {
+        path: 'srm/quality/eightd',
+        element: withPermission('srm:quality:eightd:list', <SrmEightDReports />),
+      },
+      {
+        path: 'srm/quality/rectifications',
+        element: withPermission('srm:quality:rectification:list', <SrmRectifications />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

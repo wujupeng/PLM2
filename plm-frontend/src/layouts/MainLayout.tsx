@@ -555,6 +555,17 @@ const menuRoute = {
             { path: '/srm/collab/asns', name: 'ASN发货通知', icon: 'CarOutlined' },
           ],
         },
+        {
+          path: '/srm/quality',
+          name: '供应商质量',
+          icon: 'ExperimentOutlined',
+          routes: [
+            { path: '/srm/quality/iqc', name: '来料质量', icon: 'FileProtectOutlined' },
+            { path: '/srm/quality/assessments', name: '供应商考评', icon: 'RadarChartOutlined' },
+            { path: '/srm/quality/eightd', name: '8D报告', icon: 'AlertOutlined' },
+            { path: '/srm/quality/rectifications', name: '整改跟踪', icon: 'CheckSquareOutlined' },
+          ],
+        },
       ],
     },
     {
