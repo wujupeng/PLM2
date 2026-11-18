@@ -364,6 +364,11 @@ const MesLastInspections = lazy(() => import('@/pages/mes/quality/lasts'));
 const MesFinalInspections = lazy(() => import('@/pages/mes/quality/finals'));
 const MesInspectionJudges = lazy(() => import('@/pages/mes/quality/judges'));
 const MesQuarantines = lazy(() => import('@/pages/mes/quality/quarantines'));
+const MesSerialNumbers = lazy(() => import('@/pages/mes/trace/serials'));
+const MesBatchTraces = lazy(() => import('@/pages/mes/trace/batches'));
+const MesTraceCodes = lazy(() => import('@/pages/mes/trace/codes'));
+const MesTraceLinks = lazy(() => import('@/pages/mes/trace/links'));
+const MesTraceRecords = lazy(() => import('@/pages/mes/trace/records'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1387,6 +1392,26 @@ const routes: RouteObject[] = [
       {
         path: 'mes/quality/quarantines',
         element: withPermission('mes:quality:quarantine:list', <MesQuarantines />),
+      },
+      {
+        path: 'mes/trace/serials',
+        element: withPermission('mes:trace:serial:list', <MesSerialNumbers />),
+      },
+      {
+        path: 'mes/trace/batches',
+        element: withPermission('mes:trace:batch:list', <MesBatchTraces />),
+      },
+      {
+        path: 'mes/trace/codes',
+        element: withPermission('mes:trace:code:list', <MesTraceCodes />),
+      },
+      {
+        path: 'mes/trace/links',
+        element: withPermission('mes:trace:link:list', <MesTraceLinks />),
+      },
+      {
+        path: 'mes/trace/records',
+        element: withPermission('mes:trace:record:list', <MesTraceRecords />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

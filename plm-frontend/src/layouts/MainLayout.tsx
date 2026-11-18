@@ -309,6 +309,18 @@ const menuRoute = {
             { path: '/mes/quality/quarantines', name: '隔离记录', icon: 'StopOutlined' },
           ],
         },
+        {
+          path: '/mes-trace',
+          name: '产品追溯',
+          icon: 'NodeIndexOutlined',
+          routes: [
+            { path: '/mes/trace/serials', name: '序列号台账', icon: 'NumberOutlined' },
+            { path: '/mes/trace/batches', name: '批次追溯', icon: 'ClusterOutlined' },
+            { path: '/mes/trace/codes', name: '追溯码', icon: 'QrcodeOutlined' },
+            { path: '/mes/trace/links', name: '追溯关联', icon: 'DeploymentUnitOutlined' },
+            { path: '/mes/trace/records', name: '追溯记录', icon: 'ProfileOutlined' },
+          ],
+        },
       ],
     },
     {
