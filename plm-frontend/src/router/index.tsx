@@ -347,6 +347,9 @@ const MesSops = lazy(() => import('@/pages/mes/craft/sops'));
 const MesRecipes = lazy(() => import('@/pages/mes/craft/recipes'));
 const MesFais = lazy(() => import('@/pages/mes/craft/fais'));
 const MesChangeovers = lazy(() => import('@/pages/mes/craft/changeovers'));
+const MesWorkReports = lazy(() => import('@/pages/mes/report/works'));
+const MesReplenishes = lazy(() => import('@/pages/mes/report/replenishes'));
+const MesLabors = lazy(() => import('@/pages/mes/report/labors'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1302,6 +1305,18 @@ const routes: RouteObject[] = [
       {
         path: 'mes/craft/changeovers',
         element: withPermission('mes:craft:changeover:list', <MesChangeovers />),
+      },
+      {
+        path: 'mes/report/works',
+        element: withPermission('mes:report:work:list', <MesWorkReports />),
+      },
+      {
+        path: 'mes/report/replenishes',
+        element: withPermission('mes:report:replenish:list', <MesReplenishes />),
+      },
+      {
+        path: 'mes/report/labors',
+        element: withPermission('mes:report:labor:list', <MesLabors />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

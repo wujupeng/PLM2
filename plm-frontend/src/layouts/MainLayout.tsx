@@ -271,6 +271,16 @@ const menuRoute = {
             { path: '/mes/craft/changeovers', name: '换线换型', icon: 'SwapOutlined' },
           ],
         },
+        {
+          path: '/mes-report',
+          name: '工序报工',
+          icon: 'SolutionOutlined',
+          routes: [
+            { path: '/mes/report/works', name: '工序报工单', icon: 'SolutionOutlined' },
+            { path: '/mes/report/replenishes', name: '补料记录', icon: 'PlusSquareOutlined' },
+            { path: '/mes/report/labors', name: '工时记录', icon: 'FieldTimeOutlined' },
+          ],
+        },
       ],
     },
     {
