@@ -281,6 +281,19 @@ const menuRoute = {
             { path: '/mes/report/labors', name: '工时记录', icon: 'FieldTimeOutlined' },
           ],
         },
+        {
+          path: '/mes-equipment',
+          name: '设备与工装',
+          icon: 'ToolOutlined',
+          routes: [
+            { path: '/mes/equipment/ledgers', name: '设备台账', icon: 'DatabaseOutlined' },
+            { path: '/mes/equipment/statuses', name: '设备状态', icon: 'DashboardOutlined' },
+            { path: '/mes/equipment/checks', name: '设备点检', icon: 'AuditOutlined' },
+            { path: '/mes/equipment/maintenances', name: '设备保养', icon: 'ToolOutlined' },
+            { path: '/mes/equipment/faults', name: '设备故障', icon: 'WarningOutlined' },
+            { path: '/mes/equipment/tools', name: '工装寿命', icon: 'FieldTimeOutlined' },
+          ],
+        },
       ],
     },
     {

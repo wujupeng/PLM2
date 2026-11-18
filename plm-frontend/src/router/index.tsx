@@ -350,6 +350,12 @@ const MesChangeovers = lazy(() => import('@/pages/mes/craft/changeovers'));
 const MesWorkReports = lazy(() => import('@/pages/mes/report/works'));
 const MesReplenishes = lazy(() => import('@/pages/mes/report/replenishes'));
 const MesLabors = lazy(() => import('@/pages/mes/report/labors'));
+const MesEquipments = lazy(() => import('@/pages/mes/equipment/ledgers'));
+const MesEquipmentStatuses = lazy(() => import('@/pages/mes/equipment/statuses'));
+const MesEquipmentChecks = lazy(() => import('@/pages/mes/equipment/checks'));
+const MesEquipmentMaintenances = lazy(() => import('@/pages/mes/equipment/maintenances'));
+const MesEquipmentFaults = lazy(() => import('@/pages/mes/equipment/faults'));
+const MesToolLifes = lazy(() => import('@/pages/mes/equipment/tools'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1317,6 +1323,30 @@ const routes: RouteObject[] = [
       {
         path: 'mes/report/labors',
         element: withPermission('mes:report:labor:list', <MesLabors />),
+      },
+      {
+        path: 'mes/equipment/ledgers',
+        element: withPermission('mes:equipment:ledger:list', <MesEquipments />),
+      },
+      {
+        path: 'mes/equipment/statuses',
+        element: withPermission('mes:equipment:status:list', <MesEquipmentStatuses />),
+      },
+      {
+        path: 'mes/equipment/checks',
+        element: withPermission('mes:equipment:check:list', <MesEquipmentChecks />),
+      },
+      {
+        path: 'mes/equipment/maintenances',
+        element: withPermission('mes:equipment:maintenance:list', <MesEquipmentMaintenances />),
+      },
+      {
+        path: 'mes/equipment/faults',
+        element: withPermission('mes:equipment:fault:list', <MesEquipmentFaults />),
+      },
+      {
+        path: 'mes/equipment/tools',
+        element: withPermission('mes:tool:life:list', <MesToolLifes />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },
