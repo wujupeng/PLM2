@@ -306,6 +306,9 @@ const SrmIncomingQualities = lazy(() => import('@/pages/srm/quality/iqc'));
 const SrmSupplierAssessments = lazy(() => import('@/pages/srm/quality/assessments'));
 const SrmEightDReports = lazy(() => import('@/pages/srm/quality/eightd'));
 const SrmRectifications = lazy(() => import('@/pages/srm/quality/rectifications'));
+const SrmPortalAccounts = lazy(() => import('@/pages/srm/portal/accounts'));
+const SrmPortalMessages = lazy(() => import('@/pages/srm/portal/messages'));
+const SrmPortalAttachments = lazy(() => import('@/pages/srm/portal/attachments'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1097,6 +1100,18 @@ const routes: RouteObject[] = [
       {
         path: 'srm/quality/rectifications',
         element: withPermission('srm:quality:rectification:list', <SrmRectifications />),
+      },
+      {
+        path: 'srm/portal/accounts',
+        element: withPermission('srm:portal:account:list', <SrmPortalAccounts />),
+      },
+      {
+        path: 'srm/portal/messages',
+        element: withPermission('srm:portal:message:list', <SrmPortalMessages />),
+      },
+      {
+        path: 'srm/portal/attachments',
+        element: withPermission('srm:portal:attachment:list', <SrmPortalAttachments />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

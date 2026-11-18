@@ -566,6 +566,16 @@ const menuRoute = {
             { path: '/srm/quality/rectifications', name: '整改跟踪', icon: 'CheckSquareOutlined' },
           ],
         },
+        {
+          path: '/srm/portal',
+          name: '供应商门户',
+          icon: 'ShopOutlined',
+          routes: [
+            { path: '/srm/portal/accounts', name: '供应商账号', icon: 'UserSwitchOutlined' },
+            { path: '/srm/portal/messages', name: '门户消息', icon: 'MessageOutlined' },
+            { path: '/srm/portal/attachments', name: '门户附件', icon: 'PaperClipOutlined' },
+          ],
+        },
       ],
     },
     {
