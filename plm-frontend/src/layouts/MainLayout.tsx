@@ -235,6 +235,16 @@ const menuRoute = {
       ],
     },
     {
+      path: '/wms-vmi',
+      name: 'VMI管理',
+      icon: 'DatabaseOutlined',
+      routes: [
+        { path: '/wms/vmi/bins', name: 'VMI库位', icon: 'DatabaseOutlined' },
+        { path: '/wms/vmi/scans', name: 'VMI扫码收发', icon: 'ScanOutlined' },
+        { path: '/wms/vmi/warnings', name: '超容量预警', icon: 'AlertOutlined' },
+      ],
+    },
+    {
       path: '/mfg',
       name: '生产执行与追溯',
       icon: 'DeploymentUnitOutlined',

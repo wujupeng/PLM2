@@ -336,6 +336,9 @@ const WmsShipmentOrders = lazy(() => import('@/pages/wms/outbound/shipments'));
 const WmsStocktakeOrders = lazy(() => import('@/pages/wms/stocktake/orders'));
 const WmsStocktakeDiffs = lazy(() => import('@/pages/wms/stocktake/diffs'));
 const WmsStocktakeTransfers = lazy(() => import('@/pages/wms/stocktake/transfers'));
+const WmsVmiBins = lazy(() => import('@/pages/wms/vmi/bins'));
+const WmsVmiScans = lazy(() => import('@/pages/wms/vmi/scans'));
+const WmsVmiWarnings = lazy(() => import('@/pages/wms/vmi/warnings'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1247,6 +1250,18 @@ const routes: RouteObject[] = [
       {
         path: 'wms/stocktake/transfers',
         element: withPermission('wms:stocktake:transfer:list', <WmsStocktakeTransfers />),
+      },
+      {
+        path: 'wms/vmi/bins',
+        element: withPermission('wms:vmi:bin:list', <WmsVmiBins />),
+      },
+      {
+        path: 'wms/vmi/scans',
+        element: withPermission('wms:vmi:scan:list', <WmsVmiScans />),
+      },
+      {
+        path: 'wms/vmi/warnings',
+        element: withPermission('wms:vmi:warning:list', <WmsVmiWarnings />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },
