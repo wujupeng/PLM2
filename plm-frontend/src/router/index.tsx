@@ -330,6 +330,9 @@ const WmsPickLineStocks = lazy(() => import('@/pages/wms/pick/line-stocks'));
 const WmsReturnOrders = lazy(() => import('@/pages/wms/return/returns'));
 const WmsReturnReplenishes = lazy(() => import('@/pages/wms/return/replenishes'));
 const WmsReturnDiffs = lazy(() => import('@/pages/wms/return/diffs'));
+const WmsFinishedGoods = lazy(() => import('@/pages/wms/outbound/finished-goods'));
+const WmsOutboundWaves = lazy(() => import('@/pages/wms/outbound/waves'));
+const WmsShipmentOrders = lazy(() => import('@/pages/wms/outbound/shipments'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1217,6 +1220,18 @@ const routes: RouteObject[] = [
       {
         path: 'wms/return/diffs',
         element: withPermission('wms:return:diff:list', <WmsReturnDiffs />),
+      },
+      {
+        path: 'wms/outbound/finished-goods',
+        element: withPermission('wms:outbound:finished:list', <WmsFinishedGoods />),
+      },
+      {
+        path: 'wms/outbound/waves',
+        element: withPermission('wms:outbound:wave:list', <WmsOutboundWaves />),
+      },
+      {
+        path: 'wms/outbound/shipments',
+        element: withPermission('wms:outbound:shipment:list', <WmsShipmentOrders />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

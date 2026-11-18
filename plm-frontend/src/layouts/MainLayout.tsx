@@ -215,6 +215,16 @@ const menuRoute = {
       ],
     },
     {
+      path: '/wms-outbound',
+      name: '成品与发运',
+      icon: 'CarOutlined',
+      routes: [
+        { path: '/wms/outbound/finished-goods', name: '成品入库', icon: 'ImportOutlined' },
+        { path: '/wms/outbound/waves', name: '出库波次', icon: 'DeploymentUnitOutlined' },
+        { path: '/wms/outbound/shipments', name: '发运单', icon: 'SendOutlined' },
+      ],
+    },
+    {
       path: '/mfg',
       name: '生产执行与追溯',
       icon: 'DeploymentUnitOutlined',
