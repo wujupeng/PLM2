@@ -259,6 +259,18 @@ const menuRoute = {
             { path: '/mes/plan/dispatches', name: '派工任务', icon: 'TeamOutlined' },
           ],
         },
+        {
+          path: '/mes-craft',
+          name: '工艺与作业',
+          icon: 'ExperimentOutlined',
+          routes: [
+            { path: '/mes/craft/versions', name: '工艺版本', icon: 'BranchesOutlined' },
+            { path: '/mes/craft/sops', name: 'SOP作业指导书', icon: 'FileTextOutlined' },
+            { path: '/mes/craft/recipes', name: '参数配方', icon: 'ExperimentOutlined' },
+            { path: '/mes/craft/fais', name: '首件确认', icon: 'CheckCircleOutlined' },
+            { path: '/mes/craft/changeovers', name: '换线换型', icon: 'SwapOutlined' },
+          ],
+        },
       ],
     },
     {

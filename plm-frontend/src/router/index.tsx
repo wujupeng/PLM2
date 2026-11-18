@@ -342,6 +342,11 @@ const WmsVmiWarnings = lazy(() => import('@/pages/wms/vmi/warnings'));
 const MesProdOrders = lazy(() => import('@/pages/mes/plan/orders'));
 const MesSchedules = lazy(() => import('@/pages/mes/plan/schedules'));
 const MesDispatches = lazy(() => import('@/pages/mes/plan/dispatches'));
+const MesProcessVersions = lazy(() => import('@/pages/mes/craft/versions'));
+const MesSops = lazy(() => import('@/pages/mes/craft/sops'));
+const MesRecipes = lazy(() => import('@/pages/mes/craft/recipes'));
+const MesFais = lazy(() => import('@/pages/mes/craft/fais'));
+const MesChangeovers = lazy(() => import('@/pages/mes/craft/changeovers'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1277,6 +1282,26 @@ const routes: RouteObject[] = [
       {
         path: 'mes/plan/dispatches',
         element: withPermission('mes:plan:dispatch:list', <MesDispatches />),
+      },
+      {
+        path: 'mes/craft/versions',
+        element: withPermission('mes:craft:version:list', <MesProcessVersions />),
+      },
+      {
+        path: 'mes/craft/sops',
+        element: withPermission('mes:craft:sop:list', <MesSops />),
+      },
+      {
+        path: 'mes/craft/recipes',
+        element: withPermission('mes:craft:recipe:list', <MesRecipes />),
+      },
+      {
+        path: 'mes/craft/fais',
+        element: withPermission('mes:craft:fai:list', <MesFais />),
+      },
+      {
+        path: 'mes/craft/changeovers',
+        element: withPermission('mes:craft:changeover:list', <MesChangeovers />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },
