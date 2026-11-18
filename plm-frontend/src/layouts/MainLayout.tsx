@@ -576,6 +576,16 @@ const menuRoute = {
             { path: '/srm/portal/attachments', name: '门户附件', icon: 'PaperClipOutlined' },
           ],
         },
+        {
+          path: '/srm/edi',
+          name: 'EDI协同',
+          icon: 'ApiOutlined',
+          routes: [
+            { path: '/srm/edi/messages', name: 'EDI报文', icon: 'SendOutlined' },
+            { path: '/srm/edi/receipts', name: 'EDI回执', icon: 'MailOutlined' },
+            { path: '/srm/edi/reconciles', name: 'EDI对账', icon: 'ReconciliationOutlined' },
+          ],
+        },
       ],
     },
     {

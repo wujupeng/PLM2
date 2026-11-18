@@ -309,6 +309,9 @@ const SrmRectifications = lazy(() => import('@/pages/srm/quality/rectifications'
 const SrmPortalAccounts = lazy(() => import('@/pages/srm/portal/accounts'));
 const SrmPortalMessages = lazy(() => import('@/pages/srm/portal/messages'));
 const SrmPortalAttachments = lazy(() => import('@/pages/srm/portal/attachments'));
+const SrmEdiMessages = lazy(() => import('@/pages/srm/edi/messages'));
+const SrmEdiReceipts = lazy(() => import('@/pages/srm/edi/receipts'));
+const SrmEdiReconciles = lazy(() => import('@/pages/srm/edi/reconciles'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1112,6 +1115,18 @@ const routes: RouteObject[] = [
       {
         path: 'srm/portal/attachments',
         element: withPermission('srm:portal:attachment:list', <SrmPortalAttachments />),
+      },
+      {
+        path: 'srm/edi/messages',
+        element: withPermission('srm:edi:message:list', <SrmEdiMessages />),
+      },
+      {
+        path: 'srm/edi/receipts',
+        element: withPermission('srm:edi:receipt:list', <SrmEdiReceipts />),
+      },
+      {
+        path: 'srm/edi/reconciles',
+        element: withPermission('srm:edi:reconcile:list', <SrmEdiReconciles />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },
