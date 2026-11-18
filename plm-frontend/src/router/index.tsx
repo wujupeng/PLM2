@@ -318,6 +318,9 @@ const WmsBaseBins = lazy(() => import('@/pages/wms/base/bins'));
 const WmsBaseRacks = lazy(() => import('@/pages/wms/base/racks'));
 const WmsBaseContainers = lazy(() => import('@/pages/wms/base/containers'));
 const WmsBaseStrategies = lazy(() => import('@/pages/wms/base/strategies'));
+const WmsInboundAsns = lazy(() => import('@/pages/wms/inbound/asns'));
+const WmsInboundReceipts = lazy(() => import('@/pages/wms/inbound/receipts'));
+const WmsInboundPutaways = lazy(() => import('@/pages/wms/inbound/putaways'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1157,6 +1160,18 @@ const routes: RouteObject[] = [
       {
         path: 'wms/base/strategies',
         element: withPermission('wms:base:strategy:list', <WmsBaseStrategies />),
+      },
+      {
+        path: 'wms/inbound/asns',
+        element: withPermission('wms:inbound:asn:list', <WmsInboundAsns />),
+      },
+      {
+        path: 'wms/inbound/receipts',
+        element: withPermission('wms:inbound:receipt:list', <WmsInboundReceipts />),
+      },
+      {
+        path: 'wms/inbound/putaways',
+        element: withPermission('wms:inbound:putaway:list', <WmsInboundPutaways />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

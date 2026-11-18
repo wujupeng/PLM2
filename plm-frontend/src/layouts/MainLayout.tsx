@@ -175,6 +175,16 @@ const menuRoute = {
       ],
     },
     {
+      path: '/wms-inbound',
+      name: '收货上架',
+      icon: 'ImportOutlined',
+      routes: [
+        { path: '/wms/inbound/asns', name: '收货通知', icon: 'FileAddOutlined' },
+        { path: '/wms/inbound/receipts', name: '收货单', icon: 'InboxOutlined' },
+        { path: '/wms/inbound/putaways', name: '上架任务', icon: 'VerticalAlignTopOutlined' },
+      ],
+    },
+    {
       path: '/mfg',
       name: '生产执行与追溯',
       icon: 'DeploymentUnitOutlined',
