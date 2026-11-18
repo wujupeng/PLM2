@@ -375,6 +375,11 @@ const MesKanbanYields = lazy(() => import('@/pages/mes/kanban/yields'));
 const MesKanbanDowntimes = lazy(() => import('@/pages/mes/kanban/downtimes'));
 const MesKanbanWips = lazy(() => import('@/pages/mes/kanban/wips'));
 const MesKanbanAndons = lazy(() => import('@/pages/mes/kanban/andons'));
+const MesCollectDevices = lazy(() => import('@/pages/mes/collect/devices'));
+const MesCollectInterfaces = lazy(() => import('@/pages/mes/collect/interfaces'));
+const MesCollectPoints = lazy(() => import('@/pages/mes/collect/points'));
+const MesCollectRules = lazy(() => import('@/pages/mes/collect/rules'));
+const MesCollectRecords = lazy(() => import('@/pages/mes/collect/records'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1442,6 +1447,26 @@ const routes: RouteObject[] = [
       {
         path: 'mes/kanban/andons',
         element: withPermission('mes:kanban:andon:list', <MesKanbanAndons />),
+      },
+      {
+        path: 'mes/collect/devices',
+        element: withPermission('mes:collect:device:list', <MesCollectDevices />),
+      },
+      {
+        path: 'mes/collect/interfaces',
+        element: withPermission('mes:collect:interface:list', <MesCollectInterfaces />),
+      },
+      {
+        path: 'mes/collect/points',
+        element: withPermission('mes:collect:point:list', <MesCollectPoints />),
+      },
+      {
+        path: 'mes/collect/rules',
+        element: withPermission('mes:collect:rule:list', <MesCollectRules />),
+      },
+      {
+        path: 'mes/collect/records',
+        element: withPermission('mes:collect:record:list', <MesCollectRecords />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

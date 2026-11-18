@@ -334,6 +334,18 @@ const menuRoute = {
             { path: '/mes/kanban/andons', name: '异常安灯', icon: 'AlertOutlined' },
           ],
         },
+        {
+          path: '/mes-collect',
+          name: '数据采集',
+          icon: 'ApiOutlined',
+          routes: [
+            { path: '/mes/collect/devices', name: '采集设备', icon: 'ClusterOutlined' },
+            { path: '/mes/collect/interfaces', name: '采集接口', icon: 'ApiOutlined' },
+            { path: '/mes/collect/points', name: '采集数据点', icon: 'DotChartOutlined' },
+            { path: '/mes/collect/rules', name: '校验规则', icon: 'FilterOutlined' },
+            { path: '/mes/collect/records', name: '采集数据', icon: 'LineChartOutlined' },
+          ],
+        },
       ],
     },
     {
