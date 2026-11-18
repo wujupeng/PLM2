@@ -277,6 +277,12 @@ const ErpBarcodeTemplates = lazy(() => import('@/pages/erp/barcode/templates'));
 const ErpBarcodeReprints = lazy(() => import('@/pages/erp/barcode/reprints'));
 const ErpBarcodeRules = lazy(() => import('@/pages/erp/barcode/rules'));
 const ErpBarcodeScans = lazy(() => import('@/pages/erp/barcode/scans'));
+const ErpProcessResources = lazy(() => import('@/pages/erp/process/resources'));
+const ErpProcessStandards = lazy(() => import('@/pages/erp/process/standards'));
+const ErpProcessRoutes = lazy(() => import('@/pages/erp/process/routes'));
+const ErpProcessPlans = lazy(() => import('@/pages/erp/process/plans'));
+const ErpProcessReports = lazy(() => import('@/pages/erp/process/reports'));
+const ErpProcessLaborFeedback = lazy(() => import('@/pages/erp/process/labor-feedback'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -952,6 +958,30 @@ const routes: RouteObject[] = [
       {
         path: 'erp/barcode/scans',
         element: withPermission('erp:barcode:scan:list', <ErpBarcodeScans />),
+      },
+      {
+        path: 'erp/process/resources',
+        element: withPermission('erp:process:resource:list', <ErpProcessResources />),
+      },
+      {
+        path: 'erp/process/standards',
+        element: withPermission('erp:process:standard:list', <ErpProcessStandards />),
+      },
+      {
+        path: 'erp/process/routes',
+        element: withPermission('erp:process:route:list', <ErpProcessRoutes />),
+      },
+      {
+        path: 'erp/process/plans',
+        element: withPermission('erp:process:plan:list', <ErpProcessPlans />),
+      },
+      {
+        path: 'erp/process/reports',
+        element: withPermission('erp:process:report:list', <ErpProcessReports />),
+      },
+      {
+        path: 'erp/process/labor-feedback',
+        element: withPermission('erp:process:labor:list', <ErpProcessLaborFeedback />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

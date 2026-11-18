@@ -495,6 +495,19 @@ const menuRoute = {
             { path: '/erp/barcode/scans', name: '扫描校验', icon: 'ScanOutlined' },
           ],
         },
+        {
+          path: '/erp/process',
+          name: '工艺资源',
+          icon: 'ClusterOutlined',
+          routes: [
+            { path: '/erp/process/resources', name: '资源资料', icon: 'ToolOutlined' },
+            { path: '/erp/process/standards', name: '标准工艺', icon: 'ProfileOutlined' },
+            { path: '/erp/process/routes', name: '工艺路线', icon: 'NodeIndexOutlined' },
+            { path: '/erp/process/plans', name: '工序计划', icon: 'ScheduleOutlined' },
+            { path: '/erp/process/reports', name: '工序报工', icon: 'CarryOutOutlined' },
+            { path: '/erp/process/labor-feedback', name: '工时反馈', icon: 'FieldTimeOutlined' },
+          ],
+        },
       ],
     },
     {
