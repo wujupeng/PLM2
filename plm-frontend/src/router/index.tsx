@@ -270,6 +270,13 @@ const ErpFinanceInvoices = lazy(() => import('@/pages/erp/finance/invoices'));
 const ErpFinanceBankStatements = lazy(() => import('@/pages/erp/finance/bank-statements'));
 const ErpFinanceCostCollections = lazy(() => import('@/pages/erp/finance/cost-collections'));
 const ErpFinanceAccruals = lazy(() => import('@/pages/erp/finance/accruals'));
+const ErpTraceDocs = lazy(() => import('@/pages/erp/trace/docs'));
+const ErpTraceEvents = lazy(() => import('@/pages/erp/trace/events'));
+const ErpBarcodeRecords = lazy(() => import('@/pages/erp/barcode/records'));
+const ErpBarcodeTemplates = lazy(() => import('@/pages/erp/barcode/templates'));
+const ErpBarcodeReprints = lazy(() => import('@/pages/erp/barcode/reprints'));
+const ErpBarcodeRules = lazy(() => import('@/pages/erp/barcode/rules'));
+const ErpBarcodeScans = lazy(() => import('@/pages/erp/barcode/scans'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -917,6 +924,34 @@ const routes: RouteObject[] = [
       {
         path: 'erp/finance/accruals',
         element: withPermission('erp:finance:accrual:list', <ErpFinanceAccruals />),
+      },
+      {
+        path: 'erp/trace/docs',
+        element: withPermission('erp:trace:doc:list', <ErpTraceDocs />),
+      },
+      {
+        path: 'erp/trace/events',
+        element: withPermission('erp:trace:event:list', <ErpTraceEvents />),
+      },
+      {
+        path: 'erp/barcode/records',
+        element: withPermission('erp:barcode:record:list', <ErpBarcodeRecords />),
+      },
+      {
+        path: 'erp/barcode/templates',
+        element: withPermission('erp:barcode:template:list', <ErpBarcodeTemplates />),
+      },
+      {
+        path: 'erp/barcode/reprints',
+        element: withPermission('erp:barcode:reprint:list', <ErpBarcodeReprints />),
+      },
+      {
+        path: 'erp/barcode/rules',
+        element: withPermission('erp:barcode:rule:list', <ErpBarcodeRules />),
+      },
+      {
+        path: 'erp/barcode/scans',
+        element: withPermission('erp:barcode:scan:list', <ErpBarcodeScans />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

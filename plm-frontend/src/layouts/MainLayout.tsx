@@ -474,6 +474,27 @@ const menuRoute = {
             { path: '/erp/finance/accruals', name: '暂估', icon: 'FieldTimeOutlined' },
           ],
         },
+        {
+          path: '/erp/trace',
+          name: '业务单据追踪',
+          icon: 'SearchOutlined',
+          routes: [
+            { path: '/erp/trace/docs', name: '单据追溯', icon: 'PartitionOutlined' },
+            { path: '/erp/trace/events', name: '业务事件', icon: 'HistoryOutlined' },
+          ],
+        },
+        {
+          path: '/erp/barcode',
+          name: '条码管理',
+          icon: 'BarcodeOutlined',
+          routes: [
+            { path: '/erp/barcode/records', name: '条码生成', icon: 'QrcodeOutlined' },
+            { path: '/erp/barcode/templates', name: '标签模板', icon: 'ProfileOutlined' },
+            { path: '/erp/barcode/reprints', name: '补打记录', icon: 'RedoOutlined' },
+            { path: '/erp/barcode/rules', name: '扫码规则', icon: 'ControlOutlined' },
+            { path: '/erp/barcode/scans', name: '扫描校验', icon: 'ScanOutlined' },
+          ],
+        },
       ],
     },
     {
