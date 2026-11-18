@@ -290,6 +290,13 @@ const SrmSupplierRisks = lazy(() => import('@/pages/srm/supplier/risks'));
 const SrmSupplierGrades = lazy(() => import('@/pages/srm/supplier/grades'));
 const SrmSupplierBlacklists = lazy(() => import('@/pages/srm/supplier/blacklists'));
 const SrmSupplierReviews = lazy(() => import('@/pages/srm/supplier/reviews'));
+const SrmSourcingRequests = lazy(() => import('@/pages/srm/sourcing/requests'));
+const SrmRfqs = lazy(() => import('@/pages/srm/sourcing/rfqs'));
+const SrmRfqSuppliers = lazy(() => import('@/pages/srm/sourcing/rfq-suppliers'));
+const SrmSupplierQuotes = lazy(() => import('@/pages/srm/sourcing/quotes'));
+const SrmPriceCompares = lazy(() => import('@/pages/srm/sourcing/compares'));
+const SrmAwards = lazy(() => import('@/pages/srm/sourcing/awards'));
+const SrmPriceAgreements = lazy(() => import('@/pages/srm/sourcing/prices'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1017,6 +1024,34 @@ const routes: RouteObject[] = [
       {
         path: 'srm/supplier/reviews',
         element: withPermission('srm:supplier:review:list', <SrmSupplierReviews />),
+      },
+      {
+        path: 'srm/sourcing/requests',
+        element: withPermission('srm:sourcing:request:list', <SrmSourcingRequests />),
+      },
+      {
+        path: 'srm/sourcing/rfqs',
+        element: withPermission('srm:sourcing:rfq:list', <SrmRfqs />),
+      },
+      {
+        path: 'srm/sourcing/rfq-suppliers',
+        element: withPermission('srm:sourcing:rfq-supplier:list', <SrmRfqSuppliers />),
+      },
+      {
+        path: 'srm/sourcing/quotes',
+        element: withPermission('srm:sourcing:quote:list', <SrmSupplierQuotes />),
+      },
+      {
+        path: 'srm/sourcing/compares',
+        element: withPermission('srm:sourcing:compare:list', <SrmPriceCompares />),
+      },
+      {
+        path: 'srm/sourcing/awards',
+        element: withPermission('srm:sourcing:award:list', <SrmAwards />),
+      },
+      {
+        path: 'srm/sourcing/prices',
+        element: withPermission('srm:sourcing:price:list', <SrmPriceAgreements />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

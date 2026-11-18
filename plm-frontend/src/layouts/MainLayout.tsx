@@ -529,6 +529,20 @@ const menuRoute = {
             { path: '/srm/supplier/reviews', name: '年度复审', icon: 'ReconciliationOutlined' },
           ],
         },
+        {
+          path: '/srm/sourcing',
+          name: '寻源与询报价',
+          icon: 'ShoppingCartOutlined',
+          routes: [
+            { path: '/srm/sourcing/requests', name: '采购需求寻源', icon: 'FileSearchOutlined' },
+            { path: '/srm/sourcing/rfqs', name: '询价单', icon: 'ProfileOutlined' },
+            { path: '/srm/sourcing/rfq-suppliers', name: '询价邀请', icon: 'UsergroupAddOutlined' },
+            { path: '/srm/sourcing/quotes', name: '供应商报价', icon: 'AccountBookOutlined' },
+            { path: '/srm/sourcing/compares', name: '报价比价', icon: 'BarChartOutlined' },
+            { path: '/srm/sourcing/awards', name: '定点定标', icon: 'TrophyOutlined' },
+            { path: '/srm/sourcing/prices', name: '定点定价', icon: 'MoneyCollectOutlined' },
+          ],
+        },
       ],
     },
     {
