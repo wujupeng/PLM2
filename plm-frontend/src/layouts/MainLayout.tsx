@@ -522,6 +522,19 @@ const menuRoute = {
             { path: '/intg/label-trace/reconciles', name: '对账', icon: 'BalanceOutlined' },
           ],
         },
+        {
+          path: '/intg-document-chain',
+          name: '单据全链路集成',
+          icon: 'SwapOutlined',
+          routes: [
+            { path: '/intg/document-chain/interfaces', name: '集成接口', icon: 'ApiOutlined' },
+            { path: '/intg/document-chain/mappings', name: '字段映射', icon: 'PartitionOutlined' },
+            { path: '/intg/document-chain/batches', name: '同步批次', icon: 'SyncOutlined' },
+            { path: '/intg/document-chain/receipts', name: '接收回执', icon: 'AuditOutlined' },
+            { path: '/intg/document-chain/compensations', name: '异常补偿', icon: 'ToolOutlined' },
+            { path: '/intg/document-chain/reconciles', name: '对账', icon: 'BalanceOutlined' },
+          ],
+        },
       ],
     },
     {

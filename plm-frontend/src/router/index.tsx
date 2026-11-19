@@ -458,6 +458,12 @@ const IntgLabelTraceBatches = lazy(() => import('@/pages/intg/label-trace/batche
 const IntgLabelTraceReceipts = lazy(() => import('@/pages/intg/label-trace/receipts'));
 const IntgLabelTraceCompensations = lazy(() => import('@/pages/intg/label-trace/compensations'));
 const IntgLabelTraceReconciles = lazy(() => import('@/pages/intg/label-trace/reconciles'));
+const IntgDocumentChainInterfaces = lazy(() => import('@/pages/intg/document-chain/interfaces'));
+const IntgDocumentChainMappings = lazy(() => import('@/pages/intg/document-chain/mappings'));
+const IntgDocumentChainBatches = lazy(() => import('@/pages/intg/document-chain/batches'));
+const IntgDocumentChainReceipts = lazy(() => import('@/pages/intg/document-chain/receipts'));
+const IntgDocumentChainCompensations = lazy(() => import('@/pages/intg/document-chain/compensations'));
+const IntgDocumentChainReconciles = lazy(() => import('@/pages/intg/document-chain/reconciles'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1857,6 +1863,30 @@ const routes: RouteObject[] = [
       {
         path: 'intg/label-trace/reconciles',
         element: withPermission('intg:label-trace:reconcile:list', <IntgLabelTraceReconciles />),
+      },
+      {
+        path: 'intg/document-chain/interfaces',
+        element: withPermission('intg:document-chain:interface:list', <IntgDocumentChainInterfaces />),
+      },
+      {
+        path: 'intg/document-chain/mappings',
+        element: withPermission('intg:document-chain:mapping:list', <IntgDocumentChainMappings />),
+      },
+      {
+        path: 'intg/document-chain/batches',
+        element: withPermission('intg:document-chain:batch:list', <IntgDocumentChainBatches />),
+      },
+      {
+        path: 'intg/document-chain/receipts',
+        element: withPermission('intg:document-chain:receipt:list', <IntgDocumentChainReceipts />),
+      },
+      {
+        path: 'intg/document-chain/compensations',
+        element: withPermission('intg:document-chain:compensation:list', <IntgDocumentChainCompensations />),
+      },
+      {
+        path: 'intg/document-chain/reconciles',
+        element: withPermission('intg:document-chain:reconcile:list', <IntgDocumentChainReconciles />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },
