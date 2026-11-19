@@ -440,6 +440,12 @@ const IntgOaSystemsBatches = lazy(() => import('@/pages/intg/oa-systems/batches'
 const IntgOaSystemsReceipts = lazy(() => import('@/pages/intg/oa-systems/receipts'));
 const IntgOaSystemsCompensations = lazy(() => import('@/pages/intg/oa-systems/compensations'));
 const IntgOaSystemsReconciles = lazy(() => import('@/pages/intg/oa-systems/reconciles'));
+const IntgEdiGatewayInterfaces = lazy(() => import('@/pages/intg/edi-gateway/interfaces'));
+const IntgEdiGatewayMappings = lazy(() => import('@/pages/intg/edi-gateway/mappings'));
+const IntgEdiGatewayBatches = lazy(() => import('@/pages/intg/edi-gateway/batches'));
+const IntgEdiGatewayReceipts = lazy(() => import('@/pages/intg/edi-gateway/receipts'));
+const IntgEdiGatewayCompensations = lazy(() => import('@/pages/intg/edi-gateway/compensations'));
+const IntgEdiGatewayReconciles = lazy(() => import('@/pages/intg/edi-gateway/reconciles'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1767,6 +1773,30 @@ const routes: RouteObject[] = [
       {
         path: 'intg/oa-systems/reconciles',
         element: withPermission('intg:oa-systems:reconcile:list', <IntgOaSystemsReconciles />),
+      },
+      {
+        path: 'intg/edi-gateway/interfaces',
+        element: withPermission('intg:edi-gateway:interface:list', <IntgEdiGatewayInterfaces />),
+      },
+      {
+        path: 'intg/edi-gateway/mappings',
+        element: withPermission('intg:edi-gateway:mapping:list', <IntgEdiGatewayMappings />),
+      },
+      {
+        path: 'intg/edi-gateway/batches',
+        element: withPermission('intg:edi-gateway:batch:list', <IntgEdiGatewayBatches />),
+      },
+      {
+        path: 'intg/edi-gateway/receipts',
+        element: withPermission('intg:edi-gateway:receipt:list', <IntgEdiGatewayReceipts />),
+      },
+      {
+        path: 'intg/edi-gateway/compensations',
+        element: withPermission('intg:edi-gateway:compensation:list', <IntgEdiGatewayCompensations />),
+      },
+      {
+        path: 'intg/edi-gateway/reconciles',
+        element: withPermission('intg:edi-gateway:reconcile:list', <IntgEdiGatewayReconciles />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

@@ -483,6 +483,19 @@ const menuRoute = {
             { path: '/intg/oa-systems/reconciles', name: '对账', icon: 'BalanceOutlined' },
           ],
         },
+        {
+          path: '/intg-edi-gateway',
+          name: 'EDI 网关集成',
+          icon: 'SwapOutlined',
+          routes: [
+            { path: '/intg/edi-gateway/interfaces', name: '集成接口', icon: 'ApiOutlined' },
+            { path: '/intg/edi-gateway/mappings', name: '字段映射', icon: 'PartitionOutlined' },
+            { path: '/intg/edi-gateway/batches', name: '同步批次', icon: 'SyncOutlined' },
+            { path: '/intg/edi-gateway/receipts', name: '接收回执', icon: 'AuditOutlined' },
+            { path: '/intg/edi-gateway/compensations', name: '异常补偿', icon: 'ToolOutlined' },
+            { path: '/intg/edi-gateway/reconciles', name: '对账', icon: 'BalanceOutlined' },
+          ],
+        },
       ],
     },
     {
