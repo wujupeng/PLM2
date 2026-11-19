@@ -446,6 +446,12 @@ const IntgEdiGatewayBatches = lazy(() => import('@/pages/intg/edi-gateway/batche
 const IntgEdiGatewayReceipts = lazy(() => import('@/pages/intg/edi-gateway/receipts'));
 const IntgEdiGatewayCompensations = lazy(() => import('@/pages/intg/edi-gateway/compensations'));
 const IntgEdiGatewayReconciles = lazy(() => import('@/pages/intg/edi-gateway/reconciles'));
+const IntgQualityLoopInterfaces = lazy(() => import('@/pages/intg/quality-loop/interfaces'));
+const IntgQualityLoopMappings = lazy(() => import('@/pages/intg/quality-loop/mappings'));
+const IntgQualityLoopBatches = lazy(() => import('@/pages/intg/quality-loop/batches'));
+const IntgQualityLoopReceipts = lazy(() => import('@/pages/intg/quality-loop/receipts'));
+const IntgQualityLoopCompensations = lazy(() => import('@/pages/intg/quality-loop/compensations'));
+const IntgQualityLoopReconciles = lazy(() => import('@/pages/intg/quality-loop/reconciles'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1797,6 +1803,30 @@ const routes: RouteObject[] = [
       {
         path: 'intg/edi-gateway/reconciles',
         element: withPermission('intg:edi-gateway:reconcile:list', <IntgEdiGatewayReconciles />),
+      },
+      {
+        path: 'intg/quality-loop/interfaces',
+        element: withPermission('intg:quality-loop:interface:list', <IntgQualityLoopInterfaces />),
+      },
+      {
+        path: 'intg/quality-loop/mappings',
+        element: withPermission('intg:quality-loop:mapping:list', <IntgQualityLoopMappings />),
+      },
+      {
+        path: 'intg/quality-loop/batches',
+        element: withPermission('intg:quality-loop:batch:list', <IntgQualityLoopBatches />),
+      },
+      {
+        path: 'intg/quality-loop/receipts',
+        element: withPermission('intg:quality-loop:receipt:list', <IntgQualityLoopReceipts />),
+      },
+      {
+        path: 'intg/quality-loop/compensations',
+        element: withPermission('intg:quality-loop:compensation:list', <IntgQualityLoopCompensations />),
+      },
+      {
+        path: 'intg/quality-loop/reconciles',
+        element: withPermission('intg:quality-loop:reconcile:list', <IntgQualityLoopReconciles />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },
