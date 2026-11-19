@@ -476,6 +476,12 @@ const MigBomBatches = lazy(() => import('@/pages/mig/bom/batches'));
 const MigBomReceipts = lazy(() => import('@/pages/mig/bom/receipts'));
 const MigBomCompensations = lazy(() => import('@/pages/mig/bom/compensations'));
 const MigBomReconciles = lazy(() => import('@/pages/mig/bom/reconciles'));
+const MigInventoryInterfaces = lazy(() => import('@/pages/mig/inventory/interfaces'));
+const MigInventoryMappings = lazy(() => import('@/pages/mig/inventory/mappings'));
+const MigInventoryBatches = lazy(() => import('@/pages/mig/inventory/batches'));
+const MigInventoryReceipts = lazy(() => import('@/pages/mig/inventory/receipts'));
+const MigInventoryCompensations = lazy(() => import('@/pages/mig/inventory/compensations'));
+const MigInventoryReconciles = lazy(() => import('@/pages/mig/inventory/reconciles'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1947,6 +1953,30 @@ const routes: RouteObject[] = [
       {
         path: 'mig/bom/reconciles',
         element: withPermission('mig:bom:reconcile:list', <MigBomReconciles />),
+      },
+      {
+        path: 'mig/inventory/interfaces',
+        element: withPermission('mig:inventory:interface:list', <MigInventoryInterfaces />),
+      },
+      {
+        path: 'mig/inventory/mappings',
+        element: withPermission('mig:inventory:mapping:list', <MigInventoryMappings />),
+      },
+      {
+        path: 'mig/inventory/batches',
+        element: withPermission('mig:inventory:batch:list', <MigInventoryBatches />),
+      },
+      {
+        path: 'mig/inventory/receipts',
+        element: withPermission('mig:inventory:receipt:list', <MigInventoryReceipts />),
+      },
+      {
+        path: 'mig/inventory/compensations',
+        element: withPermission('mig:inventory:compensation:list', <MigInventoryCompensations />),
+      },
+      {
+        path: 'mig/inventory/reconciles',
+        element: withPermission('mig:inventory:reconcile:list', <MigInventoryReconciles />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

@@ -568,6 +568,19 @@ const menuRoute = {
             { path: '/mig/bom/reconciles', name: '对账', icon: 'BalanceOutlined' },
           ],
         },
+        {
+          path: '/mig-inventory',
+          name: '库存迁移',
+          icon: 'SwapOutlined',
+          routes: [
+            { path: '/mig/inventory/interfaces', name: '集成接口', icon: 'ApiOutlined' },
+            { path: '/mig/inventory/mappings', name: '字段映射', icon: 'PartitionOutlined' },
+            { path: '/mig/inventory/batches', name: '同步批次', icon: 'SyncOutlined' },
+            { path: '/mig/inventory/receipts', name: '接收回执', icon: 'AuditOutlined' },
+            { path: '/mig/inventory/compensations', name: '异常补偿', icon: 'ToolOutlined' },
+            { path: '/mig/inventory/reconciles', name: '对账', icon: 'BalanceOutlined' },
+          ],
+        },
       ],
     },
     {
