@@ -464,6 +464,12 @@ const IntgDocumentChainBatches = lazy(() => import('@/pages/intg/document-chain/
 const IntgDocumentChainReceipts = lazy(() => import('@/pages/intg/document-chain/receipts'));
 const IntgDocumentChainCompensations = lazy(() => import('@/pages/intg/document-chain/compensations'));
 const IntgDocumentChainReconciles = lazy(() => import('@/pages/intg/document-chain/reconciles'));
+const MigMasterDataInterfaces = lazy(() => import('@/pages/mig/master-data/interfaces'));
+const MigMasterDataMappings = lazy(() => import('@/pages/mig/master-data/mappings'));
+const MigMasterDataBatches = lazy(() => import('@/pages/mig/master-data/batches'));
+const MigMasterDataReceipts = lazy(() => import('@/pages/mig/master-data/receipts'));
+const MigMasterDataCompensations = lazy(() => import('@/pages/mig/master-data/compensations'));
+const MigMasterDataReconciles = lazy(() => import('@/pages/mig/master-data/reconciles'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1887,6 +1893,30 @@ const routes: RouteObject[] = [
       {
         path: 'intg/document-chain/reconciles',
         element: withPermission('intg:document-chain:reconcile:list', <IntgDocumentChainReconciles />),
+      },
+      {
+        path: 'mig/master-data/interfaces',
+        element: withPermission('mig:master-data:interface:list', <MigMasterDataInterfaces />),
+      },
+      {
+        path: 'mig/master-data/mappings',
+        element: withPermission('mig:master-data:mapping:list', <MigMasterDataMappings />),
+      },
+      {
+        path: 'mig/master-data/batches',
+        element: withPermission('mig:master-data:batch:list', <MigMasterDataBatches />),
+      },
+      {
+        path: 'mig/master-data/receipts',
+        element: withPermission('mig:master-data:receipt:list', <MigMasterDataReceipts />),
+      },
+      {
+        path: 'mig/master-data/compensations',
+        element: withPermission('mig:master-data:compensation:list', <MigMasterDataCompensations />),
+      },
+      {
+        path: 'mig/master-data/reconciles',
+        element: withPermission('mig:master-data:reconcile:list', <MigMasterDataReconciles />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

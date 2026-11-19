@@ -538,6 +538,26 @@ const menuRoute = {
       ],
     },
     {
+      path: '/mig',
+      name: '数据迁移',
+      icon: 'ImportOutlined',
+      routes: [
+        {
+          path: '/mig-master-data',
+          name: '主数据迁移',
+          icon: 'SwapOutlined',
+          routes: [
+            { path: '/mig/master-data/interfaces', name: '集成接口', icon: 'ApiOutlined' },
+            { path: '/mig/master-data/mappings', name: '字段映射', icon: 'PartitionOutlined' },
+            { path: '/mig/master-data/batches', name: '同步批次', icon: 'SyncOutlined' },
+            { path: '/mig/master-data/receipts', name: '接收回执', icon: 'AuditOutlined' },
+            { path: '/mig/master-data/compensations', name: '异常补偿', icon: 'ToolOutlined' },
+            { path: '/mig/master-data/reconciles', name: '对账', icon: 'BalanceOutlined' },
+          ],
+        },
+      ],
+    },
+    {
       path: '/mfg',
       name: '生产执行与追溯',
       icon: 'DeploymentUnitOutlined',
