@@ -452,6 +452,12 @@ const IntgQualityLoopBatches = lazy(() => import('@/pages/intg/quality-loop/batc
 const IntgQualityLoopReceipts = lazy(() => import('@/pages/intg/quality-loop/receipts'));
 const IntgQualityLoopCompensations = lazy(() => import('@/pages/intg/quality-loop/compensations'));
 const IntgQualityLoopReconciles = lazy(() => import('@/pages/intg/quality-loop/reconciles'));
+const IntgLabelTraceInterfaces = lazy(() => import('@/pages/intg/label-trace/interfaces'));
+const IntgLabelTraceMappings = lazy(() => import('@/pages/intg/label-trace/mappings'));
+const IntgLabelTraceBatches = lazy(() => import('@/pages/intg/label-trace/batches'));
+const IntgLabelTraceReceipts = lazy(() => import('@/pages/intg/label-trace/receipts'));
+const IntgLabelTraceCompensations = lazy(() => import('@/pages/intg/label-trace/compensations'));
+const IntgLabelTraceReconciles = lazy(() => import('@/pages/intg/label-trace/reconciles'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1827,6 +1833,30 @@ const routes: RouteObject[] = [
       {
         path: 'intg/quality-loop/reconciles',
         element: withPermission('intg:quality-loop:reconcile:list', <IntgQualityLoopReconciles />),
+      },
+      {
+        path: 'intg/label-trace/interfaces',
+        element: withPermission('intg:label-trace:interface:list', <IntgLabelTraceInterfaces />),
+      },
+      {
+        path: 'intg/label-trace/mappings',
+        element: withPermission('intg:label-trace:mapping:list', <IntgLabelTraceMappings />),
+      },
+      {
+        path: 'intg/label-trace/batches',
+        element: withPermission('intg:label-trace:batch:list', <IntgLabelTraceBatches />),
+      },
+      {
+        path: 'intg/label-trace/receipts',
+        element: withPermission('intg:label-trace:receipt:list', <IntgLabelTraceReceipts />),
+      },
+      {
+        path: 'intg/label-trace/compensations',
+        element: withPermission('intg:label-trace:compensation:list', <IntgLabelTraceCompensations />),
+      },
+      {
+        path: 'intg/label-trace/reconciles',
+        element: withPermission('intg:label-trace:reconcile:list', <IntgLabelTraceReconciles />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

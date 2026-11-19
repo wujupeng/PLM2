@@ -509,6 +509,19 @@ const menuRoute = {
             { path: '/intg/quality-loop/reconciles', name: '对账', icon: 'BalanceOutlined' },
           ],
         },
+        {
+          path: '/intg-label-trace',
+          name: '标签追溯集成',
+          icon: 'SwapOutlined',
+          routes: [
+            { path: '/intg/label-trace/interfaces', name: '集成接口', icon: 'ApiOutlined' },
+            { path: '/intg/label-trace/mappings', name: '字段映射', icon: 'PartitionOutlined' },
+            { path: '/intg/label-trace/batches', name: '同步批次', icon: 'SyncOutlined' },
+            { path: '/intg/label-trace/receipts', name: '接收回执', icon: 'AuditOutlined' },
+            { path: '/intg/label-trace/compensations', name: '异常补偿', icon: 'ToolOutlined' },
+            { path: '/intg/label-trace/reconciles', name: '对账', icon: 'BalanceOutlined' },
+          ],
+        },
       ],
     },
     {
