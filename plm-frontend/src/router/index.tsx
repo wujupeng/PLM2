@@ -470,6 +470,12 @@ const MigMasterDataBatches = lazy(() => import('@/pages/mig/master-data/batches'
 const MigMasterDataReceipts = lazy(() => import('@/pages/mig/master-data/receipts'));
 const MigMasterDataCompensations = lazy(() => import('@/pages/mig/master-data/compensations'));
 const MigMasterDataReconciles = lazy(() => import('@/pages/mig/master-data/reconciles'));
+const MigBomInterfaces = lazy(() => import('@/pages/mig/bom/interfaces'));
+const MigBomMappings = lazy(() => import('@/pages/mig/bom/mappings'));
+const MigBomBatches = lazy(() => import('@/pages/mig/bom/batches'));
+const MigBomReceipts = lazy(() => import('@/pages/mig/bom/receipts'));
+const MigBomCompensations = lazy(() => import('@/pages/mig/bom/compensations'));
+const MigBomReconciles = lazy(() => import('@/pages/mig/bom/reconciles'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1917,6 +1923,30 @@ const routes: RouteObject[] = [
       {
         path: 'mig/master-data/reconciles',
         element: withPermission('mig:master-data:reconcile:list', <MigMasterDataReconciles />),
+      },
+      {
+        path: 'mig/bom/interfaces',
+        element: withPermission('mig:bom:interface:list', <MigBomInterfaces />),
+      },
+      {
+        path: 'mig/bom/mappings',
+        element: withPermission('mig:bom:mapping:list', <MigBomMappings />),
+      },
+      {
+        path: 'mig/bom/batches',
+        element: withPermission('mig:bom:batch:list', <MigBomBatches />),
+      },
+      {
+        path: 'mig/bom/receipts',
+        element: withPermission('mig:bom:receipt:list', <MigBomReceipts />),
+      },
+      {
+        path: 'mig/bom/compensations',
+        element: withPermission('mig:bom:compensation:list', <MigBomCompensations />),
+      },
+      {
+        path: 'mig/bom/reconciles',
+        element: withPermission('mig:bom:reconcile:list', <MigBomReconciles />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

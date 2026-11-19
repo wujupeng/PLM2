@@ -555,6 +555,19 @@ const menuRoute = {
             { path: '/mig/master-data/reconciles', name: '对账', icon: 'BalanceOutlined' },
           ],
         },
+        {
+          path: '/mig-bom',
+          name: 'BOM迁移',
+          icon: 'SwapOutlined',
+          routes: [
+            { path: '/mig/bom/interfaces', name: '集成接口', icon: 'ApiOutlined' },
+            { path: '/mig/bom/mappings', name: '字段映射', icon: 'PartitionOutlined' },
+            { path: '/mig/bom/batches', name: '同步批次', icon: 'SyncOutlined' },
+            { path: '/mig/bom/receipts', name: '接收回执', icon: 'AuditOutlined' },
+            { path: '/mig/bom/compensations', name: '异常补偿', icon: 'ToolOutlined' },
+            { path: '/mig/bom/reconciles', name: '对账', icon: 'BalanceOutlined' },
+          ],
+        },
       ],
     },
     {
