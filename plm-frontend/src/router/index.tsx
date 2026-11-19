@@ -482,6 +482,12 @@ const MigInventoryBatches = lazy(() => import('@/pages/mig/inventory/batches'));
 const MigInventoryReceipts = lazy(() => import('@/pages/mig/inventory/receipts'));
 const MigInventoryCompensations = lazy(() => import('@/pages/mig/inventory/compensations'));
 const MigInventoryReconciles = lazy(() => import('@/pages/mig/inventory/reconciles'));
+const MigOpenBusinessInterfaces = lazy(() => import('@/pages/mig/open-business/interfaces'));
+const MigOpenBusinessMappings = lazy(() => import('@/pages/mig/open-business/mappings'));
+const MigOpenBusinessBatches = lazy(() => import('@/pages/mig/open-business/batches'));
+const MigOpenBusinessReceipts = lazy(() => import('@/pages/mig/open-business/receipts'));
+const MigOpenBusinessCompensations = lazy(() => import('@/pages/mig/open-business/compensations'));
+const MigOpenBusinessReconciles = lazy(() => import('@/pages/mig/open-business/reconciles'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -1977,6 +1983,30 @@ const routes: RouteObject[] = [
       {
         path: 'mig/inventory/reconciles',
         element: withPermission('mig:inventory:reconcile:list', <MigInventoryReconciles />),
+      },
+      {
+        path: 'mig/open-business/interfaces',
+        element: withPermission('mig:open-business:interface:list', <MigOpenBusinessInterfaces />),
+      },
+      {
+        path: 'mig/open-business/mappings',
+        element: withPermission('mig:open-business:mapping:list', <MigOpenBusinessMappings />),
+      },
+      {
+        path: 'mig/open-business/batches',
+        element: withPermission('mig:open-business:batch:list', <MigOpenBusinessBatches />),
+      },
+      {
+        path: 'mig/open-business/receipts',
+        element: withPermission('mig:open-business:receipt:list', <MigOpenBusinessReceipts />),
+      },
+      {
+        path: 'mig/open-business/compensations',
+        element: withPermission('mig:open-business:compensation:list', <MigOpenBusinessCompensations />),
+      },
+      {
+        path: 'mig/open-business/reconciles',
+        element: withPermission('mig:open-business:reconcile:list', <MigOpenBusinessReconciles />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },

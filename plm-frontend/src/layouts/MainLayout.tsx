@@ -581,6 +581,19 @@ const menuRoute = {
             { path: '/mig/inventory/reconciles', name: '对账', icon: 'BalanceOutlined' },
           ],
         },
+        {
+          path: '/mig-open-business',
+          name: '未结业务迁移',
+          icon: 'SwapOutlined',
+          routes: [
+            { path: '/mig/open-business/interfaces', name: '集成接口', icon: 'ApiOutlined' },
+            { path: '/mig/open-business/mappings', name: '字段映射', icon: 'PartitionOutlined' },
+            { path: '/mig/open-business/batches', name: '同步批次', icon: 'SyncOutlined' },
+            { path: '/mig/open-business/receipts', name: '接收回执', icon: 'AuditOutlined' },
+            { path: '/mig/open-business/compensations', name: '异常补偿', icon: 'ToolOutlined' },
+            { path: '/mig/open-business/reconciles', name: '对账', icon: 'BalanceOutlined' },
+          ],
+        },
       ],
     },
     {
