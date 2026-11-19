@@ -48,6 +48,44 @@ export interface MigOpenBusinessReconcileQuery extends PageQuery {
   interfaceNo?: string;
 }
 
+export interface MigOpenBusinessImportRowQuery extends PageQuery {
+  rowStatus?: string;
+  objectType?: string;
+}
+
+export interface MigOpenBusinessImportRecord {
+  sourceNo: string;
+  objectType: string;
+  payload: Record<string, unknown>;
+}
+
+export interface MigOpenBusinessImportRequest {
+  sourceFile?: string;
+  records: MigOpenBusinessImportRecord[];
+}
+
+export interface MigOpenBusinessImportRow {
+  id: number;
+  batchId: number;
+  batchNo: string;
+  sourceNo: string;
+  objectType: string;
+  sourceFile?: string;
+  sourcePayload: string;
+  rowStatus: string;
+  validationMessage?: string;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  reviewComment?: string;
+  targetId?: number;
+  promotedAt?: string;
+}
+
+export interface MigOpenBusinessReviewRequest {
+  approved: boolean;
+  comment?: string;
+}
+
 /* ---------------- 1. 集成接口定义 ---------------- */
 
 export interface MigOpenBusinessInterface {
@@ -225,16 +263,33 @@ function build(options: Array<{ label: string; value: string }>) {
   };
 }
 
-/** 集成对象类型：OPEN_SALES_ORDER/OPEN_PURCHASE_ORDER/OUTSOURCE_ORDER/PRODUCTION_ORDER/IN_TRANSIT。 */
+/** T079 未结业务迁移对象类型。 */
 const OBJECT_TYPE = build([
   { label: '未结销售订单', value: 'OPEN_SALES_ORDER' },
   { label: '未结采购订单', value: 'OPEN_PURCHASE_ORDER' },
   { label: '委外单', value: 'OUTSOURCE_ORDER' },
   { label: '生产工单', value: 'PRODUCTION_ORDER' },
-  { label: '在途/待检', value: 'IN_TRANSIT' },
+  { label: '在途', value: 'IN_TRANSIT' },
+  { label: '待检业务', value: 'PENDING_INSPECTION' },
+  { label: '未结算业务', value: 'UNSETTLED' },
+  { label: '采购在途', value: 'IN_TRANSIT_PURCHASE' },
+  { label: '销售发运在途', value: 'IN_TRANSIT_SALES' },
+  { label: '未结应收', value: 'UNSETTLED_AR' },
+  { label: '未结应付', value: 'UNSETTLED_AP' },
+  { label: '未结委外结算', value: 'UNSETTLED_OUTSOURCE' },
 ]);
 export const MIG_OPEN_BUSINESS_OBJECT_TYPE_OPTIONS = OBJECT_TYPE.options;
 export const MIG_OPEN_BUSINESS_OBJECT_TYPE_LABEL = OBJECT_TYPE.label;
+
+const IMPORT_ROW_STATUS = build([
+  { label: '待审核', value: 'PENDING_REVIEW' },
+  { label: '校验失败', value: 'INVALID' },
+  { label: '已通过', value: 'APPROVED' },
+  { label: '已驳回', value: 'REJECTED' },
+  { label: '已转正式单据', value: 'PROMOTED' },
+  { label: '转入失败可重试', value: 'PROMOTION_FAILED' },
+]);
+export const MIG_OPEN_BUSINESS_IMPORT_ROW_STATUS_LABEL = IMPORT_ROW_STATUS.label;
 
 /** 传输协议：API/EVENT/FILE。 */
 const INTG_PROTOCOL = build([
@@ -284,6 +339,7 @@ export const MIG_OPEN_BUSINESS_MAPPING_STATUS_LABEL = MAPPING_STATUS.label;
 const BATCH_STATUS = build([
   { label: '待执行', value: 'PENDING' },
   { label: '执行中', value: 'RUNNING' },
+  { label: '待审核', value: 'PENDING_REVIEW' },
   { label: '成功', value: 'SUCCESS' },
   { label: '部分成功', value: 'PARTIAL' },
   { label: '失败', value: 'FAILED' },

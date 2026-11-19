@@ -19,6 +19,10 @@ import type {
   MigOpenBusinessReconcile,
   MigOpenBusinessReconcileQuery,
   MigOpenBusinessReconcileSaveRequest,
+  MigOpenBusinessImportRequest,
+  MigOpenBusinessImportRow,
+  MigOpenBusinessImportRowQuery,
+  MigOpenBusinessReviewRequest,
 } from '@/types/migOpenBusiness';
 
 /** G9-N4 六系统集成—未结业务迁移（T079，后端 Base: /mig/open-business）服务定义。 */
@@ -80,6 +84,25 @@ export const migOpenBusinessBatchService = {
 
   remove: (id: number): Promise<void> =>
     request<void>({ method: 'DELETE', url: `${BASE}/batches/${id}` }),
+
+  importRows: (batchId: number, data: MigOpenBusinessImportRequest) =>
+    request<{
+      batchId: number;
+      batchNo: string;
+      totalCount: number;
+      validCount: number;
+      invalidCount: number;
+      rows: Array<Pick<MigOpenBusinessImportRow, 'sourceNo' | 'objectType' | 'rowStatus' | 'validationMessage'>>;
+    }>({ method: 'POST', url: `${BASE}/batches/${batchId}/rows/import`, data }),
+
+  rows: (batchId: number, params: MigOpenBusinessImportRowQuery): Promise<PageResult<MigOpenBusinessImportRow>> =>
+    request<PageResult<MigOpenBusinessImportRow>>({ method: 'GET', url: `${BASE}/batches/${batchId}/rows`, params }),
+
+  reviewRow: (rowId: number, data: MigOpenBusinessReviewRequest): Promise<MigOpenBusinessImportRow> =>
+    request<MigOpenBusinessImportRow>({ method: 'POST', url: `${BASE}/batches/rows/${rowId}/review`, data }),
+
+  promoteRow: (rowId: number): Promise<MigOpenBusinessImportRow> =>
+    request<MigOpenBusinessImportRow>({ method: 'POST', url: `${BASE}/batches/rows/${rowId}/promote` }),
 };
 
 /* ---------------- 4. 系统接收回执 ---------------- */

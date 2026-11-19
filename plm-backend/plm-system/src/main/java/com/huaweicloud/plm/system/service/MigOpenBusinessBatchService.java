@@ -9,7 +9,9 @@ import com.huaweicloud.plm.common.security.UserContext;
 import com.huaweicloud.plm.system.dto.MigOpenBusinessBatchQuery;
 import com.huaweicloud.plm.system.dto.MigOpenBusinessBatchSaveRequest;
 import com.huaweicloud.plm.system.entity.MigOpenBusinessBatch;
+import com.huaweicloud.plm.system.entity.MigOpenBusinessImportRow;
 import com.huaweicloud.plm.system.mapper.MigOpenBusinessBatchMapper;
+import com.huaweicloud.plm.system.mapper.MigOpenBusinessImportRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -30,6 +32,7 @@ public class MigOpenBusinessBatchService {
     private static final String DEFAULT_BATCH_STATUS = "PENDING";
 
     private final MigOpenBusinessBatchMapper mapper;
+    private final MigOpenBusinessImportRowMapper importRowMapper;
     private final OaBizFlowSupport flowSupport;
 
     /** 分页查询同步批次：对象类型/状态/接口编号精确，批次编号/名称/消息模糊，按主键倒序。 */
@@ -75,6 +78,10 @@ public class MigOpenBusinessBatchService {
             mapper.insert(entity);
         } else {
             entity = require(id);
+            if (importRowMapper.selectCount(Wrappers.<MigOpenBusinessImportRow>lambdaQuery()
+                    .eq(MigOpenBusinessImportRow::getBatchId, id)) > 0) {
+                throw new BusinessException(ResultCode.CONFLICT, "已有暂存数据的批次不能修改");
+            }
             applyRequest(entity, request);
             mapper.updateById(entity);
         }
@@ -84,6 +91,10 @@ public class MigOpenBusinessBatchService {
     /** 删除同步批次：物理删除以释放批次编号。 */
     public void delete(Long id) {
         require(id);
+        if (importRowMapper.selectCount(Wrappers.<MigOpenBusinessImportRow>lambdaQuery()
+                .eq(MigOpenBusinessImportRow::getBatchId, id)) > 0) {
+            throw new BusinessException(ResultCode.CONFLICT, "批次已有暂存数据，不能删除");
+        }
         mapper.physicalDeleteById(id);
     }
 

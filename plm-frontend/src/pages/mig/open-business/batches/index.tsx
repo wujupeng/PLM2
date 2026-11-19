@@ -25,6 +25,7 @@ import { statusTag } from '@/pages/platform/approval/shared';
 import {
   MIG_OPEN_BUSINESS_BATCH_STATUS_LABEL,
   MIG_OPEN_BUSINESS_BATCH_STATUS_OPTIONS,
+  MIG_OPEN_BUSINESS_IMPORT_ROW_STATUS_LABEL,
   MIG_OPEN_BUSINESS_OBJECT_TYPE_LABEL,
   MIG_OPEN_BUSINESS_OBJECT_TYPE_OPTIONS,
   MIG_OPEN_BUSINESS_TRIGGER_TYPE_LABEL,
@@ -32,10 +33,13 @@ import {
   type MigOpenBusinessBatch,
   type MigOpenBusinessBatchQuery,
   type MigOpenBusinessBatchSaveRequest,
+  type MigOpenBusinessImportRecord,
+  type MigOpenBusinessImportRow,
 } from '@/types/migOpenBusiness';
 
 const { Title } = Typography;
 
+const LIST = 'mig:open-business:batch:list';
 const MANAGE = 'mig:open-business:batch:manage';
 const DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
 
@@ -58,6 +62,18 @@ export default function MigOpenBusinessBatchPage() {
   const [editId, setEditId] = useState<number | null>(null);
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+  const [importBatch, setImportBatch] = useState<MigOpenBusinessBatch | null>(null);
+  const [importSourceFile, setImportSourceFile] = useState('');
+  const [importText, setImportText] = useState('');
+  const [importing, setImporting] = useState(false);
+  const [rowsOpen, setRowsOpen] = useState(false);
+  const [rowsBatch, setRowsBatch] = useState<MigOpenBusinessBatch | null>(null);
+  const [rows, setRows] = useState<MigOpenBusinessImportRow[]>([]);
+  const [rowsTotal, setRowsTotal] = useState(0);
+  const [rowsPage, setRowsPage] = useState(1);
+  const [rowsLoading, setRowsLoading] = useState(false);
+  const [rowDetail, setRowDetail] = useState<MigOpenBusinessImportRow | null>(null);
 
   const loadData = useCallback(
     async (
@@ -142,6 +158,137 @@ export default function MigOpenBusinessBatchPage() {
     void loadData();
   };
 
+  const sampleRecord = (batchType?: string): MigOpenBusinessImportRecord => {
+    const rowType = batchType === 'IN_TRANSIT'
+      ? 'IN_TRANSIT_PURCHASE'
+      : batchType === 'UNSETTLED'
+        ? 'UNSETTLED_AR'
+        : batchType || 'OPEN_SALES_ORDER';
+    const orderLines = [{ materialCode: 'MAT-001', materialName: '物料示例', uom: 'PCS', orderQty: 10 }];
+    const receiptLines = [{ materialCode: 'MAT-001', uom: 'PCS', receiptQty: 10 }];
+    const deliveryLines = [{ materialCode: 'MAT-001', uom: 'PCS', deliveryQty: 10 }];
+    const payloadByType: Record<string, Record<string, unknown>> = {
+      OPEN_SALES_ORDER: {
+        header: { orderNo: 'SO-OLD-001', customerCode: 'CUST-001', orderStatus: 'OPEN' },
+        lines: orderLines,
+      },
+      OPEN_PURCHASE_ORDER: {
+        header: { orderNo: 'PO-OLD-001', supplierCode: 'SUP-001', orderStatus: 'OPEN' },
+        lines: orderLines,
+      },
+      OUTSOURCE_ORDER: {
+        header: { orderNo: 'OS-OLD-001', supplierCode: 'SUP-001', orderStatus: 'OPEN' },
+        lines: orderLines,
+      },
+      PRODUCTION_ORDER: {
+        header: { orderNo: 'MO-OLD-001', materialCode: 'MAT-001', planQty: 10, orderStatus: 'RELEASED' },
+        lines: [{ materialCode: 'MAT-002', requiredQty: 10, uom: 'PCS' }],
+      },
+      IN_TRANSIT_PURCHASE: {
+        header: { receiptNo: 'GR-OLD-001', supplierCode: 'SUP-001', receiptStatus: 'IN_TRANSIT' },
+        lines: receiptLines,
+      },
+      IN_TRANSIT_SALES: {
+        header: { deliveryNo: 'DN-OLD-001', orderNo: 'SO-OLD-001', customerCode: 'CUST-001' },
+        lines: deliveryLines,
+      },
+      PENDING_INSPECTION: {
+        header: { inspectionNo: 'IQC-OLD-001', materialCode: 'MAT-001', inspectionQty: 10 },
+      },
+      UNSETTLED_AR: {
+        header: { arNo: 'AR-OLD-001', customerCode: 'CUST-001', arAmount: 100, settledAmount: 0 },
+      },
+      UNSETTLED_AP: {
+        header: { apNo: 'AP-OLD-001', supplierCode: 'SUP-001', apAmount: 100, settledAmount: 0 },
+      },
+      UNSETTLED_OUTSOURCE: {
+        header: {
+          settlementNo: 'OS-SET-OLD-001',
+          supplierCode: 'SUP-001',
+          orderNo: 'OS-OLD-001',
+          settlementAmount: 100,
+          paidAmount: 0,
+        },
+      },
+    };
+    return {
+      sourceNo: 'OLD-DOC-001',
+      objectType: rowType,
+      payload: payloadByType[rowType] || payloadByType.OPEN_SALES_ORDER,
+    };
+  };
+
+  const openImport = (record: MigOpenBusinessBatch) => {
+    setImportBatch(record);
+    setImportSourceFile('');
+    setImportText(JSON.stringify({ records: [sampleRecord(record.objectType)] }, null, 2));
+    setImportOpen(true);
+  };
+
+  const submitImport = async () => {
+    if (!importBatch?.id) return;
+    let parsed: { records?: MigOpenBusinessImportRecord[] };
+    try {
+      parsed = JSON.parse(importText) as { records?: MigOpenBusinessImportRecord[] };
+    } catch {
+      message.error('JSON 格式错误，请检查导入内容');
+      return;
+    }
+    if (!Array.isArray(parsed.records) || parsed.records.length === 0) {
+      message.error('JSON 中必须包含非空 records 数组');
+      return;
+    }
+    setImporting(true);
+    try {
+      const result = await service.importRows(importBatch.id, {
+        sourceFile: importSourceFile || undefined,
+        records: parsed.records,
+      });
+      message.success(`已暂存 ${result.totalCount} 条：${result.validCount} 条待审核，${result.invalidCount} 条校验失败`);
+      setImportOpen(false);
+      void loadData();
+    } finally {
+      setImporting(false);
+    }
+  };
+
+  const loadRows = async (batch: MigOpenBusinessBatch, page = 1, size = 10) => {
+    if (!batch.id) return;
+    setRowsLoading(true);
+    try {
+      const result = await service.rows(batch.id, { pageNum: page, pageSize: size });
+      setRows(result.list || []);
+      setRowsTotal(result.total || 0);
+      setRowsPage(page);
+    } finally {
+      setRowsLoading(false);
+    }
+  };
+
+  const openRows = (record: MigOpenBusinessBatch) => {
+    setRowsBatch(record);
+    setRowsOpen(true);
+    void loadRows(record);
+  };
+
+  const reviewRow = async (record: MigOpenBusinessImportRow, approved: boolean) => {
+    await service.reviewRow(record.id, { approved });
+    message.success(approved ? '暂存行已审核通过' : '暂存行已驳回');
+    if (rowsBatch) {
+      await loadRows(rowsBatch, rowsPage);
+      void loadData();
+    }
+  };
+
+  const promoteRow = async (record: MigOpenBusinessImportRow) => {
+    const promoted = await service.promoteRow(record.id);
+    message.success(`已转入正式业务，目标记录 ID：${promoted.targetId}`);
+    if (rowsBatch) {
+      await loadRows(rowsBatch, rowsPage);
+      void loadData();
+    }
+  };
+
   const columns: ColumnsType<MigOpenBusinessBatch> = [
     { title: '批次编号', dataIndex: 'batchNo', width: 200, fixed: 'left', render: plain },
     { title: '批次名称', dataIndex: 'batchName', width: 180, render: plain },
@@ -173,21 +320,105 @@ export default function MigOpenBusinessBatchPage() {
     {
       title: '操作',
       key: 'action',
-      width: 140,
+      width: 260,
       fixed: 'right',
       render: (_, record) =>
-        hasPermission(MANAGE) && (
+        (
           <Space size="small" wrap>
-            <Button type="link" size="small" onClick={() => openEdit(record)}>
-              编辑
+            {hasPermission(LIST) && (
+            <Button type="link" size="small" onClick={() => openRows(record)}>
+              暂存行
             </Button>
-            <Popconfirm title="确认删除该同步批次？" onConfirm={() => record.id != null && void remove(record.id)}>
-              <Button type="link" size="small" danger>
-                删除
+            )}
+            {hasPermission(MANAGE) && record.batchStatus !== 'SUCCESS' && record.batchStatus !== 'RUNNING' && (
+              <Button type="link" size="small" onClick={() => openImport(record)}>
+                导入JSON
               </Button>
-            </Popconfirm>
+            )}
+            {hasPermission(MANAGE) && (record.totalCount || 0) === 0 && (
+              <>
+                <Button type="link" size="small" onClick={() => openEdit(record)}>
+                  编辑
+                </Button>
+                <Popconfirm
+                  title="确认删除该同步批次？"
+                  onConfirm={() => record.id != null && void remove(record.id)}
+                >
+                  <Button type="link" size="small" danger>
+                    删除
+                  </Button>
+                </Popconfirm>
+              </>
+            )}
           </Space>
         ),
+    },
+  ];
+
+  const importRowColumns: ColumnsType<MigOpenBusinessImportRow> = [
+    { title: '来源单号', dataIndex: 'sourceNo', width: 150, render: plain },
+    {
+      title: '对象类型',
+      dataIndex: 'objectType',
+      width: 150,
+      render: (value) => statusTag(MIG_OPEN_BUSINESS_OBJECT_TYPE_LABEL, value),
+    },
+    {
+      title: '状态',
+      dataIndex: 'rowStatus',
+      width: 130,
+      render: (value) => statusTag(MIG_OPEN_BUSINESS_IMPORT_ROW_STATUS_LABEL, value),
+    },
+    {
+      title: '校验/审核信息',
+      dataIndex: 'validationMessage',
+      width: 260,
+      render: (value, record) => plain(value || record.reviewComment),
+    },
+    { title: '目标记录ID', dataIndex: 'targetId', width: 110, render: plain },
+    {
+      title: '操作',
+      key: 'rowAction',
+      width: 280,
+      fixed: 'right',
+      render: (_, record) => (
+        <Space size="small" wrap>
+          <Button type="link" size="small" onClick={() => setRowDetail(record)}>
+            查看数据
+          </Button>
+          {hasPermission(MANAGE) && record.rowStatus === 'PENDING_REVIEW' && (
+            <>
+              <Popconfirm title="确认审核通过该行？" onConfirm={() => void reviewRow(record, true)}>
+                <Button type="link" size="small">通过</Button>
+              </Popconfirm>
+              <Popconfirm title="确认驳回该行？" onConfirm={() => void reviewRow(record, false)}>
+                <Button type="link" size="small" danger>驳回</Button>
+              </Popconfirm>
+            </>
+          )}
+          {hasPermission(MANAGE) && record.rowStatus === 'PROMOTION_FAILED' && (
+            <Popconfirm
+              title="关闭该失败行？"
+              description="关闭后可在新批次修正数据并重新导入。"
+              onConfirm={() => void reviewRow(record, false)}
+            >
+              <Button type="link" size="small" danger>关闭并重导</Button>
+            </Popconfirm>
+          )}
+          {hasPermission(MANAGE)
+            && (record.rowStatus === 'APPROVED' || record.rowStatus === 'PROMOTION_FAILED') && (
+            <Popconfirm
+              title={record.rowStatus === 'APPROVED' ? '确认创建正式业务单据？' : '重试转入正式单据？'}
+              description="该操作会调用现有 ERP 业务服务写入正式数据。"
+              onConfirm={() => void promoteRow(record)}
+            >
+              <Button type="link" size="small">
+                {record.rowStatus === 'APPROVED' ? '转正式单据' : '重试转入'}
+              </Button>
+            </Popconfirm>
+          )}
+        </Space>
+      ),
     },
   ];
 
@@ -340,6 +571,82 @@ export default function MigOpenBusinessBatchPage() {
             <Input.TextArea rows={2} placeholder="请输入备注" />
           </Form.Item>
         </Form>
+      </Modal>
+
+      <Modal
+        title={`导入暂存数据${importBatch?.batchNo ? ` - ${importBatch.batchNo}` : ''}`}
+        open={importOpen}
+        onOk={() => void submitImport()}
+        confirmLoading={importing}
+        onCancel={() => setImportOpen(false)}
+        destroyOnClose
+        width={900}
+      >
+        <Typography.Paragraph type="secondary">
+          使用 JSON records 数组导入，系统将按对象类型校验并暂存；审核通过后才会写入正式 ERP 单据。单次最多 1000 条，每条数据最大 1 MB。
+          订单和到货/发运数据需提供 header 与 lines。
+        </Typography.Paragraph>
+        <Form layout="vertical">
+          <Form.Item label="来源文件名">
+            <Input value={importSourceFile} onChange={(event) => setImportSourceFile(event.target.value)} />
+          </Form.Item>
+          <Form.Item label="JSON 数据" required>
+            <Input.TextArea
+              value={importText}
+              onChange={(event) => setImportText(event.target.value)}
+              rows={18}
+              spellCheck={false}
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal
+        title={`暂存行${rowsBatch?.batchNo ? ` - ${rowsBatch.batchNo}` : ''}（共 ${rowsTotal} 条）`}
+        open={rowsOpen}
+        onCancel={() => setRowsOpen(false)}
+        footer={null}
+        destroyOnClose
+        width={1100}
+      >
+        <Table<MigOpenBusinessImportRow>
+          rowKey="id"
+          loading={rowsLoading}
+          columns={importRowColumns}
+          dataSource={rows}
+          scroll={{ x: 1100 }}
+          pagination={{
+            current: rowsPage,
+            pageSize: 10,
+            total: rowsTotal,
+            showTotal: (value) => `共 ${value} 条`,
+            onChange: (page, size) => rowsBatch && void loadRows(rowsBatch, page, size),
+          }}
+        />
+      </Modal>
+
+      <Modal
+        title={`来源数据 - ${rowDetail?.sourceNo || ''}`}
+        open={rowDetail != null}
+        onCancel={() => setRowDetail(null)}
+        footer={null}
+        width={900}
+        destroyOnClose
+      >
+        <Input.TextArea
+          readOnly
+          rows={22}
+          value={rowDetail?.sourcePayload
+            ? (() => {
+                try {
+                  return JSON.stringify(JSON.parse(rowDetail.sourcePayload), null, 2);
+                } catch {
+                  return rowDetail.sourcePayload;
+                }
+              })()
+            : ''}
+          spellCheck={false}
+        />
       </Modal>
     </Space>
   );

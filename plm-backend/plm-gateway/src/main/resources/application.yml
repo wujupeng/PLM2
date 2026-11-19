@@ -146,6 +146,13 @@ spring:
             - Path=/api/int/**
           filters:
             - StripPrefix=1
+        # 数据迁移控制器位于系统服务 /mig/** 下。
+        - id: migration-service
+          uri: ${PLM_SYSTEM_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/mig/**
+          filters:
+            - StripPrefix=1
         # OA 2.0 统一门户与身份组织权限：控制器路径为 /oa/**，仅剥离 /api 前缀
         - id: oa-service
           uri: ${PLM_SYSTEM_URI:http://localhost:8082}
