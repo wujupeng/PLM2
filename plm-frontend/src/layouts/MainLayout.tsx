@@ -594,6 +594,19 @@ const menuRoute = {
             { path: '/mig/open-business/reconciles', name: '对账', icon: 'BalanceOutlined' },
           ],
         },
+        {
+          path: '/mig-plm-document',
+          name: 'PLM文档迁移',
+          icon: 'SwapOutlined',
+          routes: [
+            { path: '/mig/plm-document/interfaces', name: '集成接口', icon: 'ApiOutlined' },
+            { path: '/mig/plm-document/mappings', name: '字段映射', icon: 'PartitionOutlined' },
+            { path: '/mig/plm-document/batches', name: '同步批次', icon: 'SyncOutlined' },
+            { path: '/mig/plm-document/receipts', name: '接收回执', icon: 'AuditOutlined' },
+            { path: '/mig/plm-document/compensations', name: '异常补偿', icon: 'ToolOutlined' },
+            { path: '/mig/plm-document/reconciles', name: '对账', icon: 'BalanceOutlined' },
+          ],
+        },
       ],
     },
     {

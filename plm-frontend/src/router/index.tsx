@@ -488,6 +488,12 @@ const MigOpenBusinessBatches = lazy(() => import('@/pages/mig/open-business/batc
 const MigOpenBusinessReceipts = lazy(() => import('@/pages/mig/open-business/receipts'));
 const MigOpenBusinessCompensations = lazy(() => import('@/pages/mig/open-business/compensations'));
 const MigOpenBusinessReconciles = lazy(() => import('@/pages/mig/open-business/reconciles'));
+const MigPlmDocumentInterfaces = lazy(() => import('@/pages/mig/plm-document/interfaces'));
+const MigPlmDocumentMappings = lazy(() => import('@/pages/mig/plm-document/mappings'));
+const MigPlmDocumentBatches = lazy(() => import('@/pages/mig/plm-document/batches'));
+const MigPlmDocumentReceipts = lazy(() => import('@/pages/mig/plm-document/receipts'));
+const MigPlmDocumentCompensations = lazy(() => import('@/pages/mig/plm-document/compensations'));
+const MigPlmDocumentReconciles = lazy(() => import('@/pages/mig/plm-document/reconciles'));
 const MobileLayout = lazy(() => import('@/layouts/MobileLayout'));
 const MobileWorkbench = lazy(() => import('@/pages/mobile/workbench'));
 const MobileTasks = lazy(() => import('@/pages/mobile/tasks'));
@@ -2007,6 +2013,30 @@ const routes: RouteObject[] = [
       {
         path: 'mig/open-business/reconciles',
         element: withPermission('mig:open-business:reconcile:list', <MigOpenBusinessReconciles />),
+      },
+      {
+        path: 'mig/plm-document/interfaces',
+        element: withPermission('mig:plm-document:interface:list', <MigPlmDocumentInterfaces />),
+      },
+      {
+        path: 'mig/plm-document/mappings',
+        element: withPermission('mig:plm-document:mapping:list', <MigPlmDocumentMappings />),
+      },
+      {
+        path: 'mig/plm-document/batches',
+        element: withPermission('mig:plm-document:batch:list', <MigPlmDocumentBatches />),
+      },
+      {
+        path: 'mig/plm-document/receipts',
+        element: withPermission('mig:plm-document:receipt:list', <MigPlmDocumentReceipts />),
+      },
+      {
+        path: 'mig/plm-document/compensations',
+        element: withPermission('mig:plm-document:compensation:list', <MigPlmDocumentCompensations />),
+      },
+      {
+        path: 'mig/plm-document/reconciles',
+        element: withPermission('mig:plm-document:reconcile:list', <MigPlmDocumentReconciles />),
       },
       { path: 'oa/portal', element: withPermission('oa:portal:view', <OaPortal />) },
       { path: 'oa/positions', element: withPermission('oa:position:list', <OaPosition />) },
