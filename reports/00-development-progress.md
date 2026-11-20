@@ -20,7 +20,7 @@
 | PLM3-011 后端版本元数据 | 已实现并验证打包产物 | Spring Boot `build-info` 为 system/Gateway 制品生成应用名、版本、构建时间和 Git commit；在隔离 H2 临时端口启动打包后的 system JAR，并通过 `/actuator/info` 验证非空元数据，不含密钥。 |
 | PLM3-012 前端构建版本 | 已实现并验证构建产物 | Vite 构建时注入 package 版本、Git commit 与构建时间，并在登录后的主布局页脚展示；dirty 工作区显式标记 `-dirty`。 |
 | PLM3-050 ESLint 9 flat config | 已实现并验证 | 增加 TypeScript、React Hooks、Fast Refresh flat config；修复 2 处无用参数/失效禁用指令；`npm run lint` 以 0 warning/0 error 退出。 |
-| PLM3-013–018 JWT/Actuator/API 文档基线 | 源码配置与测试完成，现有进程切换待做 | 移除源码 JWT 默认密钥，要求注入至少 32 UTF-8 字节的 `PLM_JWT_SECRET`；Actuator 限制为 health/info 且健康详情仅授权可见；Swagger/OpenAPI 默认关闭；Gateway 与 system 过滤器不再匿名放行 Actuator 索引、敏感端点、文档或 H2 console。 |
+| PLM3-013–018 JWT/Actuator/API 文档基线 | 源码配置与自动化测试完成，运行进程切换待做 | 移除源码 JWT 默认密钥，要求注入至少 32 UTF-8 字节的 `PLM_JWT_SECRET`；Actuator 限制为 health/info 且健康详情仅授权可见；Swagger/OpenAPI 默认关闭；Gateway 与 system 过滤器不再匿名放行 Actuator 索引、敏感端点、文档或 H2 console。PLM3-015 已覆盖 Gateway 对有效、格式错误、过期及错误签名令牌的处理，以及 system 刷新令牌类型校验、刷新和已认证登出接口。当前登出仍是无状态实现，不撤销已签发令牌；如需即时失效，仍须实现并配置 Redis 黑名单或等效机制。 |
 | S01 隔离测试账号初始化 | 已完成并验证（仅 dev H2） | 已轮换本机 H2 管理员密码，通过正式系统 API 建立 1 个测试公司、11 个部门、测试角色及 14 个测试账号；14/14 登录验证通过。权限矩阵未提供，角色未授予细粒度权限。运行 ID：`PLM2-202611200315-fb906044`。 |
 
 ## 代码和文档
@@ -35,8 +35,7 @@
 
 ## 验证结果与边界
 
-- `mvn -f plm-backend/pom.xml -pl plm-gateway -am test`：BUILD SUCCESS，5 项 Gateway 单元测试通过（JWT allowlist/key 长度 2 项；Redis 降级、恢复及下游失败隔离 3 项）。
-- `mvn -f plm-backend/pom.xml -pl plm-system -am test`：BUILD SUCCESS，4 项 system `AuthControllerIntegrationTest` 通过，覆盖登录校验和 Actuator/docs/H2 console 访问控制。
+- `mvn -f plm-backend/pom.xml -pl plm-gateway,plm-system -am '-Dtest=JwtAuthenticationFilterTest,AuthControllerIntegrationTest' -Dsurefire.failIfNoSpecifiedTests=false test`：BUILD SUCCESS，Gateway JWT 4 项、system 集成 5 项测试通过。覆盖 Gateway allowlist、短密钥、格式错误/过期/错误签名及有效令牌身份和角色透传；system 刷新请求的空值/格式错误/访问令牌类型拒绝、有效刷新令牌签发、登出认证及 Actuator/docs/H2 console 访问控制。既有 `RateLimitFilterTest` 另覆盖 Redis 降级、恢复及下游失败隔离 3 项。
 - `BUILD_TIME=2026-11-20T03:30:00Z bash scripts/build-versioned.sh`（Java 17）：后端 Gateway/system 打包测试通过、前端 TypeScript 与生产构建成功；两个后端 `META-INF/build-info.properties` 均包含非空 application name、version、build time、commit，前端 bundle 已包含构建版本数据。此次工作区未提交，正确显示 `-dirty`。
 - 打包后的 system JAR 在独立 `127.0.0.1:18082`、隔离 H2 上启动成功；`/actuator/info` 实际返回 `build.application.name`、`build.version`、`build.time` 和 `build.git.commit`，核验后已停止该临时进程，现存 8082 服务未受影响。
 - 前端 ESLint 9 flat-config：`npm --prefix plm-frontend run lint` 成功，0 warnings/errors；`npm --prefix plm-frontend run build` 成功（Vite 提示既有 vendor/antd circular chunk warning，未作为本任务改动范围）。
@@ -50,5 +49,5 @@
 ## 下一步
 
 1. 在可丢弃的隔离 H2 测试窗口按 `.env.local` 启动新 system/Gateway；重启会清空已创建的测试数据，需重跑 bootstrap/seed，再验证配置生效。确认新 Gateway 连接持久化 Redis后，补齐 Redis 中断/恢复和 health 的端到端证据。
-2. 继续 PLM3-011 版本元数据及未完成的通用生产数据库隔离审计。
+2. 继续 PLM3-013–018 的运行时切换与验收；明确登出仍不撤销已签发 JWT，若 WBS 验收要求强制失效，再实现 Redis 黑名单或等效方案并补充跨实例验证。并完成未覆盖的通用生产数据库隔离审计。
 3. 业务负责人提供角色-权限矩阵后，再做权限配置、工作分离及 S02–S20/九个分支业务验证；当前登录验证不可替代这些验收。

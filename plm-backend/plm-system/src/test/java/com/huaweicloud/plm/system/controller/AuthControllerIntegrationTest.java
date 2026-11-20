@@ -1,5 +1,7 @@
 package com.huaweicloud.plm.system.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,6 +41,9 @@ class AuthControllerIntegrationTest {
     @Autowired
     private Flyway flyway;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
     void emptyLoginReturnsChineseValidationErrors() throws Exception {
         mockMvc.perform(post("/auth/login")
@@ -55,6 +62,58 @@ class AuthControllerIntegrationTest {
                 .andExpect(status().isUnauthorized());
         mockMvc.perform(get("/system/users"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void refreshRequiresRefreshTokenAndLogoutRequiresAuthentication() throws Exception {
+        String loginResponse = mockMvc.perform(post("/auth/login")
+                        .contentType("application/json")
+                        .content("{\"username\":\"admin\",\"password\":\"admin123\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
+                .andExpect(jsonPath("$.data.refreshToken").isNotEmpty())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        JsonNode tokens = objectMapper.readTree(loginResponse).path("data");
+        String accessToken = tokens.path("accessToken").asText();
+        String refreshToken = tokens.path("refreshToken").asText();
+
+        mockMvc.perform(post("/auth/refresh")
+                        .contentType("application/json")
+                        .content("{}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(400));
+
+        mockMvc.perform(post("/auth/refresh")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(Map.of("refreshToken", "not-a-jwt"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(401));
+
+        mockMvc.perform(post("/auth/refresh")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(
+                                Map.of("refreshToken", accessToken))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(401));
+
+        mockMvc.perform(post("/auth/refresh")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(
+                                Map.of("refreshToken", refreshToken))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.data.accessToken").isNotEmpty())
+                .andExpect(jsonPath("$.data.refreshToken").isNotEmpty());
+
+        mockMvc.perform(post("/auth/logout"))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(post("/auth/logout")
+                        .header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200));
     }
 
     @Test
