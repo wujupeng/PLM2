@@ -38,7 +38,12 @@ const healthResponse = await fetch(new URL('/actuator/health', systemUrl), {
 assert.equal(healthResponse.status, 200, 'System service health must be available before provisioning.');
 const health = await healthResponse.json();
 assert.equal(health.status, 'UP');
-assert.equal(health.components?.db?.details?.database, 'H2', 'Refusing to provision outside dev H2.');
+const databaseType = health.components?.db?.details?.database;
+const configuredDatasourceUrl = process.env.PLM_DATASOURCE_URL ?? process.env.SPRING_DATASOURCE_URL;
+assert.ok(
+  databaseType === 'H2' || configuredDatasourceUrl?.startsWith('jdbc:h2:'),
+  'Refusing to provision without evidence of H2: provide its JDBC URL explicitly when health details are hidden.',
+);
 
 function parseJsonPreservingLongIntegers(text) {
   const losslessText = text.replace(

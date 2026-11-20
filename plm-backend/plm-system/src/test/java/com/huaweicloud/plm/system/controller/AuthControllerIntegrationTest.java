@@ -11,7 +11,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,6 +23,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -135,8 +140,8 @@ class AuthControllerIntegrationTest {
     @Test
     void allMigrationsApplyToEmptyH2AndRepeatedMigrationIsIdempotent() {
         int historyCountBefore = appliedMigrationCount();
-        assertTrue(historyCountBefore >= 172);
-        assertEquals("172", jdbcTemplate.queryForObject(
+        assertTrue(historyCountBefore >= 173);
+        assertEquals("173", jdbcTemplate.queryForObject(
                 "SELECT version FROM flyway_schema_history WHERE success = TRUE ORDER BY installed_rank DESC LIMIT 1",
                 String.class));
 
@@ -145,9 +150,82 @@ class AuthControllerIntegrationTest {
         assertEquals(historyCountBefore, appliedMigrationCount());
     }
 
+    @Test
+    void rolePermissionAssignmentCanBeRepeatedAndRestorePreviouslyRemovedPermissions() throws Exception {
+        String loginResponse = mockMvc.perform(post("/auth/login")
+                        .contentType("application/json")
+                        .content("{\"username\":\"admin\",\"password\":\"admin123\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        String accessToken = objectMapper.readTree(loginResponse).path("data").path("accessToken").asText();
+
+        JsonNode permissions = objectMapper.readTree(mockMvc.perform(get("/system/permissions")
+                        .header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andReturn()
+                .getResponse()
+                .getContentAsString()).path("data");
+        long orgPermissionId = permissionId(permissions, "system:org:list");
+        long userPermissionId = permissionId(permissions, "system:user:list");
+
+        String roleResponse = mockMvc.perform(post("/system/roles")
+                        .header("Authorization", "Bearer " + accessToken)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "roleCode", "IT-RP-" + UUID.randomUUID().toString().replace("-", ""),
+                                "roleName", "Permission assignment regression",
+                                "dataScope", "org",
+                                "status", 1))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        long roleId = objectMapper.readTree(roleResponse).path("data").asLong();
+
+        assignRolePermissions(accessToken, roleId, List.of(orgPermissionId, userPermissionId));
+        assignRolePermissions(accessToken, roleId, List.of(userPermissionId));
+        assignRolePermissions(accessToken, roleId, List.of(orgPermissionId, userPermissionId));
+
+        JsonNode assigned = objectMapper.readTree(mockMvc.perform(get("/system/roles/{roleId}/permissions", roleId)
+                        .header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andReturn()
+                .getResponse()
+                .getContentAsString()).path("data");
+        assertEquals(2, assigned.size());
+        Set<Long> assignedIds = new HashSet<>();
+        assigned.forEach(permissionId -> assignedIds.add(permissionId.asLong()));
+        assertEquals(Set.of(orgPermissionId, userPermissionId), assignedIds);
+    }
+
     private int appliedMigrationCount() {
         return jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM flyway_schema_history WHERE success = TRUE",
                 Integer.class);
+    }
+
+    private long permissionId(JsonNode permissions, String permissionCode) {
+        for (JsonNode permission : permissions) {
+            if (permissionCode.equals(permission.path("permissionCode").asText())) {
+                return permission.path("id").asLong();
+            }
+        }
+        throw new AssertionError("Permission not found: " + permissionCode);
+    }
+
+    private void assignRolePermissions(String accessToken, long roleId, List<Long> permissionIds)
+            throws Exception {
+        mockMvc.perform(put("/system/roles/{roleId}/permissions", roleId)
+                        .header("Authorization", "Bearer " + accessToken)
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(Map.of("permissionIds", permissionIds))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200));
     }
 }

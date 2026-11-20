@@ -168,6 +168,9 @@ public class WorkflowEngineService {
         if (instance == null) {
             throw new BusinessException(ResultCode.NOT_FOUND, "流程实例不存在: " + task.getInstanceId());
         }
+        if (Objects.equals(instance.getApplicantUserId(), userId)) {
+            throw new BusinessException(ResultCode.FORBIDDEN, "发起人不能审批自己的单据");
+        }
         if (!INSTANCE_RUNNING.equals(instance.getInstanceStatus())) {
             throw new BusinessException(ResultCode.CONFLICT, "流程已结束，无法审批");
         }

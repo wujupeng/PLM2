@@ -23,6 +23,9 @@ public class ProductSaveRequest {
 
     private String model;
 
+    @NotBlank(message = "产品计量单位不能为空")
+    private String unit;
+
     /** 状态：draft/released/obsolete。 */
     private String status;
 

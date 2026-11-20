@@ -81,6 +81,7 @@ public class ProductService {
         product.setSeriesName(request.getSeriesName());
         product.setCustomerCode(request.getCustomerCode());
         product.setModel(request.getModel());
+        product.setUnit(request.getUnit());
         if (StringUtils.hasText(request.getStatus())) {
             product.setStatus(request.getStatus());
         }

@@ -93,8 +93,7 @@ public class RoleService {
     @Transactional
     public void assignPermissions(Long roleId, List<Long> permissionIds) {
         requireRole(roleId);
-        rolePermissionMapper.delete(Wrappers.<SysRolePermission>lambdaQuery()
-                .eq(SysRolePermission::getRoleId, roleId));
+        rolePermissionMapper.physicalDeleteByRoleId(roleId);
         if (CollectionUtils.isEmpty(permissionIds)) {
             return;
         }

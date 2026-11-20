@@ -22,7 +22,7 @@
 | 系统服务 | Spring Boot 3.2、MyBatis-Plus、Flyway，默认监听 `8082` |
 | 公共模块 | `plm-common/`，由后端服务依赖 |
 | 生产数据库 | PostgreSQL；通过 Flyway 管理 `plm-system` 数据库迁移 |
-| 本地开发数据库 | H2（PostgreSQL 兼容模式），由 `dev` profile 配置 |
+| 本地开发数据库 | 文件 H2（PostgreSQL 兼容模式，位于 Git 忽略的 `.local/dev-h2/`）；可用本机 PostgreSQL 做迁移验证 |
 
 前端默认访问同源 `/api`，Vite 开发服务器将其转发到 `http://localhost:8080`。生产静态站点也应将 `/api` 反向代理到 API 网关。
 
@@ -51,16 +51,16 @@
 - Java 17
 - Maven 3.8+
 - Node.js 20 LTS（建议）及 npm
-- 生产环境：PostgreSQL；网关启用 Redis 相关功能时需提供可达的 Redis 实例
+- 本机开发默认文件 H2；生产及 PostgreSQL 迁移验证使用 PostgreSQL
+- 网关启用 Redis 相关功能时需提供可达的 Redis 实例
 
 ### 本地启动
 
-网关本地开发使用独立的 loopback Redis（端口 `6381`），启用认证及 AOF/RDB 持久化。先启动 Redis 并在同一个终端导出其本地密码：
+网关本地开发使用独立的 loopback Redis（端口 `6381`），启用认证及 AOF/RDB 持久化。首次准备本地 JWT 密钥后，运行开发启动脚本；脚本读取 `.env.local`、设置仓库内绝对路径的文件 H2，并启动 Redis、system、Gateway 和前端：
 
-   ```bash
-   bash scripts/test-redis.sh start
-   export PLM_REDIS_PASSWORD="$(<.local/redis-test/password)"
-   ```
+```bash
+bash scripts/start-dev.sh
+```
 
 本地 Redis 数据和密码仅写入 Git 忽略的 `.local/redis-test/`。不要删除或覆盖该目录来“重置”数据；如需清理，请先确认其中仅有可丢弃的本地测试数据。
 
@@ -76,7 +76,7 @@ else
 fi
 ```
 
-不要覆盖已有 `.env.local`；该文件包含本地凭据并已被 Git 忽略。每次启动系统服务前，在同一终端加载它：
+不要覆盖已有 `.env.local`；该文件包含本地凭据并已被 Git 忽略。`start-dev.sh` 会自动加载该文件；如手动启动后端服务，则在启动前于仓库根目录加载：
 
 ```bash
 set -a
@@ -84,7 +84,7 @@ set -a
 set +a
 ```
 
-1. 启动系统服务（默认 `dev` profile 使用内存 H2 数据库）：
+1. 手动启动系统服务（默认 `dev` profile 使用仓库 `.local/dev-h2/plm_system` 文件 H2 数据库）：
 
    ```bash
    cd plm-backend
@@ -115,8 +115,8 @@ set +a
 
 4. 打开 Vite 输出的本地地址（默认 `http://localhost:3000`）。前端 API 经由网关 `8080` 转发到系统服务 `8082`。
 
-首次启动系统服务时，Flyway 会执行数据库迁移。H2 为内存数据库，进程停止后数据不保留；不要将其用于生产环境。
-完成本地联调并停止网关后，可在终端运行 `bash scripts/test-redis.sh stop` 停止 Redis；正常停止会保留 Redis 数据。
+首次启动系统服务时，Flyway 会执行数据库迁移。文件 H2 在进程重启后保留数据，但只适合本地过渡联调，不可作为生产持久化验收或生产数据库。需重建测试种子时，只对经确认可丢弃的隔离开发库执行 bootstrap/seed，不得删除生产数据。
+完成本地联调并停止网关后，可运行 `bash scripts/test-redis.sh stop` 停止 Redis；正常停止会保留 Redis 数据。
 隔离测试管理员及测试账号的初始化步骤见[运维手册](./docs/运维手册.md#隔离测试账号初始化)；脚本只允许 loopback H2，不要将生成的 `.env.local` 提交或发送到聊天/工单。
 
 `admin123` 仅是全新 dev H2 数据库中 Flyway 初始管理员的密码。运行隔离管理员初始化后，`admin` 密码会被轮换为随机值并保存在被 Git 忽略的 `.env.local` 的 `PLM_PROVISIONER_PASSWORD` 项中；之后不能再用 `admin123` 登录。不要把该值发送到聊天、工单或提交到仓库。

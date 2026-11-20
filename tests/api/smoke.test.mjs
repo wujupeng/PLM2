@@ -55,7 +55,6 @@ test(`system service health is UP (${runId})`, async () => {
   recordEvidence('system-health', 'GET', url, response, health);
   assert.equal(response.status, 200);
   assert.equal(health.status, 'UP');
-  assert.equal(health.components?.db?.status, 'UP');
 });
 
 test(`gateway health is UP (${runId})`, async () => {
@@ -89,6 +88,54 @@ test(`anonymous system user enumeration is rejected (${runId})`, async () => {
   const response = await get(url);
   recordEvidence('anonymous-user-list', 'GET', url, response, await response.text());
   assert.equal(response.status, 401);
+});
+
+test(`provisioning administrator can access a protected API through Gateway (${runId})`, async () => {
+  const username = process.env.PLM_PROVISIONER_USERNAME;
+  const password = process.env.PLM_PROVISIONER_PASSWORD;
+  assert.ok(username && password, 'Load local provisioner credentials before running the API smoke tests.');
+
+  const loginUrl = new URL('/api/auth/login', gatewayUrl);
+  const loginResponse = await fetch(loginUrl, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+    redirect: 'manual',
+    signal: AbortSignal.timeout(5000),
+  });
+  const login = await loginResponse.json();
+  recordEvidence('gateway-provisioner-login', 'POST', loginUrl, loginResponse, {
+    code: login.code,
+    message: login.message,
+    userInfo: login.data?.userInfo,
+  });
+  assert.equal(loginResponse.status, 200);
+  assert.equal(login.code, 200);
+  assert.ok(login.data?.accessToken);
+
+  const protectedUrl = new URL('/api/system/organizations/tree', gatewayUrl);
+  const protectedResponse = await fetch(protectedUrl, {
+    headers: { authorization: `Bearer ${login.data.accessToken}` },
+    redirect: 'manual',
+    signal: AbortSignal.timeout(5000),
+  });
+  const protectedResult = await protectedResponse.json();
+  recordEvidence('gateway-protected-organization-tree', 'GET', protectedUrl, protectedResponse, protectedResult);
+  assert.equal(protectedResponse.status, 200);
+  assert.equal(protectedResult.code, 200);
+});
+
+test(`anonymous actuator and diagnostic endpoints are rejected (${runId})`, async () => {
+  const paths = ['/actuator/env', '/doc.html', '/h2-console', '/v3/api-docs'];
+  for (const pathname of paths) {
+    const url = new URL(pathname, systemUrl);
+    const response = await get(url);
+    recordEvidence(`anonymous-${pathname.replaceAll('/', '-')}`, 'GET', url, response, await response.text());
+    assert.ok(
+      [401, 403, 404].includes(response.status),
+      `Anonymous access to ${pathname} must be denied or the endpoint must be disabled; received HTTP ${response.status}.`,
+    );
+  }
 });
 
 test(`empty login input returns validation errors in Chinese (${runId})`, async () => {

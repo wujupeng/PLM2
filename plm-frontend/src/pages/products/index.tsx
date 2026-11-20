@@ -106,6 +106,7 @@ export default function ProductsPage() {
       seriesName: record.seriesName,
       customerCode: record.customerCode,
       model: record.model,
+      unit: record.unit,
       status: record.status,
       description: record.description,
       remark: record.remark,
@@ -144,6 +145,7 @@ export default function ProductsPage() {
     { title: '系列名称', dataIndex: 'seriesName', width: 150, render: (v) => v || '-' },
     { title: '客户编码', dataIndex: 'customerCode', width: 130, render: (v) => v || '-' },
     { title: '型号', dataIndex: 'model', width: 140, render: (v) => v || '-' },
+    { title: '计量单位', dataIndex: 'unit', width: 100, render: (v) => v || '-' },
     {
       title: '状态',
       dataIndex: 'status',
@@ -224,7 +226,7 @@ export default function ProductsPage() {
           loading={loading}
           columns={columns}
           dataSource={data}
-          scroll={{ x: 1500 }}
+          scroll={{ x: 1600 }}
           pagination={{
             current: pageNum,
             pageSize,
@@ -275,6 +277,13 @@ export default function ProductsPage() {
           </Form.Item>
           <Form.Item name="model" label="型号">
             <Input placeholder="请输入型号" />
+          </Form.Item>
+          <Form.Item
+            name="unit"
+            label="计量单位"
+            rules={[{ required: true, message: '请输入产品计量单位' }]}
+          >
+            <Input placeholder="例如：台" />
           </Form.Item>
           <Form.Item name="status" label="状态" initialValue="draft">
             <Select options={PRODUCT_STATUS_OPTIONS} />

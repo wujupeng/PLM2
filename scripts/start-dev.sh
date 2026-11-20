@@ -2,6 +2,12 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [[ -f "$ROOT_DIR/.env.local" ]]; then
+  set -a
+  # Local-only credentials are intentionally loaded for matching JWT validation in system and gateway.
+  source "$ROOT_DIR/.env.local"
+  set +a
+fi
 node "$ROOT_DIR/scripts/validate-test-targets.mjs"
 BACKEND_DIR="$ROOT_DIR/plm-backend"
 FRONTEND_DIR="$ROOT_DIR/plm-frontend"
@@ -80,7 +86,7 @@ wait_ready() {
   local name="$1"
   local url="$2"
   local expected="$3"
-  local seconds=60
+  local seconds=180
 
   while (( seconds > 0 )); do
     if service_ready "$name" "$url" "$expected"; then
@@ -104,6 +110,8 @@ done
 
 export PLM_REDIS_HOST="${PLM_REDIS_HOST:-127.0.0.1}"
 export PLM_REDIS_PORT="${PLM_REDIS_PORT:-6381}"
+mkdir -p "$ROOT_DIR/.local/dev-h2"
+export PLM_DATASOURCE_URL="${PLM_DATASOURCE_URL:-jdbc:h2:file:$ROOT_DIR/.local/dev-h2/plm_system;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_ON_EXIT=FALSE}"
 if [[ "$PLM_REDIS_HOST" != 127.0.0.1 && "$PLM_REDIS_HOST" != localhost ]]; then
   printf 'ERROR: local development only permits loopback Redis hosts.\n' >&2
   exit 2

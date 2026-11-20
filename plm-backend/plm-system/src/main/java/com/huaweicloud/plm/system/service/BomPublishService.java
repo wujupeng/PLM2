@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huaweicloud.plm.common.api.ResultCode;
 import com.huaweicloud.plm.common.exception.BusinessException;
 import com.huaweicloud.plm.system.dto.BomPublishRequest;
+import com.huaweicloud.plm.system.dto.BomValidationResult;
 import com.huaweicloud.plm.system.entity.BomHeader;
 import com.huaweicloud.plm.system.entity.BomLine;
 import com.huaweicloud.plm.system.entity.BomPublishLog;
@@ -18,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -33,31 +33,46 @@ import java.util.Map;
 public class BomPublishService {
 
     private static final String STATUS_RELEASED = "released";
-    private static final String STATUS_SUCCESS = "success";
-    private static final String STATUS_FAILED = "failed";
+    private static final String STATUS_DRAFT = "draft";
+    private static final String STATUS_PENDING = "pending";
 
     private static final String CONFIG_TARGET_SYSTEMS = "bom.publish.target_systems";
-    private static final String CONFIG_RETRY_MAX_TIMES = "bom.publish.retry.max_times";
     private static final String DEFAULT_TARGET_SYSTEMS = "ERP,MES";
-    private static final int DEFAULT_RETRY_MAX_TIMES = 3;
     private static final int PAYLOAD_MAX_LENGTH = 2000;
     private static final int RESPONSE_MAX_LENGTH = 500;
 
     private final BomHeaderMapper bomHeaderMapper;
     private final BomLineMapper bomLineMapper;
     private final BomPublishLogMapper bomPublishLogMapper;
+    private final BomValidationService bomValidationService;
     private final ConfigService configService;
     private final ObjectMapper objectMapper;
 
     @Transactional
     public List<BomPublishLog> publish(Long headerId, BomPublishRequest request) {
         BomHeader header = requireHeader(headerId);
-        if (!STATUS_RELEASED.equalsIgnoreCase(header.getStatus())) {
-            throw new BusinessException(ResultCode.BAD_REQUEST, "BOM 未发布，禁止同步下游");
+        if (!STATUS_DRAFT.equalsIgnoreCase(header.getStatus())
+                && !STATUS_RELEASED.equalsIgnoreCase(header.getStatus())) {
+            throw new BusinessException(ResultCode.CONFLICT, "仅草稿或已发布 BOM 可执行发布");
+        }
+        BomValidationResult validation = bomValidationService.evaluate(headerId);
+        long blockingIssues = validation.getIssues().stream()
+                .filter(issue -> "error".equalsIgnoreCase(issue.getSeverity()))
+                .count();
+        if (blockingIssues > 0) {
+            throw new BusinessException(ResultCode.BAD_REQUEST, "BOM 校验失败，存在 " + blockingIssues + " 项阻断错误");
+        }
+        List<BomLine> lines = bomLineMapper.selectList(Wrappers.<BomLine>lambdaQuery()
+                .eq(BomLine::getHeaderId, headerId));
+        if (lines.isEmpty()) {
+            throw new BusinessException(ResultCode.BAD_REQUEST, "BOM 至少需要一条有效物料行才能发布");
+        }
+        if (STATUS_DRAFT.equalsIgnoreCase(header.getStatus())) {
+            header.setStatus(STATUS_RELEASED);
+            bomHeaderMapper.updateById(header);
         }
         List<String> targetSystems = resolveTargetSystems(request);
         String payload = buildPayload(header);
-        LocalDateTime now = LocalDateTime.now();
 
         List<BomPublishLog> logs = new ArrayList<>();
         for (String system : targetSystems) {
@@ -66,12 +81,10 @@ public class BomPublishService {
             log.setBomCode(header.getBomCode());
             log.setVersionNo(header.getVersionNo());
             log.setTargetSystem(system);
-            log.setStatus(STATUS_SUCCESS);
+            log.setStatus(STATUS_PENDING);
             log.setRetryCount(0);
             log.setRequestPayload(truncate(payload, PAYLOAD_MAX_LENGTH));
-            log.setResponseMessage(truncate("下游 " + system + " 接收成功，回执：" + header.getBomCode()
-                    + " " + header.getVersionNo(), RESPONSE_MAX_LENGTH));
-            log.setPublishedAt(now);
+            log.setResponseMessage(truncate("未执行下游同步：真实 " + system + " 适配器尚未配置", RESPONSE_MAX_LENGTH));
             bomPublishLogMapper.insert(log);
             logs.add(log);
         }
@@ -84,20 +97,8 @@ public class BomPublishService {
         if (log == null) {
             throw new BusinessException(ResultCode.NOT_FOUND, "发布日志不存在: " + logId);
         }
-        int retryCount = (log.getRetryCount() == null ? 0 : log.getRetryCount()) + 1;
-        log.setRetryCount(retryCount);
-        int maxTimes = resolveRetryMaxTimes();
-        if (retryCount > maxTimes) {
-            log.setStatus(STATUS_FAILED);
-            log.setResponseMessage(truncate("重试次数超过上限 " + maxTimes + "，同步失败", RESPONSE_MAX_LENGTH));
-        } else {
-            log.setStatus(STATUS_SUCCESS);
-            log.setPublishedAt(LocalDateTime.now());
-            log.setResponseMessage(truncate("重试成功，下游 " + log.getTargetSystem() + " 接收成功",
-                    RESPONSE_MAX_LENGTH));
-        }
-        bomPublishLogMapper.updateById(log);
-        return log;
+        throw new BusinessException(ResultCode.CONFLICT,
+                "未配置真实下游同步适配器，无法重试 " + log.getTargetSystem() + " 发布");
     }
 
     public List<BomPublishLog> listLogs(Long headerId) {
@@ -149,18 +150,6 @@ public class BomPublishService {
             return objectMapper.writeValueAsString(root);
         } catch (JsonProcessingException e) {
             throw new BusinessException(ResultCode.ERROR, "生成发布报文失败: " + e.getMessage());
-        }
-    }
-
-    private int resolveRetryMaxTimes() {
-        String value = configService.getValue(CONFIG_RETRY_MAX_TIMES);
-        if (!StringUtils.hasText(value)) {
-            return DEFAULT_RETRY_MAX_TIMES;
-        }
-        try {
-            return Integer.parseInt(value.trim());
-        } catch (NumberFormatException e) {
-            return DEFAULT_RETRY_MAX_TIMES;
         }
     }
 

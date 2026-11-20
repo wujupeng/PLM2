@@ -42,6 +42,7 @@ public class BomService {
 
     private static final String DEFAULT_VERSION = "V1";
     private static final String STATUS_DRAFT = "draft";
+    private static final String STATUS_RELEASED = "released";
     private static final String BOM_TYPE_EBOM = "EBOM";
     private static final String BOM_TYPE_MBOM = "MBOM";
     private static final List<String> EXPAND_STATUS = List.of("released", "draft");
@@ -92,6 +93,10 @@ public class BomService {
     @Transactional
     public void update(Long headerId, BomSaveRequest request) {
         BomHeader header = requireHeader(headerId);
+        requireDraft(header);
+        if (STATUS_RELEASED.equalsIgnoreCase(request.getStatus())) {
+            throw new BusinessException(ResultCode.BAD_REQUEST, "BOM 必须通过发布操作转为已发布状态");
+        }
         String versionNo = StringUtils.hasText(request.getVersionNo()) ? request.getVersionNo() : header.getVersionNo();
         ensureUnique(request.getProductCode(), request.getBomType(), versionNo, headerId);
         header.setProductId(request.getProductId());
@@ -111,14 +116,14 @@ public class BomService {
 
     @Transactional
     public void delete(Long headerId) {
-        requireHeader(headerId);
+        requireDraft(requireHeader(headerId));
         bomLineMapper.delete(Wrappers.<BomLine>lambdaQuery().eq(BomLine::getHeaderId, headerId));
         bomHeaderMapper.deleteById(headerId);
     }
 
     @Transactional
     public Long addLine(Long headerId, BomLineSaveRequest request) {
-        requireHeader(headerId);
+        requireDraft(requireHeader(headerId));
         validateLine(request);
         Integer maxLineNo = bomLineMapper.selectMaxLineNo(headerId);
         BomLine line = new BomLine();
@@ -134,6 +139,7 @@ public class BomService {
     @Transactional
     public void updateLine(Long lineId, BomLineSaveRequest request) {
         BomLine line = requireLine(lineId);
+        requireDraft(requireHeader(line.getHeaderId()));
         validateLine(request);
         if (request.getLineNo() != null) {
             line.setLineNo(request.getLineNo());
@@ -144,7 +150,8 @@ public class BomService {
 
     @Transactional
     public void deleteLine(Long lineId) {
-        requireLine(lineId);
+        BomLine line = requireLine(lineId);
+        requireDraft(requireHeader(line.getHeaderId()));
         bomLineMapper.deleteById(lineId);
     }
 
@@ -157,7 +164,7 @@ public class BomService {
         int maxLevel = levels == null || levels < 1 ? 10 : levels;
         Set<String> visited = new HashSet<>();
         visited.add(header.getProductCode());
-        return expandChildren(header, header.getProductCode(), 1, maxLevel, visited);
+        return expandChildren(header, header.getProductCode(), BigDecimal.ONE, 1, maxLevel, visited);
     }
 
     /** 物料反查：查询所有以该物料为子件的 BOM 行，并带出所属 BOM 头信息。 */
@@ -287,7 +294,7 @@ public class BomService {
         return target.getId();
     }
 
-    private List<BomExpandNode> expandChildren(BomHeader header, String path, int level,
+    private List<BomExpandNode> expandChildren(BomHeader header, String path, BigDecimal parentQuantity, int level,
                                                int maxLevel, Set<String> visited) {
         List<BomExpandNode> nodes = new ArrayList<>();
         if (level > maxLevel) {
@@ -301,7 +308,8 @@ public class BomService {
             BomExpandNode node = new BomExpandNode();
             node.setMaterialCode(childCode);
             node.setMaterialName(line.getChildMaterialName());
-            node.setQty(line.getQty());
+            BigDecimal requiredQuantity = parentQuantity.multiply(line.getQty());
+            node.setQty(requiredQuantity);
             node.setUnit(line.getUnit());
             node.setLevel(level);
             String childPath = path + "/" + childCode;
@@ -310,7 +318,8 @@ public class BomService {
             if (visited.add(childCode)) {
                 BomHeader childHeader = findExpandableHeader(childCode, header.getBomType());
                 if (childHeader != null) {
-                    node.setChildren(expandChildren(childHeader, childPath, level + 1, maxLevel, visited));
+                    node.setChildren(expandChildren(childHeader, childPath, requiredQuantity,
+                            level + 1, maxLevel, visited));
                 }
                 visited.remove(childCode);
             }
@@ -404,6 +413,12 @@ public class BomService {
             throw new BusinessException(ResultCode.NOT_FOUND, "BOM 不存在: " + headerId);
         }
         return header;
+    }
+
+    private void requireDraft(BomHeader header) {
+        if (!STATUS_DRAFT.equalsIgnoreCase(header.getStatus())) {
+            throw new BusinessException(ResultCode.CONFLICT, "仅草稿 BOM 可编辑；已发布版本请创建新版本");
+        }
     }
 
     private BomLine requireLine(Long lineId) {

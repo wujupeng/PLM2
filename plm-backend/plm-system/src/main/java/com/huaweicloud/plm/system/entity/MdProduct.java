@@ -31,6 +31,9 @@ public class MdProduct extends BaseEntity {
     /** 产品型号。 */
     private String model;
 
+    /** 产品计量单位。 */
+    private String unit;
+
     /** 状态：draft/released/obsolete。 */
     private String status;
 

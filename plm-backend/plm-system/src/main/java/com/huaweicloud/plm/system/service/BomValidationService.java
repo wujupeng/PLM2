@@ -61,6 +61,18 @@ public class BomValidationService {
                 .eq(BomIssue::getHeaderId, headerId)
                 .eq(BomIssue::getStatus, STATUS_OPEN));
 
+        BomValidationResult result = evaluate(header);
+        result.getIssues().forEach(bomIssueMapper::insert);
+        return result;
+    }
+
+    /** Evaluate current BOM content without changing persisted issue records. */
+    public BomValidationResult evaluate(Long headerId) {
+        return evaluate(requireHeader(headerId));
+    }
+
+    private BomValidationResult evaluate(BomHeader header) {
+        Long headerId = header.getId();
         List<BomLine> lines = listLines(headerId);
         List<BomIssue> issues = new ArrayList<>();
         issues.addAll(checkDuplicate(headerId, lines));
@@ -70,7 +82,6 @@ public class BomValidationService {
         if (isCycleCheckEnabled()) {
             issues.addAll(checkCycle(header));
         }
-        issues.forEach(bomIssueMapper::insert);
 
         BomValidationResult result = new BomValidationResult();
         result.setHeaderId(headerId);

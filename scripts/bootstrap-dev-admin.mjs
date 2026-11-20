@@ -2,7 +2,7 @@
 
 import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
-import { appendFile, chmod, open, readFile } from 'node:fs/promises';
+import { chmod, open, readFile, rename, unlink } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { assertAllowedTarget } from '../tests/helpers/allowed-target.cjs';
@@ -16,19 +16,17 @@ const systemUrl = assertAllowedTarget(
 );
 const initialPassword = process.env.PLM_BOOTSTRAP_INITIAL_PASSWORD;
 let existingEnv = '';
-let envExists = true;
 
 try {
   existingEnv = await readFile(envFile, 'utf8');
 } catch (error) {
   if (error.code !== 'ENOENT') throw error;
-  envExists = false;
 }
 
-assert.equal(
-  process.env.PLM_TEST_BOOTSTRAP_CONFIRM,
-  'isolated-dev-h2',
-  'Set PLM_TEST_BOOTSTRAP_CONFIRM=isolated-dev-h2 only for the isolated local H2 test instance.',
+const confirmation = process.env.PLM_TEST_BOOTSTRAP_CONFIRM;
+assert.ok(
+  confirmation === 'isolated-dev-h2' || confirmation === 'isolated-dev-h2-reset',
+  'Set PLM_TEST_BOOTSTRAP_CONFIRM=isolated-dev-h2 only for a new local H2 database, or isolated-dev-h2-reset when rebuilding its seed data.',
 );
 assert.ok(initialPassword, 'Set the known initial local administrator password for this one-time rotation.');
 assert.equal(systemUrl.hostname, 'localhost');
@@ -40,7 +38,12 @@ const healthResponse = await fetch(new URL('/actuator/health', systemUrl), {
 assert.equal(healthResponse.status, 200, 'System health must be available before bootstrap.');
 const health = await healthResponse.json();
 assert.equal(health.status, 'UP');
-assert.equal(health.components?.db?.details?.database, 'H2', 'Refusing to bootstrap outside dev H2.');
+const databaseType = health.components?.db?.details?.database;
+const configuredDatasourceUrl = process.env.PLM_DATASOURCE_URL ?? process.env.SPRING_DATASOURCE_URL;
+assert.ok(
+  databaseType === 'H2' || configuredDatasourceUrl?.startsWith('jdbc:h2:'),
+  'Refusing to bootstrap without evidence of H2: provide its JDBC URL explicitly when health details are hidden.',
+);
 
 const accounts = JSON.parse(await readFile(accountsFile, 'utf8')).accounts;
 const randomPassword = () => randomBytes(32).toString('hex');
@@ -56,11 +59,13 @@ const managedNames = [
   'PLM_TEST_DEFAULT_PASSWORD',
   'PLM_TEST_USE_SYSTEM_DIRECT',
   'PLM_TEST_SYSTEM_URL',
+  'PLM_JWT_SECRET',
   ...accounts.map(({ passwordEnv }) => passwordEnv),
 ];
+const hasExistingManagedCredentials = managedNames.some((name) => existingValues.has(name));
 assert.ok(
-  managedNames.every((name) => !existingValues.has(name)),
-  'Local test credentials are already initialized; refusing to overwrite them.',
+  !hasExistingManagedCredentials || confirmation === 'isolated-dev-h2-reset',
+  'Local test credentials are already initialized; use isolated-dev-h2-reset only after replacing the isolated H2 seed database.',
 );
 const provisionerPassword = randomPassword();
 const jwtSecret = existingValues.get('PLM_JWT_SECRET')
@@ -76,7 +81,14 @@ const credentials = [
   ['PLM_TEST_SYSTEM_URL', systemUrl.origin],
   ...accounts.map(({ username, passwordEnv }) => [passwordEnv, randomPassword()]),
 ];
-const envContents = `${credentials.map(([name, value]) => `${name}=${value}`).join('\n')}\n`;
+const preservedLines = existingEnv.split(/\r?\n/).filter((line) => {
+  const separator = line.indexOf('=');
+  return separator < 0 || !managedNames.includes(line.slice(0, separator).trim());
+});
+const envContents = [
+  ...preservedLines.filter((line) => line.length > 0),
+  ...credentials.map(([name, value]) => `${name}=${value}`),
+].join('\n') + '\n';
 
 async function request(endpoint, { method = 'GET', token, body } = {}) {
   const response = await fetch(new URL(endpoint, systemUrl), {
@@ -102,17 +114,21 @@ const current = await request('/auth/login', {
 });
 assert.ok(current?.accessToken && current?.userInfo?.userId, 'Initial administrator login failed.');
 
-if (envExists) {
-  await appendFile(envFile, `\n${envContents}`, { mode: 0o600 });
-} else {
-  let handle;
-  try {
-    handle = await open(envFile, 'wx', 0o600);
-    await handle.writeFile(envContents, 'utf8');
-    await handle.sync();
-  } finally {
-    await handle?.close();
-  }
+const tempFile = `${envFile}.tmp-${randomBytes(8).toString('hex')}`;
+let handle;
+try {
+  handle = await open(tempFile, 'wx', 0o600);
+  await handle.writeFile(envContents, 'utf8');
+  await handle.sync();
+  await handle.close();
+  handle = undefined;
+  await rename(tempFile, envFile);
+} catch (error) {
+  await handle?.close();
+  await unlink(tempFile).catch((cleanupError) => {
+    if (cleanupError.code !== 'ENOENT') throw cleanupError;
+  });
+  throw error;
 }
 await chmod(envFile, 0o600);
 

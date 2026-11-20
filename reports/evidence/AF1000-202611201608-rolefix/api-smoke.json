@@ -1,0 +1,380 @@
+{
+  "runId": "AF1000-202611201608-rolefix",
+  "evidence": [
+    {
+      "name": "system-health",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8082/actuator/health"
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/vnd.spring-boot.actuator.v3+json",
+        "body": {
+          "status": "UP"
+        }
+      }
+    },
+    {
+      "name": "gateway-health",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8080/actuator/health"
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/vnd.spring-boot.actuator.v3+json",
+        "body": {
+          "status": "UP"
+        }
+      }
+    },
+    {
+      "name": "frontend-root",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:3000/"
+      },
+      "response": {
+        "status": 200,
+        "contentType": "text/html",
+        "bodyBytes": 1114,
+        "bodySha256": "ec87ca8552b076348febbf6fc306ff409ba8c0434d766727217f6a2e36990cee"
+      }
+    },
+    {
+      "name": "anonymous-current-user",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8080/api/auth/me"
+      },
+      "response": {
+        "status": 401,
+        "contentType": null,
+        "bodyBytes": 0,
+        "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "anonymous-user-list",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8080/api/system/users"
+      },
+      "response": {
+        "status": 401,
+        "contentType": null,
+        "bodyBytes": 0,
+        "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "gateway-provisioner-login",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:8080/api/auth/login"
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "body": {
+          "code": 200,
+          "message": "操作成功",
+          "userInfo": {
+            "userId": 9001,
+            "username": "admin",
+            "displayName": "系统管理员",
+            "roles": [
+              "ADMIN"
+            ],
+            "permissions": [
+              "*"
+            ],
+            "orgId": 1101,
+            "organization": "研发中心"
+          }
+        }
+      }
+    },
+    {
+      "name": "gateway-protected-organization-tree",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8080/api/system/organizations/tree"
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "body": {
+          "code": 200,
+          "message": "操作成功",
+          "data": [
+            {
+              "orgId": 2123685856130220000,
+              "orgCode": "112015524f19db5d-QK-ROOT",
+              "orgName": "乾坤之境控股有限公司",
+              "parentId": 0,
+              "orgType": "company",
+              "sortNo": 0,
+              "status": 1,
+              "children": [
+                {
+                  "orgId": 2123685856218300400,
+                  "orgCode": "112015524f19db5d-QK-00",
+                  "orgName": "总经办",
+                  "parentId": 2123685856130220000,
+                  "orgType": "department",
+                  "sortNo": 0,
+                  "status": 1,
+                  "children": []
+                },
+                {
+                  "orgId": 2123685856297992200,
+                  "orgCode": "112015524f19db5d-QK-10",
+                  "orgName": "销售部",
+                  "parentId": 2123685856130220000,
+                  "orgType": "department",
+                  "sortNo": 0,
+                  "status": 1,
+                  "children": []
+                },
+                {
+                  "orgId": 2123685856386072600,
+                  "orgCode": "112015524f19db5d-QK-20",
+                  "orgName": "采购部",
+                  "parentId": 2123685856130220000,
+                  "orgType": "department",
+                  "sortNo": 0,
+                  "status": 1,
+                  "children": []
+                },
+                {
+                  "orgId": 2123685856444792800,
+                  "orgCode": "112015524f19db5d-QK-30",
+                  "orgName": "研发部",
+                  "parentId": 2123685856130220000,
+                  "orgType": "department",
+                  "sortNo": 0,
+                  "status": 1,
+                  "children": []
+                },
+                {
+                  "orgId": 2123685856516096000,
+                  "orgCode": "112015524f19db5d-QK-40",
+                  "orgName": "生产部",
+                  "parentId": 2123685856130220000,
+                  "orgType": "department",
+                  "sortNo": 0,
+                  "status": 1,
+                  "children": [
+                    {
+                      "orgId": 2123685856595787800,
+                      "orgCode": "112015524f19db5d-QK-41",
+                      "orgName": "装配车间",
+                      "parentId": 2123685856516096000,
+                      "orgType": "department",
+                      "sortNo": 0,
+                      "status": 1,
+                      "children": []
+                    },
+                    {
+                      "orgId": 2123685856679673900,
+                      "orgCode": "112015524f19db5d-QK-42",
+                      "orgName": "测试老化车间",
+                      "parentId": 2123685856516096000,
+                      "orgType": "department",
+                      "sortNo": 0,
+                      "status": 1,
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "orgId": 2123685856738394000,
+                  "orgCode": "112015524f19db5d-QK-50",
+                  "orgName": "质量部",
+                  "parentId": 2123685856130220000,
+                  "orgType": "department",
+                  "sortNo": 0,
+                  "status": 1,
+                  "children": []
+                },
+                {
+                  "orgId": 2123685856792920000,
+                  "orgCode": "112015524f19db5d-QK-60",
+                  "orgName": "仓储物流部",
+                  "parentId": 2123685856130220000,
+                  "orgType": "department",
+                  "sortNo": 0,
+                  "status": 1,
+                  "children": []
+                },
+                {
+                  "orgId": 2123685856843251700,
+                  "orgCode": "112015524f19db5d-QK-70",
+                  "orgName": "财务部",
+                  "parentId": 2123685856130220000,
+                  "orgType": "department",
+                  "sortNo": 0,
+                  "status": 1,
+                  "children": []
+                },
+                {
+                  "orgId": 2123685856901972000,
+                  "orgCode": "112015524f19db5d-QK-80",
+                  "orgName": "信息部",
+                  "parentId": 2123685856130220000,
+                  "orgType": "department",
+                  "sortNo": 0,
+                  "status": 1,
+                  "children": []
+                }
+              ]
+            },
+            {
+              "orgId": 1000,
+              "orgCode": "PLM-ROOT",
+              "orgName": "PLM 制造有限公司",
+              "parentId": 0,
+              "orgType": "company",
+              "sortNo": 1,
+              "status": 1,
+              "children": [
+                {
+                  "orgId": 1101,
+                  "orgCode": "PLM-RD",
+                  "orgName": "研发中心",
+                  "parentId": 1000,
+                  "orgType": "department",
+                  "sortNo": 1,
+                  "status": 1,
+                  "children": []
+                },
+                {
+                  "orgId": 1102,
+                  "orgCode": "PLM-SCM",
+                  "orgName": "供应链中心",
+                  "parentId": 1000,
+                  "orgType": "department",
+                  "sortNo": 2,
+                  "status": 1,
+                  "children": []
+                },
+                {
+                  "orgId": 1103,
+                  "orgCode": "PLM-MFG",
+                  "orgName": "制造中心",
+                  "parentId": 1000,
+                  "orgType": "department",
+                  "sortNo": 3,
+                  "status": 1,
+                  "children": []
+                },
+                {
+                  "orgId": 1104,
+                  "orgCode": "PLM-QA",
+                  "orgName": "质量管理部",
+                  "parentId": 1000,
+                  "orgType": "department",
+                  "sortNo": 4,
+                  "status": 1,
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "timestamp": "2026-11-20 16:10:23"
+        }
+      }
+    },
+    {
+      "name": "anonymous--actuator-env",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8082/actuator/env"
+      },
+      "response": {
+        "status": 401,
+        "contentType": "application/json;charset=UTF-8",
+        "bodyBytes": 77,
+        "bodySha256": "2e9ea69caa27850a715e59e7845382a4150b66e477692fec35662751abc20140"
+      }
+    },
+    {
+      "name": "anonymous--doc.html",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8082/doc.html"
+      },
+      "response": {
+        "status": 401,
+        "contentType": "application/json;charset=UTF-8",
+        "bodyBytes": 77,
+        "bodySha256": "2e9ea69caa27850a715e59e7845382a4150b66e477692fec35662751abc20140"
+      }
+    },
+    {
+      "name": "anonymous--h2-console",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8082/h2-console"
+      },
+      "response": {
+        "status": 401,
+        "contentType": "application/json;charset=UTF-8",
+        "bodyBytes": 77,
+        "bodySha256": "2e9ea69caa27850a715e59e7845382a4150b66e477692fec35662751abc20140"
+      }
+    },
+    {
+      "name": "anonymous--v3-api-docs",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8082/v3/api-docs"
+      },
+      "response": {
+        "status": 401,
+        "contentType": "application/json;charset=UTF-8",
+        "bodyBytes": 77,
+        "bodySha256": "2e9ea69caa27850a715e59e7845382a4150b66e477692fec35662751abc20140"
+      }
+    },
+    {
+      "name": "empty-login",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:8080/api/auth/login",
+        "body": {}
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "body": {
+          "code": 400,
+          "message": "用户名不能为空; 密码不能为空",
+          "timestamp": "2026-11-20 16:10:23"
+        }
+      }
+    },
+    {
+      "name": "unknown-user-login",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:8080/api/auth/login",
+        "body": {
+          "username": "<random-invalid-test-user>",
+          "password": "[REDACTED]"
+        }
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "body": {
+          "code": 401,
+          "message": "用户名或密码错误",
+          "timestamp": "2026-11-20 16:10:23"
+        }
+      }
+    }
+  ]
+}

@@ -75,6 +75,7 @@ export interface ProductItem {
   seriesName?: string;
   customerCode?: string;
   model?: string;
+  unit?: string;
   status: ProductStatus;
   description?: string;
   remark?: string;
@@ -95,6 +96,7 @@ export interface ProductSaveParams {
   seriesName?: string;
   customerCode?: string;
   model?: string;
+  unit: string;
   status?: ProductStatus;
   description?: string;
   remark?: string;
