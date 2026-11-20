@@ -137,8 +137,11 @@ for service_spec in \
 do
   IFS=: read -r name port url <<<"$service_spec"
   if port_listening "$port" && ! service_ready "$name" "$url" UP; then
-    printf 'ERROR: :%s is occupied but %s is not healthy; refusing to replace an existing process.\n' "$port" "$name" >&2
-    exit 1
+    printf '%s is listening on :%s but not ready; waiting without replacing the existing process.\n' "$name" "$port"
+    if ! wait_ready "$name" "$url" UP; then
+      printf 'ERROR: :%s is occupied but %s did not become healthy; refusing to replace the process.\n' "$port" "$name" >&2
+      exit 1
+    fi
   fi
 done
 

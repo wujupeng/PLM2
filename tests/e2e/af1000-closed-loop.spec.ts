@@ -1,5 +1,17 @@
 import { expect, test } from '../../plm-frontend/node_modules/@playwright/test/index.mjs';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { assertAllowedTarget } from '../helpers/allowed-target.cjs';
+
+const runId = process.env.PLM_TEST_RUN_ID ?? `PLM2-UI-${Date.now()}`;
+const evidenceDir = process.env.PLM_TEST_EVIDENCE_DIR ?? resolve('reports/evidence', runId);
+
+async function captureScreenshot(page, name) {
+  const screenshot = await page.screenshot();
+  mkdirSync(evidenceDir, { recursive: true });
+  writeFileSync(join(evidenceDir, `${name}.png`), screenshot);
+  await test.info().attach(name, { body: screenshot, contentType: 'image/png' });
+}
 
 test.beforeEach(async ({ page }) => {
   await page.route('**/*', async (route) => {
@@ -19,6 +31,7 @@ test('login screen renders Chinese labels in the real UI', async ({ page }) => {
   await expect(page.getByPlaceholder('用户名')).toBeVisible();
   await expect(page.getByPlaceholder('密码')).toBeVisible();
   await expect(page.getByRole('button', { name: /登\s*录/ })).toBeVisible();
+  await captureScreenshot(page, 'login-screen');
 });
 
 test('invalid credentials show the server rejection in the real UI', async ({ page }) => {
@@ -27,6 +40,7 @@ test('invalid credentials show the server rejection in the real UI', async ({ pa
   await page.getByPlaceholder('密码').fill('invalid-test-only');
   await page.getByRole('button', { name: /登\s*录/ }).click();
   await expect(page.getByText('用户名或密码错误')).toBeVisible();
+  await captureScreenshot(page, 'invalid-login-rejection');
 });
 
 const blockedSteps = [

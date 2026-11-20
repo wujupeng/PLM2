@@ -21,7 +21,8 @@
 
 | 优先级 | 缺口 | 第二轮证据 | 后续条件 |
 |---|---|---|---|
-| P0 | Gateway 当前不健康 | `reports/10-env-discovery.md`：8080 health HTTP 503/DOWN；system 8082 health UP | 由环境维护者检查 gateway 健康组件和 Redis/服务发现依赖后再复测；本轮不擅自重启服务 |
+| P0 | Gateway 依赖 Redis 健康；当前 Redis 停止时 health 为 DOWN | `reports/10-env-discovery.md`：Redis 暂时启动时 Gateway 恢复 UP，停止后再次 DOWN | 为深度测试提供获批的稳定 Redis 测试依赖；确认不是一次性临时实例后再开始业务流程 |
 | P0 | 管理员及 14 个测试账号未配置 | `.env.local` 不存在；`reports/16-closed-loop-v2.md` S01–S20 全阻塞 | 在隔离测试环境本地配置 `PLM_PROVISIONER_USERNAME`、`PLM_PROVISIONER_PASSWORD`、`PLM_TEST_DEFAULT_PASSWORD` 及各账号密码环境变量 |
 | P0 | 只读数据库账号、注册中心/服务部署访问未提供 | `reports/10-env-discovery.md` | 提供最小权限 SELECT 账号和测试机服务发现/日志读取方式；不在会话中提交凭据 |
 | P1 | 业务 API、页面角色遍历、CRUD、状态机、并发和恢复尚未实测 | A2 1,274 GET 探测全部 BLOCKED；A3–A5 及 P3–P5 被前置阻断 | 满足 Gateway、账号、数据和只读核对前提后逐阶段执行 |
+| P0 | Gateway 默认 JWT signing key 为硬编码字面量，运行时覆盖未知 | `reports/defects.md` ROUND2-SEC-002；Gateway filter 读取该配置 | 由安全/部署负责人确认实际取值，改用密钥管理并评估轮换；本轮未进行令牌伪造测试 |

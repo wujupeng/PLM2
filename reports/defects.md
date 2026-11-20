@@ -41,8 +41,10 @@
 
 - **严重度：阻塞测试环境**
 - **证据：** 2026-11-20 第二轮白名单探测，`GET http://localhost:8080/actuator/health` 返回 HTTP 503，响应 `{"status":"DOWN"}`；同轮 system health 为 HTTP 200/UP。
-- **影响：** 登录、角色 API 和业务接口不能按任务书验收；没有确认具体健康组件或根因。
-- **状态：** 未解决；本轮没有启动 Redis、重启或替换既有进程。
+- **影响：** 登录、角色 API 和业务接口不能按任务书验收；健康组件细节不可匿名读取。
+- **初步线索：** Gateway 配置 Redis 为 `localhost:6379`，本机无监听进程；限流 filter 有 Redis 故障降级逻辑，不能据此认定唯一根因。见 [P0 环境发现](./10-env-discovery.md)。
+- **受控验证：** 用户授权启动无持久化 loopback Redis 后，Gateway health 从 HTTP 503 恢复到 200；停止该 PID 后再次变为 503。Gateway 没有重启，Redis 当前已停止。
+- **状态：** 已确认 Gateway 健康检查依赖 Redis 可用；测试环境在 Redis 关闭时仍 DOWN。没有替换既有服务。
 
 ### ROUND2-SEC-001：Actuator/OpenAPI 在测试主机 loopback 未认证可读
 
@@ -51,3 +53,11 @@
 - **边界：** 仅从 `localhost` 探测，没有验证其他网卡、防火墙或公网访问；不能断言外部暴露。Gateway 对应 Swagger UI/OpenAPI 路径返回 404。
 - **建议：** 环境负责人确认测试网络隔离策略；非必要时限制 Actuator/Swagger 仅本机或授权网段访问。不要在未授权情况下从其他网络探测。
 - **状态：** 观察项，待确认；本轮未更改服务绑定或安全配置。
+
+### ROUND2-SEC-002：Gateway 默认 JWT 签名密钥硬编码
+
+- **严重度：高（运行时覆盖情况待确认）**
+- **证据：** [Gateway application.yml](../plm-backend/plm-gateway/src/main/resources/application.yml#L215) 将 `plm.jwt.secret` 配成源码字面量；[JwtAuthenticationFilter](../plm-backend/plm-gateway/src/main/java/com/huaweicloud/plm/gateway/filter/JwtAuthenticationFilter.java#L37) 直接读取该属性用于签名密钥。仓库中未发现 Gateway 专用 profile 配置文件；进程环境是否覆盖该属性未检查。
+- **影响：** 若部署没有显式覆盖默认值，JWT 信任边界依赖于仓库内可见的固定密钥。
+- **处置建议：** 通过部署密钥管理注入高熵密钥，轮换任何可能被使用的现有密钥，并评估使旧令牌失效。
+- **边界：** 未尝试生成/伪造令牌；未复制密钥值到报告；运行时最终取值尚未确认。

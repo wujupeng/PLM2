@@ -20,6 +20,16 @@
 
 ss、docker 和 systemd 清单工具在当前 macOS 环境不可用；使用 `lsof` 与 `ps` 记录进程。命令版本/可用性见同目录的 `evidence/PLM2-DEEP-20261120020412-25171/environment.json`。
 
+## Gateway DOWN 初步诊断（只读）
+
+- Gateway 配置指向 `localhost:6379` Redis，依赖 Reactive Redis；本机进程清单未发现 6379 listener。
+- `RateLimitFilter` 在 Redis 错误时会降级为本地计数器，因此不能仅凭缺少 Redis 断言它是 health DOWN 的唯一根因。
+- `GET /actuator/health` 返回 HTTP 503 / `DOWN`；`GET /actuator/health/redis` 返回 404。健康详情配置为 `when-authorized`，未提供凭据，无法看到失败组件。
+- Gateway 进程的 stdout/stderr 未重定向到可读日志文件；本轮未扫描应用错误日志，也未尝试查看进程环境。
+- 经用户同意，启动仅绑定 loopback、禁用 RDB/AOF 的临时 Redis 后，Gateway health 先连续 3 次 HTTP 503，随后变为 HTTP 200/UP；停止临时 Redis 后再次变为 HTTP 503/DOWN。Gateway 进程未重启，系统/业务数据未改。
+- **判断：** 已验证 Gateway health 依赖 Redis 可用性；具体 actuator 健康组件因 details 隐藏仍不可见。最终状态为 Redis 已停止、Gateway health DOWN。受控切换证据见 [gateway-redis-diagnostic.json](./evidence/PLM2-DEEP-20261120020412-25171/gateway-redis-diagnostic.json)。
+- 启动脚本现在等待已运行但暂未健康的 Gateway 恢复，而不是立即报错；实测启动检查在临时 Redis 恢复后通过。
+
 ## 网关服务发现目标
 
 | lb:// 目标 | 聚合工程含对应模块 | 注册实例状态 |

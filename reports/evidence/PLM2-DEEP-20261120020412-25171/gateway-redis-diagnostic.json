@@ -1,0 +1,84 @@
+{
+  "runId": "PLM2-DEEP-20261120020412-25171",
+  "authorization": "User approved a temporary loopback Redis diagnostic.",
+  "initialState": {
+    "redisListeningOn6379": false,
+    "gatewayHealth": {
+      "status": 503,
+      "body": {
+        "status": "DOWN"
+      }
+    }
+  },
+  "controlledDiagnostic": {
+    "redisHost": "127.0.0.1",
+    "redisPort": 6379,
+    "rdbEnabled": false,
+    "aofEnabled": false,
+    "pid": 34230,
+    "gatewayHealthSamples": [
+      {
+        "status": 503,
+        "durationMs": 3169,
+        "body": {
+          "status": "DOWN"
+        }
+      },
+      {
+        "status": 503,
+        "durationMs": 3086,
+        "body": {
+          "status": "DOWN"
+        }
+      },
+      {
+        "status": 503,
+        "durationMs": 3099,
+        "body": {
+          "status": "DOWN"
+        }
+      },
+      {
+        "status": 200,
+        "durationMs": 7,
+        "body": {
+          "status": "UP"
+        }
+      }
+    ],
+    "stoppedPid": 34230,
+    "redisListenerAfterStop": false,
+    "gatewayHealthAfterStop": {
+      "status": 503,
+      "body": {
+        "status": "DOWN"
+      }
+    }
+  },
+  "testSession": {
+    "redisStartedBy": "scripts/start-dev.sh",
+    "pid": 37305,
+    "persistenceEnabled": false,
+    "startupResult": "system, gateway, and frontend health checks passed",
+    "apiSmoke": {
+      "runId": "PLM2-DEEP-AUTH-20261120T0221",
+      "passed": 7,
+      "failed": 0
+    },
+    "playwright": {
+      "runId": "PLM2-DEEP-AUTH-20261120T0221",
+      "passed": 2,
+      "blocked": 20
+    },
+    "stoppedPid": 37305,
+    "redisListenerAfterStop": false,
+    "gatewayHealthAfterStop": {
+      "status": 503,
+      "body": {
+        "status": "DOWN"
+      }
+    }
+  },
+  "businessDataChanged": false,
+  "gatewayProcessRestarted": false
+}
