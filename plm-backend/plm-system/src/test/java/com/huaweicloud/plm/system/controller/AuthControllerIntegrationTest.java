@@ -1,12 +1,16 @@
 package com.huaweicloud.plm.system.controller;
 
+import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -23,6 +27,12 @@ class AuthControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private Flyway flyway;
 
     @Test
     void emptyLoginReturnsChineseValidationErrors() throws Exception {
@@ -42,5 +52,24 @@ class AuthControllerIntegrationTest {
                 .andExpect(status().isUnauthorized());
         mockMvc.perform(get("/system/users"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void allMigrationsApplyToEmptyH2AndRepeatedMigrationIsIdempotent() {
+        int historyCountBefore = appliedMigrationCount();
+        assertTrue(historyCountBefore >= 172);
+        assertEquals("172", jdbcTemplate.queryForObject(
+                "SELECT version FROM flyway_schema_history WHERE success = TRUE ORDER BY installed_rank DESC LIMIT 1",
+                String.class));
+
+        flyway.migrate();
+
+        assertEquals(historyCountBefore, appliedMigrationCount());
+    }
+
+    private int appliedMigrationCount() {
+        return jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM flyway_schema_history WHERE success = TRUE",
+                Integer.class);
     }
 }
