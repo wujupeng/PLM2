@@ -238,7 +238,7 @@ function RepairOrderTab() {
           { label: '流程状态', key: 'flowStatus', render: (v) => bizFlowStatusTag(v) },
           { label: '备注', key: 'remark' },
         ]}
-        renderFields={(_form, _editing) => (
+        renderFields={() => (
           <>
             <Form.Item
               name="assetCategory"

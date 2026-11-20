@@ -146,7 +146,6 @@ export default function RelabelPage() {
       setPlantOptions(list || []);
     };
     void load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* 新码条码（Data Matrix） */

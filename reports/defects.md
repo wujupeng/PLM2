@@ -8,8 +8,9 @@
 - **复现步骤：** 在 `plm-frontend/` 执行 `npm run lint`。
 - **预期 / 实际：** 预期 ESLint 检查源码；实际 ESLint 9.39.4 报错找不到 `eslint.config.(js|mjs|cjs)` 并退出码 2。
 - **证据：** 最终运行 `PLM2-20261120-085329-89211` 的 `frontend-lint.log`；`package.json` 调用 ESLint 9，仓库缺少 flat config。
-- **状态：** 未解决。没有添加空规则配置或绕过 lint。
-- **疑似位置：** `plm-frontend/package.json`；尚无 ESLint flat config 文件。
+- **处置：** 新增 `plm-frontend/eslint.config.js`，启用 TypeScript 推荐规则、React Hooks 和 Fast Refresh 检查；将共享 UI helper 模块明确排除在 Fast Refresh 边界规则之外。修复维修表单未使用参数和 relabel 页面失效的 disable 指令。
+- **复测：** `npm --prefix plm-frontend run lint` 通过，0 warnings、0 errors；随后 `npm --prefix plm-frontend run build` 成功。
+- **状态：** 已解决（2026-11-20）；依赖审计 BUG-002 仍独立未解决。
 
 ## BUG-002
 
