@@ -2,8 +2,36 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import viteCompression from 'vite-plugin-compression';
 import path from 'path';
+import { execFileSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+
+const packageJson = JSON.parse(readFileSync(path.resolve(__dirname, 'package.json'), 'utf8')) as {
+  version: string;
+};
+
+function resolveGitCommit() {
+  if (process.env.GIT_COMMIT) return process.env.GIT_COMMIT;
+  try {
+    return execFileSync('git', ['rev-parse', '--short=12', 'HEAD'], {
+      cwd: path.resolve(__dirname, '..'),
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+  } catch {
+    return 'unknown';
+  }
+}
+
+const buildInfo = {
+  version: packageJson.version,
+  commit: resolveGitCommit(),
+  builtAt: process.env.BUILD_TIME ?? new Date().toISOString(),
+};
 
 export default defineConfig({
+  define: {
+    __PLM_BUILD_INFO__: JSON.stringify(buildInfo),
+  },
   plugins: [
     react(),
     viteCompression({

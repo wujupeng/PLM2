@@ -1100,7 +1100,11 @@ export default function MainLayout() {
       }}
       footerRender={() => (
         <div style={{ textAlign: 'center', padding: '8px 0', color: 'rgba(0,0,0,0.45)' }}>
-          华为云团队交付版 · 制造业 PLM 系统 ©2024
+          <div>华为云团队交付版 · 制造业 PLM 系统 ©2024</div>
+          <div>
+            版本 {__PLM_BUILD_INFO__.version} · Commit {__PLM_BUILD_INFO__.commit} · 构建于{' '}
+            {new Date(__PLM_BUILD_INFO__.builtAt).toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })}
+          </div>
         </div>
       )}
     >

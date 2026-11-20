@@ -120,6 +120,9 @@ set +a
 ### 构建
 
 ```bash
+# 从 Git 仓库根目录构建并注入版本、commit 与构建时间
+bash scripts/build-versioned.sh
+
 # 后端聚合工程
 cd plm-backend
 mvn clean package
@@ -132,6 +135,7 @@ npm run build
 
 构建产物分别位于各后端模块的 `target/` 和前端 `plm-frontend/dist/`。运维部署步骤、环境变量、备份恢复和故障排查见[详细运维手册](docs/运维手册.md)。
 第三轮 WBS 的当前开发状态和验证边界见[开发进度报告](reports/00-development-progress.md)。
+版本化构建脚本会将 Git commit 写入后端 `/actuator/info` 与前端主布局页脚；发布制品必须从干净的已提交工作区构建，不能发布标记为 `-dirty` 或 `unknown` 的制品。
 
 ## API 与运行状态
 

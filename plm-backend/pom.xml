@@ -29,6 +29,7 @@
         <resilience4j.version>2.2.0</resilience4j.version>
         <skywalking.version>9.2.0</skywalking.version>
         <knife4j.version>4.5.0</knife4j.version>
+        <plm.git.commit>unknown</plm.git.commit>
     </properties>
 
     <modules>
@@ -114,7 +115,18 @@
                                 <artifactId>lombok</artifactId>
                             </exclude>
                         </excludes>
+                        <additionalProperties>
+                            <application.name>${project.name}</application.name>
+                            <git.commit>${plm.git.commit}</git.commit>
+                        </additionalProperties>
                     </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>build-info</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
