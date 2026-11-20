@@ -36,6 +36,15 @@
 
 除上述质量门禁与依赖审计外，没有在真实业务流程中确认应用业务缺陷；原因是 S01 测试数据 provisioning 未完成，后续业务步骤 BLOCKED，不能将“未测”归为无缺陷。
 
+## 2026-11-20 本机管理员登录故障复测
+
+- **现象：** 本机登录页填写 `admin` / `admin123` 无法登录。
+- **凭据原因：** 当前 dev H2 的 `admin` 初始密码已由隔离初始化工具轮换；`PLM_PROVISIONER_PASSWORD` 保存在 Git 忽略、权限为 `0600` 的 `.env.local`。系统 API 使用该本地值认证成功；`admin123` 对当前账号返回应用层 401。没有修改或重置账号密码。
+- **网关原因：** 登录页 `/api` 请求经 Vite 代理到 Gateway 8080。初始 Gateway health 为 503/DOWN，Redis 6381 未运行。启动隔离 loopback Redis 后，旧 Gateway 仍未恢复，获用户授权后仅重启 Gateway。
+- **启动缺陷及修复：** `scripts/start-dev.sh` 原先对 Maven 聚合根执行 `spring-boot:run`，导致没有 main class；随后发现 Gateway `application.yml` 的 `management.endpoints.web.exposure.include` 缩进错误，阻止 Actuator 配置绑定。启动器现改为按模块打包后运行对应 JAR，并修正 YAML 缩进。
+- **复测：** `scripts/start-dev.sh` 重用现存 system（未重启 H2）、确认前端/Redis ready、Gateway health HTTP 200/UP；通过 Gateway `/api/auth/login` 使用 `.env.local` 中本地保存的管理员凭据登录成功，响应账号为 `admin`。token/密码均未输出。H2 数据未清空，账号密码未更改。
+- **处理建议：** 使用 `.env.local` 中 `PLM_PROVISIONER_PASSWORD` 对应的本机随机密码；不要恢复到公开/弱密码 `admin123`。该密码不得复制到聊天或提交。
+
 ## 第二轮实测观察
 
 ### ROUND2-ENV-001：API 网关健康状态 DOWN

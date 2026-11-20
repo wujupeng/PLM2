@@ -53,7 +53,8 @@ start_backend_service() {
       export PATH="$JAVA_HOME/bin:$PATH"
     fi
     export SPRING_PROFILES_ACTIVE=dev
-    mvn -pl "$module" -am spring-boot:run
+    mvn -pl "$module" -am package
+    java -jar "$BACKEND_DIR/$module/target/$module-1.0.0-SNAPSHOT.jar"
   ) >"$LOG_DIR/$name.log" 2>&1 &
   printf '%s started (PID %s); log: %s\n' "$name" "$!" "$LOG_DIR/$name.log"
 }

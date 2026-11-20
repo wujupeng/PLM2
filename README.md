@@ -88,7 +88,8 @@ set +a
 
    ```bash
    cd plm-backend
-   mvn -pl plm-system -am spring-boot:run
+   mvn -pl plm-system -am package
+   java -jar plm-system/target/plm-system-1.0.0-SNAPSHOT.jar
    ```
 
 2. 另开终端加载本机 JWT 密钥并导出测试 Redis 密码，再启动网关：
@@ -100,7 +101,8 @@ set +a
    set +a
    export PLM_REDIS_PASSWORD="$(<.local/redis-test/password)"
    cd plm-backend
-   mvn -pl plm-gateway -am spring-boot:run
+   mvn -pl plm-gateway -am package
+   java -jar plm-gateway/target/plm-gateway-1.0.0-SNAPSHOT.jar
    ```
 
 3. 另开终端启动前端：
@@ -116,6 +118,8 @@ set +a
 首次启动系统服务时，Flyway 会执行数据库迁移。H2 为内存数据库，进程停止后数据不保留；不要将其用于生产环境。
 完成本地联调并停止网关后，可在终端运行 `bash scripts/test-redis.sh stop` 停止 Redis；正常停止会保留 Redis 数据。
 隔离测试管理员及测试账号的初始化步骤见[运维手册](./docs/运维手册.md#隔离测试账号初始化)；脚本只允许 loopback H2，不要将生成的 `.env.local` 提交或发送到聊天/工单。
+
+`admin123` 仅是全新 dev H2 数据库中 Flyway 初始管理员的密码。运行隔离管理员初始化后，`admin` 密码会被轮换为随机值并保存在被 Git 忽略的 `.env.local` 的 `PLM_PROVISIONER_PASSWORD` 项中；之后不能再用 `admin123` 登录。不要把该值发送到聊天、工单或提交到仓库。
 
 ### 构建
 
