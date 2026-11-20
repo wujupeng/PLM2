@@ -1,0 +1,20 @@
+{
+  "environment": "isolated-dev-only",
+  "credentials": "Inject each password through a local environment variable; never commit passwords.",
+  "accounts": [
+    { "username": "admin_qk", "passwordEnv": "PLM_TEST_ADMIN_QK_PASSWORD" },
+    { "username": "chenzong", "passwordEnv": "PLM_TEST_CHENZONG_PASSWORD" },
+    { "username": "zhangsan", "passwordEnv": "PLM_TEST_ZHANGSAN_PASSWORD" },
+    { "username": "lisi", "passwordEnv": "PLM_TEST_LISI_PASSWORD" },
+    { "username": "wangwu", "passwordEnv": "PLM_TEST_WANGWU_PASSWORD" },
+    { "username": "zhaoliu", "passwordEnv": "PLM_TEST_ZHAOLIU_PASSWORD" },
+    { "username": "qianqi", "passwordEnv": "PLM_TEST_QIANQI_PASSWORD" },
+    { "username": "sunba", "passwordEnv": "PLM_TEST_SUNBA_PASSWORD" },
+    { "username": "zhoujiu", "passwordEnv": "PLM_TEST_ZHOUJIU_PASSWORD" },
+    { "username": "wushi", "passwordEnv": "PLM_TEST_WUSHI_PASSWORD" },
+    { "username": "zhengyi", "passwordEnv": "PLM_TEST_ZHENGYI_PASSWORD" },
+    { "username": "wanger", "passwordEnv": "PLM_TEST_WANGER_PASSWORD" },
+    { "username": "fengsan", "passwordEnv": "PLM_TEST_FENGSAN_PASSWORD" },
+    { "username": "guest_qk", "passwordEnv": "PLM_TEST_GUEST_QK_PASSWORD" }
+  ]
+}

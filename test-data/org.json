@@ -1,0 +1,37 @@
+{
+  "company": {
+    "code": "QK-ROOT",
+    "name": "乾坤之境控股有限公司"
+  },
+  "runIdPrefix": "PLM2-YYYYMMDD-HHMM-RANDOM",
+  "departments": [
+    { "code": "QK-00", "name": "总经办", "parent": null },
+    { "code": "QK-10", "name": "销售部", "parent": null },
+    { "code": "QK-20", "name": "采购部", "parent": null },
+    { "code": "QK-30", "name": "研发部", "parent": null },
+    { "code": "QK-40", "name": "生产部", "parent": null },
+    { "code": "QK-41", "name": "装配车间", "parent": "QK-40" },
+    { "code": "QK-42", "name": "测试老化车间", "parent": "QK-40" },
+    { "code": "QK-50", "name": "质量部", "parent": null },
+    { "code": "QK-60", "name": "仓储物流部", "parent": null },
+    { "code": "QK-70", "name": "财务部", "parent": null },
+    { "code": "QK-80", "name": "信息部", "parent": null }
+  ],
+  "employees": [
+    { "username": "admin_qk", "name": "系统管理员", "department": "信息部", "title": "管理员", "role": "系统管理员" },
+    { "username": "chenzong", "name": "陈总", "department": "总经办", "title": "总经理", "role": "最终审批" },
+    { "username": "zhangsan", "name": "张三", "department": "销售部", "title": "销售代表", "role": "销售员" },
+    { "username": "lisi", "name": "李四", "department": "销售部", "title": "销售经理", "role": "销售经理" },
+    { "username": "wangwu", "name": "王五", "department": "采购部", "title": "采购员", "role": "采购员" },
+    { "username": "zhaoliu", "name": "赵六", "department": "采购部", "title": "采购经理", "role": "采购经理" },
+    { "username": "qianqi", "name": "钱七", "department": "研发部", "title": "硬件工程师", "role": "研发工程师" },
+    { "username": "sunba", "name": "孙八", "department": "研发部", "title": "研发经理", "role": "研发经理" },
+    { "username": "zhoujiu", "name": "周九", "department": "生产部", "title": "生产计划员", "role": "计划员" },
+    { "username": "wushi", "name": "吴十", "department": "装配车间", "title": "车间主管", "role": "生产主管" },
+    { "username": "zhengyi", "name": "郑十一", "department": "质量部", "title": "质检员", "role": "质检员" },
+    { "username": "wanger", "name": "王十二", "department": "仓储物流部", "title": "仓管员", "role": "仓管员" },
+    { "username": "fengsan", "name": "冯十三", "department": "财务部", "title": "会计", "role": "财务" },
+    { "username": "guest_qk", "name": "测试访客", "department": "信息部", "title": "无权限测试账号", "role": "无权限" }
+  ],
+  "note": "Fixture definition only. Provision test data through application APIs/UI; this file does not create database rows."
+}
