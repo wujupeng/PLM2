@@ -28,12 +28,12 @@ Playwright HTML 报告：本机 `reports/playwright/html/index.html`（自动生
 
 ## 后续复验
 
-- 运行 ID：`PLM2-20261120-084104-76174`
+- 最终运行 ID：`PLM2-20261120-085329-89211`
 - `scripts/start-dev.sh`：PASS。检查系统服务、网关、前端均 ready；脚本在本机 Redis 未运行时启动仅内存、禁用持久化的 Redis，网关 health 随后为 UP。
-- API 冒烟：6 项 PASS、0 FAIL。
-- Playwright：21 项，1 PASS、20 BLOCKED。
+- API 冒烟：7 项 PASS、0 FAIL。
+- Playwright：22 项，2 PASS、20 BLOCKED。
 - 前端构建：PASS。
-- Java 17 离线 Maven：`mvn -o -pl plm-system -am test` 为 2 PASS；聚合模块构建成功。此前全工程没有测试类，现已新增这 2 项真实 H2/Spring 集成测试。
+- Java 17 离线 Maven：`mvn -o test` 为 3 PASS；聚合模块构建成功。测试验证认证校验、匿名访问控制和 172 个迁移在空 H2 库的完成版本/重复迁移幂等。
 - ESLint 仍因缺少 flat config 阻塞；总测脚本因此返回非零。后端其余业务域自动化及完整业务闭环仍未通过验收。
 
 ## P1 结论

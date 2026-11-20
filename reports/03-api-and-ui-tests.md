@@ -2,15 +2,15 @@
 
 ## 执行元数据
 
-- 运行 ID：`PLM2-20261120-084104-76174`
-- 源码提交基线：`557bac9`，测试改动见后续 phase-3 commit
+- 运行 ID：`PLM2-20261120-085329-89211`
+- 源码提交基线：`38d76de`
 - 后端：Java 17；Spring Boot dev profile；独立 H2 测试库（PostgreSQL 兼容模式）
 - 前端：Node.js 25.8.1；Playwright 1.65.1 / Chromium
 - 数据：仅本机既有 H2 与 HTTP 健康/认证端点；未创建业务单据或测试用户
 
 ## 实际自动化检查
 
-### Node API 冒烟：6 PASS / 0 FAIL
+### Node API 冒烟：7 PASS / 0 FAIL
 
 | 检查 | 结果 | 断言 |
 |---|---|---|
@@ -20,19 +20,22 @@
 | 未认证身份接口 | PASS | `GET /api/auth/me` 返回 HTTP 401。 |
 | 未认证用户列表 | PASS | `GET /api/system/users` 返回 HTTP 401。 |
 | 空登录字段 | PASS | HTTP 200 业务 envelope `code=400`，中文提示用户名和密码必填。 |
+| 随机无效测试身份 | PASS | HTTP 200 业务 envelope `code=401`，返回通用中文登录拒绝。 |
 
-### Java Spring/H2 集成测试：2 PASS / 0 FAIL
+### Java Spring/H2 集成测试：3 PASS / 0 FAIL
 
-`AuthControllerIntegrationTest` 直接运行真实 Spring 上下文、MockMvc、安全过滤器及 H2；没有 Mock/假造业务服务。
+`AuthControllerIntegrationTest` 直接运行真实 Spring 上下文、MockMvc、安全过滤器、Flyway 及 H2；没有 Mockito/假造业务服务。
 
 1. `emptyLoginReturnsChineseValidationErrors`：空 JSON 返回业务校验码 400，包含两条中文必填错误。
 2. `anonymousIdentityAndUserListRequestsAreRejected`：身份读取和用户列表接口均返回 HTTP 401。
+3. `allMigrationsApplyToEmptyH2AndRepeatedMigrationIsIdempotent`：全新 H2 PostgreSQL 模式库到达 V172，重复执行 migrate 后成功版本历史数量不变。
 
-验证命令：`JAVA_HOME=<Java 17> mvn -o -pl plm-system -am test`。本轮在完成 Surefire 运行器依赖缓存后离线复验通过，共 2 项测试。
+验证命令：`JAVA_HOME=<Java 17> mvn -o test`。最终全量运行在离线模式通过，共 3 项测试。
 
-### Playwright UI：1 PASS / 20 BLOCKED
+### Playwright UI：2 PASS / 20 BLOCKED
 
 - PASS：真实浏览器访问登录页，确认中文标题、用户名、密码和登录按钮可见。
+- PASS：真实浏览器提交随机无效用户名，确认页面显示服务端中文拒绝信息。
 - BLOCKED：S01–S20 在 Playwright HTML 报告中逐项显示为 skipped，原因是尚无系统创建的测试用户/角色权限和业务前置单据。未调用测试桩，也未继续伪造下游数据。
 - 失败截图、视频、trace 与 HTML 输出配置已开启；最新运行全量报告位于 `reports/playwright/html/index.html`（本机生成、Git 忽略）。
 
@@ -42,7 +45,7 @@
 
 | 模块/用例 | 结果 | 阻塞原因 |
 |---|---|---|
-| OA/系统 TC-OA-01 | BLOCKED（部分校验子项 PASS） | 未配置测试账号，无法验证成功登录、错误密码、锁定和过期 JWT。 |
+| OA/系统 TC-OA-01 | BLOCKED（部分校验子项 PASS） | 空字段和无效身份被拒绝；未配置测试账号，无法验证成功登录、锁定和过期 JWT。 |
 | OA/系统 TC-OA-02–08 | BLOCKED | 需要管理员/岗位账号、部门/员工数据及真实 OA 工作流/邮件/附件。 |
 | PLM TC-PLM-01–04 | BLOCKED | 无研发账号和物料/BOM/文档/变更数据；未执行保存、发布及版本关系断言。 |
 | ERP/SRM TC-ERP-01–05、TC-SRM-01–03 | BLOCKED | 无登录账号和真实客户、订单、采购、供应商及财务业务单据。 |
