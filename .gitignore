@@ -40,6 +40,9 @@ deploy/
 # === 日志 ===
 *.log
 /logs/
+/reports/playwright/
+/reports/test-runs/
+/test-data/accounts.json
 
 # === 敏感信息（服务器凭据绝对不可提交，仅限配置文件，避免误伤源码）===
 *secret*.yml
