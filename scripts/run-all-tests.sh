@@ -2,6 +2,9 @@
 set -uo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if ! node "$ROOT_DIR/scripts/validate-test-targets.mjs"; then
+  exit 1
+fi
 RUN_ID="PLM2-$(date +%Y%m%d-%H%M%S)-$$"
 RUN_DIR="$ROOT_DIR/reports/test-runs/$RUN_ID"
 mkdir -p "$RUN_DIR"

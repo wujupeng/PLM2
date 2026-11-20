@@ -1,4 +1,17 @@
 import { expect, test } from '../../plm-frontend/node_modules/@playwright/test/index.mjs';
+import { assertAllowedTarget } from '../helpers/allowed-target.cjs';
+
+test.beforeEach(async ({ page }) => {
+  await page.route('**/*', async (route) => {
+    try {
+      assertAllowedTarget(route.request().url(), 'browser request');
+    } catch {
+      await route.abort('blockedbyclient');
+      throw new Error('Blocked browser request to a non-whitelisted origin.');
+    }
+    await route.continue();
+  });
+});
 
 test('login screen renders Chinese labels in the real UI', async ({ page }) => {
   await page.goto('/login');

@@ -1,4 +1,10 @@
 import { defineConfig } from './plm-frontend/node_modules/@playwright/test/index.mjs';
+import { assertAllowedTarget } from './tests/helpers/allowed-target.cjs';
+
+const baseURL = assertAllowedTarget(
+  process.env.PLM_TEST_FRONTEND_URL ?? 'http://127.0.0.1:3000',
+  'Playwright baseURL',
+).origin;
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -11,12 +17,12 @@ export default defineConfig({
   webServer: {
     command: 'npm run dev -- --host 127.0.0.1',
     cwd: './plm-frontend',
-    url: 'http://127.0.0.1:3000',
+    url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
   },
   use: {
-    baseURL: 'http://127.0.0.1:3000',
+    baseURL,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',

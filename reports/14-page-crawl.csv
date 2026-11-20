@@ -1,0 +1,2 @@
+scope,roles,routeCount,pagesVisited,status,reason
+"Full role-by-route Playwright crawl","all 14 test roles",514,0,"BLOCKED","No authenticated test accounts exist; no role-specific route was opened. Count is the taskbook scope, not a re-count of current routes."

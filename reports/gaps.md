@@ -16,3 +16,12 @@
 | P3 | 性能基线目标尚未由项目负责人确认 | 任务书 §13.3 | 无法判定性能达标；不得自行设阈值 | 业务/IT 确认吞吐、延迟、数据规模和资源预算后建立 baseline，再压测。 |
 
 业务计划证据来源还包括：根目录制造业 PLM、OA、供应链/生产集成开发计划工作簿；主闭环步骤及额外 E2E-01–10 以测试任务书第 4、5、6、11–16 节为准。
+
+## 第二轮补充阻塞
+
+| 优先级 | 缺口 | 第二轮证据 | 后续条件 |
+|---|---|---|---|
+| P0 | Gateway 当前不健康 | `reports/10-env-discovery.md`：8080 health HTTP 503/DOWN；system 8082 health UP | 由环境维护者检查 gateway 健康组件和 Redis/服务发现依赖后再复测；本轮不擅自重启服务 |
+| P0 | 管理员及 14 个测试账号未配置 | `.env.local` 不存在；`reports/16-closed-loop-v2.md` S01–S20 全阻塞 | 在隔离测试环境本地配置 `PLM_PROVISIONER_USERNAME`、`PLM_PROVISIONER_PASSWORD`、`PLM_TEST_DEFAULT_PASSWORD` 及各账号密码环境变量 |
+| P0 | 只读数据库账号、注册中心/服务部署访问未提供 | `reports/10-env-discovery.md` | 提供最小权限 SELECT 账号和测试机服务发现/日志读取方式；不在会话中提交凭据 |
+| P1 | 业务 API、页面角色遍历、CRUD、状态机、并发和恢复尚未实测 | A2 1,274 GET 探测全部 BLOCKED；A3–A5 及 P3–P5 被前置阻断 | 满足 Gateway、账号、数据和只读核对前提后逐阶段执行 |

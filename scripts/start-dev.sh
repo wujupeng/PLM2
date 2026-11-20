@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+node "$ROOT_DIR/scripts/validate-test-targets.mjs"
 BACKEND_DIR="$ROOT_DIR/plm-backend"
 FRONTEND_DIR="$ROOT_DIR/plm-frontend"
 LOG_DIR="${TMPDIR:-/tmp}/plm2-dev-test"

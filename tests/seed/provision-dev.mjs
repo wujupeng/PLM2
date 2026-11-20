@@ -3,21 +3,19 @@ import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { assertAllowedTarget } from '../helpers/allowed-target.cjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const seed = JSON.parse(await readFile(path.join(root, 'test-data/org.json'), 'utf8'));
 const accounts = JSON.parse(await readFile(path.join(root, 'test-data/accounts.example.json'), 'utf8'));
-const gatewayUrl = new URL(process.env.PLM_TEST_GATEWAY_URL ?? 'http://127.0.0.1:8080');
-const systemUrl = new URL(process.env.PLM_TEST_SYSTEM_URL ?? 'http://127.0.0.1:8082');
+const gatewayUrl = assertAllowedTarget(process.env.PLM_TEST_GATEWAY_URL ?? 'http://localhost:8080', 'gateway target');
+const systemUrl = assertAllowedTarget(process.env.PLM_TEST_SYSTEM_URL ?? 'http://localhost:8082', 'system target');
 const runId = process.env.PLM_TEST_RUN_ID ?? `PLM2-${new Date().toISOString().replace(/\D/g, '').slice(0, 12)}-${randomUUID().slice(0, 8)}`;
 const runSuffix = runId.replace(/[^A-Za-z0-9]/g, '').slice(-16);
 const adminUsername = process.env.PLM_PROVISIONER_USERNAME;
 const adminPassword = process.env.PLM_PROVISIONER_PASSWORD;
 const testPassword = process.env.PLM_TEST_DEFAULT_PASSWORD;
 
-for (const [name, url] of [['gateway', gatewayUrl], ['system', systemUrl]]) {
-  assert.ok(['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname), `${name} target must be local`);
-}
 assert.ok(adminUsername && adminPassword, 'Set PLM_PROVISIONER_USERNAME and PLM_PROVISIONER_PASSWORD locally.');
 assert.ok(testPassword, 'Set PLM_TEST_DEFAULT_PASSWORD locally; never commit its value.');
 assert.equal(seed.departments.length, 11, 'Expected exactly 11 departments.');
@@ -43,6 +41,7 @@ assert.equal(health.components?.db?.details?.database, 'H2', 'Refusing to provis
 async function request(base, endpoint, { method = 'GET', token, body } = {}) {
   const response = await fetch(new URL(endpoint, base), {
     method,
+    redirect: 'manual',
     headers: {
       ...(body === undefined ? {} : { 'content-type': 'application/json' }),
       ...(token ? { authorization: `Bearer ${token}` } : {}),

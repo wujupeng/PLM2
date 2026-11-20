@@ -1,0 +1,298 @@
+{
+  "runId": "PLM2-DEEP-20261120020412-25171",
+  "targets": {
+    "frontend": "http://localhost:3000",
+    "gateway": "http://localhost:8080",
+    "system": "http://localhost:8082"
+  },
+  "probes": [
+    {
+      "name": "system-health",
+      "url": "http://localhost:8082/actuator/health",
+      "status": 200,
+      "durationMs": 94,
+      "responseBytes": 304,
+      "contentType": "application/vnd.spring-boot.actuator.v3+json",
+      "health": {
+        "status": "UP",
+        "components": {
+          "db": {
+            "status": "UP",
+            "details": {
+              "database": "H2",
+              "validationQuery": "isValid()"
+            }
+          },
+          "diskSpace": {
+            "status": "UP",
+            "details": {
+              "total": 1000240963584,
+              "free": 348214898688,
+              "threshold": 10485760,
+              "path": "$HOME/dev/PLM2/plm-backend/plm-system/.",
+              "exists": true
+            }
+          },
+          "ping": {
+            "status": "UP"
+          }
+        }
+      },
+      "frontendChineseShell": false
+    },
+    {
+      "name": "gateway-health",
+      "url": "http://localhost:8080/actuator/health",
+      "status": 503,
+      "durationMs": 3036,
+      "responseBytes": 17,
+      "contentType": "application/vnd.spring-boot.actuator.v3+json",
+      "health": {
+        "status": "DOWN"
+      },
+      "frontendChineseShell": false
+    },
+    {
+      "name": "system-info",
+      "url": "http://localhost:8082/actuator/info",
+      "status": 200,
+      "durationMs": 4,
+      "responseBytes": 2,
+      "contentType": "application/vnd.spring-boot.actuator.v3+json",
+      "infoKeys": [],
+      "frontendChineseShell": false
+    },
+    {
+      "name": "gateway-info",
+      "url": "http://localhost:8080/actuator/info",
+      "status": 200,
+      "durationMs": 4,
+      "responseBytes": 2,
+      "contentType": "application/vnd.spring-boot.actuator.v3+json",
+      "infoKeys": [],
+      "frontendChineseShell": false
+    },
+    {
+      "name": "system-actuator-root",
+      "url": "http://localhost:8082/actuator",
+      "status": 200,
+      "durationMs": 3,
+      "responseBytes": 315,
+      "contentType": "application/vnd.spring-boot.actuator.v3+json",
+      "frontendChineseShell": false
+    },
+    {
+      "name": "gateway-actuator-root",
+      "url": "http://localhost:8080/actuator",
+      "status": 200,
+      "durationMs": 5,
+      "responseBytes": 315,
+      "contentType": "application/vnd.spring-boot.actuator.v3+json",
+      "frontendChineseShell": false
+    },
+    {
+      "name": "system-swagger-ui",
+      "url": "http://localhost:8082/swagger-ui/index.html",
+      "status": 200,
+      "durationMs": 7,
+      "responseBytes": 734,
+      "contentType": "text/html",
+      "frontendChineseShell": false
+    },
+    {
+      "name": "system-openapi-docs",
+      "url": "http://localhost:8082/v3/api-docs",
+      "status": 200,
+      "durationMs": 94,
+      "responseBytes": 2633853,
+      "contentType": "application/json",
+      "frontendChineseShell": false
+    },
+    {
+      "name": "gateway-swagger-ui",
+      "url": "http://localhost:8080/swagger-ui/index.html",
+      "status": 404,
+      "durationMs": 5,
+      "responseBytes": 137,
+      "contentType": "application/json",
+      "frontendChineseShell": false
+    },
+    {
+      "name": "gateway-openapi-docs",
+      "url": "http://localhost:8080/v3/api-docs",
+      "status": 404,
+      "durationMs": 6,
+      "responseBytes": 127,
+      "contentType": "application/json",
+      "frontendChineseShell": false
+    },
+    {
+      "name": "frontend-root",
+      "url": "http://localhost:3000/",
+      "status": 200,
+      "durationMs": 3,
+      "responseBytes": 1114,
+      "contentType": "text/html",
+      "frontendChineseShell": true
+    },
+    {
+      "name": "frontend-dashboard",
+      "url": "http://localhost:3000/dashboard",
+      "status": 200,
+      "durationMs": 4,
+      "responseBytes": 1114,
+      "contentType": "text/html",
+      "frontendChineseShell": true
+    }
+  ],
+  "processes": [
+    {
+      "process": "node",
+      "pid": 6820,
+      "address": "*:3000 (LISTEN)",
+      "details": "Thu Nov 19 13:20:03 2026     node $HOME/dev/PLM2/plm-frontend/node_modules/.bin/vite --host 0.0.0.0"
+    },
+    {
+      "process": "java",
+      "pid": 9413,
+      "address": "*:8082 (LISTEN)",
+      "details": "Thu Nov 19 13:22:11 2026     /usr/bin/java -jar target/plm-system-1.0.0-SNAPSHOT.jar"
+    },
+    {
+      "process": "java",
+      "pid": 10941,
+      "address": "*:8080 (LISTEN)",
+      "details": "Thu Nov 19 13:23:02 2026     /usr/bin/java -jar target/plm-gateway-1.0.0-SNAPSHOT.jar"
+    }
+  ],
+  "runtime": {
+    "node": "v25.8.1",
+    "java": "openjdk version \"25.0.2\" 2026-01-20 LTS\nOpenJDK Runtime Environment Temurin-25.0.2+10 (build 25.0.2+10-LTS)\nOpenJDK 64-Bit Server VM Temurin-25.0.2+10 (build 25.0.2+10-LTS, mixed mode)",
+    "maven": "The JAVA_HOME environment variable is not defined correctly,\nthis environment variable is needed to run this program.",
+    "docker": "docker: unavailable",
+    "systemctl": "systemctl: unavailable"
+  },
+  "scan": {
+    "controllerRoutes": 3244,
+    "frontendCalls": 3229,
+    "domains": [
+      {
+        "domain": "ERP",
+        "controllerRoutes": 322,
+        "getRoutes": 118,
+        "frontendCalls": 322,
+        "staticMatches": 322,
+        "unmatchedFrontendCalls": 0,
+        "backendRoutesWithoutFrontendMatch": 0
+      },
+      {
+        "domain": "ERP Purchase",
+        "controllerRoutes": 54,
+        "getRoutes": 18,
+        "frontendCalls": 54,
+        "staticMatches": 54,
+        "unmatchedFrontendCalls": 0,
+        "backendRoutesWithoutFrontendMatch": 0
+      },
+      {
+        "domain": "ERP Sales",
+        "controllerRoutes": 51,
+        "getRoutes": 18,
+        "frontendCalls": 51,
+        "staticMatches": 51,
+        "unmatchedFrontendCalls": 0,
+        "backendRoutesWithoutFrontendMatch": 0
+      },
+      {
+        "domain": "Integration",
+        "controllerRoutes": 561,
+        "getRoutes": 226,
+        "frontendCalls": 560,
+        "staticMatches": 560,
+        "unmatchedFrontendCalls": 0,
+        "backendRoutesWithoutFrontendMatch": 1
+      },
+      {
+        "domain": "MES",
+        "controllerRoutes": 205,
+        "getRoutes": 82,
+        "frontendCalls": 205,
+        "staticMatches": 205,
+        "unmatchedFrontendCalls": 0,
+        "backendRoutesWithoutFrontendMatch": 0
+      },
+      {
+        "domain": "Manufacturing",
+        "controllerRoutes": 60,
+        "getRoutes": 27,
+        "frontendCalls": 60,
+        "staticMatches": 60,
+        "unmatchedFrontendCalls": 0,
+        "backendRoutesWithoutFrontendMatch": 0
+      },
+      {
+        "domain": "Migration",
+        "controllerRoutes": 154,
+        "getRoutes": 61,
+        "frontendCalls": 154,
+        "staticMatches": 154,
+        "unmatchedFrontendCalls": 0,
+        "backendRoutesWithoutFrontendMatch": 0
+      },
+      {
+        "domain": "OA",
+        "controllerRoutes": 660,
+        "getRoutes": 258,
+        "frontendCalls": 648,
+        "staticMatches": 648,
+        "unmatchedFrontendCalls": 0,
+        "backendRoutesWithoutFrontendMatch": 12
+      },
+      {
+        "domain": "PLM",
+        "controllerRoutes": 215,
+        "getRoutes": 93,
+        "frontendCalls": 213,
+        "staticMatches": 213,
+        "unmatchedFrontendCalls": 0,
+        "backendRoutesWithoutFrontendMatch": 2
+      },
+      {
+        "domain": "Platform",
+        "controllerRoutes": 582,
+        "getRoutes": 220,
+        "frontendCalls": 582,
+        "staticMatches": 581,
+        "unmatchedFrontendCalls": 1,
+        "backendRoutesWithoutFrontendMatch": 1
+      },
+      {
+        "domain": "Quality",
+        "controllerRoutes": 29,
+        "getRoutes": 11,
+        "frontendCalls": 29,
+        "staticMatches": 29,
+        "unmatchedFrontendCalls": 0,
+        "backendRoutesWithoutFrontendMatch": 0
+      },
+      {
+        "domain": "SRM",
+        "controllerRoutes": 145,
+        "getRoutes": 58,
+        "frontendCalls": 145,
+        "staticMatches": 145,
+        "unmatchedFrontendCalls": 0,
+        "backendRoutesWithoutFrontendMatch": 0
+      },
+      {
+        "domain": "WMS",
+        "controllerRoutes": 206,
+        "getRoutes": 84,
+        "frontendCalls": 206,
+        "staticMatches": 206,
+        "unmatchedFrontendCalls": 0,
+        "backendRoutesWithoutFrontendMatch": 0
+      }
+    ]
+  }
+}

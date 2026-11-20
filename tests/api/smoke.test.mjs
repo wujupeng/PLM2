@@ -1,22 +1,14 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { assertAllowedTarget } from '../helpers/allowed-target.cjs';
 
 const runId = process.env.PLM_TEST_RUN_ID ?? 'manual';
-const systemUrl = localServiceUrl('PLM_TEST_SYSTEM_URL', 'http://127.0.0.1:8082');
-const gatewayUrl = localServiceUrl('PLM_TEST_GATEWAY_URL', 'http://127.0.0.1:8080');
-const frontendUrl = localServiceUrl('PLM_TEST_FRONTEND_URL', 'http://127.0.0.1:3000');
-
-function localServiceUrl(variable, fallback) {
-  const url = new URL(process.env[variable] ?? fallback);
-  assert.ok(
-    ['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname),
-    `${variable} must target a local development service`,
-  );
-  return url;
-}
+const systemUrl = assertAllowedTarget(process.env.PLM_TEST_SYSTEM_URL ?? 'http://localhost:8082', 'system target');
+const gatewayUrl = assertAllowedTarget(process.env.PLM_TEST_GATEWAY_URL ?? 'http://localhost:8080', 'gateway target');
+const frontendUrl = assertAllowedTarget(process.env.PLM_TEST_FRONTEND_URL ?? 'http://localhost:3000', 'frontend target');
 
 async function get(url) {
-  return fetch(url, { signal: AbortSignal.timeout(5000) });
+  return fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(5000) });
 }
 
 test(`system service health is UP (${runId})`, async () => {
@@ -58,6 +50,7 @@ test(`empty login input returns validation errors in Chinese (${runId})`, async 
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: '{}',
+    redirect: 'manual',
     signal: AbortSignal.timeout(5000),
   });
   assert.equal(response.status, 200);
@@ -75,6 +68,7 @@ test(`unknown test identity receives a generic login rejection (${runId})`, asyn
       username: `plm2-invalid-${runId}`,
       password: 'invalid-test-only',
     }),
+    redirect: 'manual',
     signal: AbortSignal.timeout(5000),
   });
   assert.equal(response.status, 200);
