@@ -42,7 +42,9 @@ const blockedSteps = [
 test.describe('AF1000 × 500 real closed-loop scenario', () => {
   for (const [stepId, title, reason] of blockedSteps) {
       test(`${stepId} ${title}`, async () => {
-        test.skip(true, `BLOCKED: ${reason}`);
+        await test.step(`${stepId} ${title}`, async () => {
+          test.skip(true, `BLOCKED: ${reason}`);
+        });
       });
     }
   });
