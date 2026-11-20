@@ -158,75 +158,19 @@ export default function MigOpenBusinessBatchPage() {
     void loadData();
   };
 
-  const sampleRecord = (batchType?: string): MigOpenBusinessImportRecord => {
-    const rowType = batchType === 'IN_TRANSIT'
-      ? 'IN_TRANSIT_PURCHASE'
-      : batchType === 'UNSETTLED'
-        ? 'UNSETTLED_AR'
-        : batchType || 'OPEN_SALES_ORDER';
-    const orderLines = [{ materialCode: 'MAT-001', materialName: '物料示例', uom: 'PCS', orderQty: 10 }];
-    const receiptLines = [{ materialCode: 'MAT-001', uom: 'PCS', receiptQty: 10 }];
-    const deliveryLines = [{ materialCode: 'MAT-001', uom: 'PCS', deliveryQty: 10 }];
-    const payloadByType: Record<string, Record<string, unknown>> = {
-      OPEN_SALES_ORDER: {
-        header: { orderNo: 'SO-OLD-001', customerCode: 'CUST-001', orderStatus: 'OPEN' },
-        lines: orderLines,
-      },
-      OPEN_PURCHASE_ORDER: {
-        header: { orderNo: 'PO-OLD-001', supplierCode: 'SUP-001', orderStatus: 'OPEN' },
-        lines: orderLines,
-      },
-      OUTSOURCE_ORDER: {
-        header: { orderNo: 'OS-OLD-001', supplierCode: 'SUP-001', orderStatus: 'OPEN' },
-        lines: orderLines,
-      },
-      PRODUCTION_ORDER: {
-        header: { orderNo: 'MO-OLD-001', materialCode: 'MAT-001', planQty: 10, orderStatus: 'RELEASED' },
-        lines: [{ materialCode: 'MAT-002', requiredQty: 10, uom: 'PCS' }],
-      },
-      IN_TRANSIT_PURCHASE: {
-        header: { receiptNo: 'GR-OLD-001', supplierCode: 'SUP-001', receiptStatus: 'IN_TRANSIT' },
-        lines: receiptLines,
-      },
-      IN_TRANSIT_SALES: {
-        header: { deliveryNo: 'DN-OLD-001', orderNo: 'SO-OLD-001', customerCode: 'CUST-001' },
-        lines: deliveryLines,
-      },
-      PENDING_INSPECTION: {
-        header: { inspectionNo: 'IQC-OLD-001', materialCode: 'MAT-001', inspectionQty: 10 },
-      },
-      UNSETTLED_AR: {
-        header: { arNo: 'AR-OLD-001', customerCode: 'CUST-001', arAmount: 100, settledAmount: 0 },
-      },
-      UNSETTLED_AP: {
-        header: { apNo: 'AP-OLD-001', supplierCode: 'SUP-001', apAmount: 100, settledAmount: 0 },
-      },
-      UNSETTLED_OUTSOURCE: {
-        header: {
-          settlementNo: 'OS-SET-OLD-001',
-          supplierCode: 'SUP-001',
-          orderNo: 'OS-OLD-001',
-          settlementAmount: 100,
-          paidAmount: 0,
-        },
-      },
-    };
-    return {
-      sourceNo: 'OLD-DOC-001',
-      objectType: rowType,
-      payload: payloadByType[rowType] || payloadByType.OPEN_SALES_ORDER,
-    };
-  };
-
   const openImport = (record: MigOpenBusinessBatch) => {
     setImportBatch(record);
     setImportSourceFile('');
-    setImportText(JSON.stringify({ records: [sampleRecord(record.objectType)] }, null, 2));
+    setImportText('');
     setImportOpen(true);
   };
 
   const submitImport = async () => {
     if (!importBatch?.id) return;
+    if (!importText.trim()) {
+      message.error('请粘贴真实来源记录，不能使用演示数据导入');
+      return;
+    }
     let parsed: { records?: MigOpenBusinessImportRecord[] };
     try {
       parsed = JSON.parse(importText) as { records?: MigOpenBusinessImportRecord[] };
@@ -594,6 +538,7 @@ export default function MigOpenBusinessBatchPage() {
             <Input.TextArea
               value={importText}
               onChange={(event) => setImportText(event.target.value)}
+              placeholder="粘贴脱敏旧系统导出的 JSON。需包含 records 数组，每行提供 sourceNo、objectType 和 payload；请勿使用演示数据代替真实来源记录。"
               rows={18}
               spellCheck={false}
             />

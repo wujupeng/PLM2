@@ -3,6 +3,7 @@ package com.huaweicloud.plm.system.service;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huaweicloud.plm.common.api.PageResult;
 import com.huaweicloud.plm.common.api.ResultCode;
@@ -237,8 +238,8 @@ public class SysBizRuleService {
         }
         try {
             return objectMapper.writeValueAsString(value);
-        } catch (Exception e) {
-            return null;
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException("无法序列化业务规则执行日志", e);
         }
     }
 

@@ -29,7 +29,7 @@ export const bizRuleService = {
 
   /** 规则试算：按规则类型 + 业务模块 + 业务键 + 输入数据求值返回命中规则与参数。 */
   evaluate: (data: BizRuleEvaluateParams): Promise<BizRuleEvaluateResult> =>
-    request<BizRuleEvaluateResult>({ method: 'POST', url: `${BASE}/evaluate`, data }),
+    request<BizRuleEvaluateResult>({ method: 'POST', url: `${BASE}/rules/evaluate`, data }),
 
   detail: (id: number): Promise<BizRuleItem> => request<BizRuleItem>({ method: 'GET', url: `${BASE}/rules/${id}` }),
 
