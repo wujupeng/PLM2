@@ -34,13 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final List<String> WHITELIST = List.of(
             "/auth/login",
             "/auth/refresh",
-            // SSO 令牌签发入口：调用方以客户端凭证换取令牌，此时尚无平台登录态
-            "/oa/sso-clients/token",
-            "/actuator",
-            "/v3/api-docs",
-            "/doc.html",
-            "/h2-console",
-            "/swagger-ui"
+            "/oa/sso-clients/token"
     );
 
     private final JwtUtils jwtUtils;
@@ -49,7 +43,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return WHITELIST.stream().anyMatch(path::startsWith);
+        return WHITELIST.contains(path)
+                || path.equals("/actuator/health")
+                || path.equals("/actuator/info");
     }
 
     @Override

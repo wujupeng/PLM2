@@ -10,6 +10,8 @@ const seed = JSON.parse(await readFile(path.join(root, 'test-data/org.json'), 'u
 const accounts = JSON.parse(await readFile(path.join(root, 'test-data/accounts.example.json'), 'utf8'));
 const gatewayUrl = assertAllowedTarget(process.env.PLM_TEST_GATEWAY_URL ?? 'http://localhost:8080', 'gateway target');
 const systemUrl = assertAllowedTarget(process.env.PLM_TEST_SYSTEM_URL ?? 'http://localhost:8082', 'system target');
+const useSystemDirect = process.env.PLM_TEST_USE_SYSTEM_DIRECT === 'true';
+const apiBaseUrl = useSystemDirect ? systemUrl : gatewayUrl;
 const runId = process.env.PLM_TEST_RUN_ID ?? `PLM2-${new Date().toISOString().replace(/\D/g, '').slice(0, 12)}-${randomUUID().slice(0, 8)}`;
 const runSuffix = runId.replace(/[^A-Za-z0-9]/g, '').slice(-16);
 const adminUsername = process.env.PLM_PROVISIONER_USERNAME;
@@ -38,8 +40,19 @@ const health = await healthResponse.json();
 assert.equal(health.status, 'UP');
 assert.equal(health.components?.db?.details?.database, 'H2', 'Refusing to provision outside dev H2.');
 
+function parseJsonPreservingLongIntegers(text) {
+  const losslessText = text.replace(
+    /("(?:\\.|[^"\\])*")|(-?\d{16,})(?=[\s,}\]])/g,
+    (match, jsonString, integer) => jsonString ?? `"${integer}"`,
+  );
+  return JSON.parse(losslessText);
+}
+
 async function request(base, endpoint, { method = 'GET', token, body } = {}) {
-  const response = await fetch(new URL(endpoint, base), {
+  const target = base === apiBaseUrl && useSystemDirect
+    ? endpoint.replace(/^\/api(?=\/)/, '')
+    : endpoint;
+  const response = await fetch(new URL(target, base), {
     method,
     redirect: 'manual',
     headers: {
@@ -49,20 +62,20 @@ async function request(base, endpoint, { method = 'GET', token, body } = {}) {
     body: body === undefined ? undefined : JSON.stringify(body),
     signal: AbortSignal.timeout(10000),
   });
-  const payload = await response.json();
+  const payload = parseJsonPreservingLongIntegers(await response.text());
   assert.equal(response.status, 200, `${method} ${endpoint} HTTP ${response.status}: ${payload.message ?? ''}`);
   assert.equal(payload.code, 200, `${method} ${endpoint}: ${payload.message ?? 'API failure'}`);
   return payload.data;
 }
 
-const login = await request(gatewayUrl, '/api/auth/login', {
+const login = await request(apiBaseUrl, '/api/auth/login', {
   method: 'POST',
   body: { username: adminUsername, password: adminPassword },
 });
 assert.ok(login?.accessToken, 'Provisioning account did not receive an access token.');
 const token = login.accessToken;
 
-const companyId = await request(gatewayUrl, '/api/system/organizations', {
+const companyId = await request(apiBaseUrl, '/api/system/organizations', {
   method: 'POST',
   token,
   body: {
@@ -80,7 +93,7 @@ const orgIds = new Map();
 for (const department of seed.departments) {
   const parentId = department.parent === null ? companyId : orgIds.get(department.parent);
   assert.ok(parentId, `Missing parent department ${department.parent ?? seed.company.name}.`);
-  const orgId = await request(gatewayUrl, '/api/system/organizations', {
+  const orgId = await request(apiBaseUrl, '/api/system/organizations', {
     method: 'POST',
     token,
     body: {
@@ -97,7 +110,7 @@ for (const department of seed.departments) {
   orgIds.set(department.name, orgId);
 }
 
-const organizationTree = await request(gatewayUrl, '/api/system/organizations/tree', { token });
+const organizationTree = await request(apiBaseUrl, '/api/system/organizations/tree', { token });
 const flatten = (nodes) => nodes.flatMap((node) => [node, ...flatten(node.children ?? [])]);
 const organizations = flatten(organizationTree);
 const companyNode = organizations.find((node) => node.orgCode === `${runSuffix}-QK-ROOT`);
@@ -111,7 +124,7 @@ for (const department of seed.departments) {
 const roleIds = new Map();
 for (const employee of seed.employees) {
   if (roleIds.has(employee.role)) continue;
-  const roleId = await request(gatewayUrl, '/api/system/roles', {
+  const roleId = await request(apiBaseUrl, '/api/system/roles', {
     method: 'POST',
     token,
     body: {
@@ -131,7 +144,7 @@ for (const employee of seed.employees) {
   const account = accounts.accounts.find(({ username }) => username === employee.username);
   assert.ok(account, `Missing credential configuration for ${employee.username}.`);
   const username = `${employee.username}_${runSuffix}`;
-  const userId = await request(gatewayUrl, '/api/system/users', {
+  const userId = await request(apiBaseUrl, '/api/system/users', {
     method: 'POST',
     token,
     body: {
@@ -150,7 +163,7 @@ for (const employee of seed.employees) {
 
 for (const account of provisioned) {
   const password = accountPasswordValues.get(account.username.replace(new RegExp(`_${runSuffix}$`), ''));
-  const result = await request(gatewayUrl, '/api/auth/login', {
+  const result = await request(apiBaseUrl, '/api/auth/login', {
     method: 'POST',
     body: { username: account.username, password },
   });

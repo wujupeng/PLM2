@@ -32,10 +32,14 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
     private final SecretKey signingKey;
 
     @Value("${plm.gateway.auth.enabled:true}")
-    private boolean authEnabled;
+    private boolean authEnabled = true;
 
     public JwtAuthenticationFilter(@Value("${plm.jwt.secret}") String secret) {
-        this.signingKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
+        if (keyBytes.length < 32) {
+            throw new IllegalStateException("PLM_JWT_SECRET must contain at least 32 UTF-8 bytes");
+        }
+        this.signingKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
     @Override
@@ -69,7 +73,7 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 
             return chain.filter(exchange.mutate().request(mutatedRequest).build());
         } catch (Exception e) {
-            log.warn("[JWT认证失败] token解析异常, path={}, error={}", path, e.getMessage());
+            log.warn("[JWT认证失败] token解析异常, path={}, category={}", path, e.getClass().getSimpleName());
             return unauthorized(exchange, "Invalid or expired token");
         }
     }
@@ -80,14 +84,12 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
     }
 
     private boolean isWhitelisted(String path) {
-        return path.startsWith("/actuator")
+        return path.equals("/actuator/health")
+                || path.equals("/actuator/info")
                 || path.equals("/api/auth/login")
                 || path.equals("/api/auth/refresh")
                 // SSO 令牌签发入口：调用方以客户端凭证换取令牌，此时尚无平台登录态
-                || path.equals("/api/oa/sso-clients/token")
-                || path.startsWith("/doc.html")
-                || path.startsWith("/webjars/")
-                || path.startsWith("/v3/api-docs");
+                || path.equals("/api/oa/sso-clients/token");
     }
 
     /** roles 声明为数组类型，需拼接为逗号分隔字符串后透传给下游 */

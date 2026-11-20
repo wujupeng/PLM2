@@ -206,13 +206,22 @@ spring:
             maxSize: 52428800
   data:
     redis:
-      host: localhost
-      port: 6379
-      timeout: 3000ms
+      host: ${PLM_REDIS_HOST:127.0.0.1}
+      port: ${PLM_REDIS_PORT:6381}
+      password: ${PLM_REDIS_PASSWORD}
+      database: ${PLM_REDIS_DATABASE:0}
+      timeout: ${PLM_REDIS_TIMEOUT:3s}
+      connect-timeout: ${PLM_REDIS_CONNECT_TIMEOUT:3s}
+      lettuce:
+        pool:
+          max-active: ${PLM_REDIS_POOL_MAX_ACTIVE:16}
+          max-idle: ${PLM_REDIS_POOL_MAX_IDLE:8}
+          min-idle: ${PLM_REDIS_POOL_MIN_IDLE:1}
+          max-wait: ${PLM_REDIS_POOL_MAX_WAIT:3s}
 
 plm:
   jwt:
-    secret: plm-system-jwt-secret-key-for-hmac-sha256-signing-2024
+    secret: ${PLM_JWT_SECRET}
     access-token-expiration: 3600
     refresh-token-expiration: 86400
   gateway:
@@ -226,7 +235,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus,gateway
+      include: health,info
   endpoint:
     health:
       show-details: when-authorized

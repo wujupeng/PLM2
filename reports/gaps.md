@@ -4,7 +4,7 @@
 
 | 优先级 | 缺口 | 证据 / 关联任务 | 对闭环影响 | 建议补齐顺序 |
 |---|---|---|---|---|
-| P0 | 尚无可用的隔离测试管理员凭据，也未通过系统接口建立测试公司、11 个部门、14 个用户 | 任务书 S01；`tests/seed/provision-dev.mjs`；`reports/02-seed-data.md` | 首个阻断点，后续所有真实岗位流程无法开始 | 在仅本机 dev H2 配置管理员/测试密码环境变量，执行种子脚本并逐个验证登录；不提交密码。 |
+| P0 | 隔离 H2 管理员、测试公司/11 个部门、测试角色及 14 个账号已建立，14/14 登录通过；但角色权限矩阵和真实业务资料仍未配置 | 任务书 S01；[种子数据报告](./02-seed-data.md)；[第三轮开发进度](./00-development-progress.md) | 仅完成测试身份初始化，不能证明岗位权限或业务流程 | 业务负责人确认角色-权限矩阵后执行最小权限配置；再准备物料、BOM、供应商、库存及业务单据，按步骤开展验收。 |
 | P0 | 角色细粒度授权矩阵未提供；新建用户接口 DTO 没有独立岗位字段 | 任务书 §3.2/S01；`UserSaveRequest.java`；`RoleSaveRequest.java` | 账号可登录但不能证明岗位权限或工作分离；岗位名只能临时写备注 | 业务负责人给出角色-权限矩阵；明确岗位主数据是否纳入当前版本；再授权并执行越权测试。 |
 | P0 | AF1000 所需客户、物料、多级 BOM、供应商、期初库存和测试业务数据未建立；订单到生产、发运及追溯没有真实运行记录 | 任务书 S02–S20、TC-ERP/PLM/WMS/MES/QMS | S02 后续无法准备，数量/金额/状态/追溯守恒无法核对 | 按 S01 建好岗位后通过真实 UI/API 逐阶段创建，前置失败即阻断，不跳步补造数据。 |
 | P1 | 多个网关服务发现目标不在聚合工程中 | `plm-backend/pom.xml` 只包含 common/gateway/system；gateway 另有 `lb://plm-manufacturing`、`plm-integration`、`plm-auth-workflow`、`plm-admin`、`plm-notification`、`plm-search` | 制造、集成及部分跨服务 E2E 在当前仓库无法独立启动/验收 | 确认对应服务仓库/部署拓扑，接入可构建服务或明确本版本范围；验证服务发现、消息幂等和补偿。关联任务书 §11.2 E2E-02/07/08/09。 |
@@ -21,8 +21,8 @@
 
 | 优先级 | 缺口 | 第二轮证据 | 后续条件 |
 |---|---|---|---|
-| P0 | Gateway 依赖 Redis 健康；当前 Redis 停止时 health 为 DOWN | `reports/10-env-discovery.md`：Redis 暂时启动时 Gateway 恢复 UP，停止后再次 DOWN | 为深度测试提供获批的稳定 Redis 测试依赖；确认不是一次性临时实例后再开始业务流程 |
-| P0 | 管理员及 14 个测试账号未配置 | `.env.local` 不存在；`reports/16-closed-loop-v2.md` S01–S20 全阻塞 | 在隔离测试环境本地配置 `PLM_PROVISIONER_USERNAME`、`PLM_PROVISIONER_PASSWORD`、`PLM_TEST_DEFAULT_PASSWORD` 及各账号密码环境变量 |
+| P0 | Gateway health 本次复测仍为 HTTP 503/DOWN；持久化 Redis 配置已开发但运行实例未切换；system 运行进程仍匿名开放多个管理/调试端点 | [本次复测报告](./20-retest-2026-11-20.md)、[缺陷 RETEST-SEC-001](./defects.md) | 先安排可丢弃/可重建的 H2 维护窗口，启动新配置 system/Gateway 与持久化 Redis；复验管理端点访问控制及 health 后再开展经网关测试 |
+| P0 | 管理员及 14 个测试账号已在隔离 H2 配置并逐个验证登录；业务数据与权限仍未配置 | [种子数据报告](./02-seed-data.md)；S01 运行 ID `PLM2-202611200315-fb906044` | 角色-权限矩阵确认后再做授权及越权测试；H2 重启丢失数据时需重新 provision |
 | P0 | 只读数据库账号、注册中心/服务部署访问未提供 | `reports/10-env-discovery.md` | 提供最小权限 SELECT 账号和测试机服务发现/日志读取方式；不在会话中提交凭据 |
 | P1 | 业务 API、页面角色遍历、CRUD、状态机、并发和恢复尚未实测 | A2 1,274 GET 探测全部 BLOCKED；A3–A5 及 P3–P5 被前置阻断 | 满足 Gateway、账号、数据和只读核对前提后逐阶段执行 |
 | P0 | Gateway 默认 JWT signing key 为硬编码字面量，运行时覆盖未知 | `reports/defects.md` ROUND2-SEC-002；Gateway filter 读取该配置 | 由安全/部署负责人确认实际取值，改用密钥管理并评估轮换；本轮未进行令牌伪造测试 |

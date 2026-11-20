@@ -12,6 +12,7 @@ plm-frontend/vite.config.d.ts
 
 # === 运行时数据（本地上传文档/附件等，不入库）===
 /plm-backend/data/
+/.local/
 
 # === 前端 ===
 node_modules/

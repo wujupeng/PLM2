@@ -35,7 +35,7 @@ mybatis-plus:
 
 plm:
   jwt:
-    secret: ${PLM_JWT_SECRET:plm-system-jwt-secret-key-for-hmac-sha256-signing-2024}
+    secret: ${PLM_JWT_SECRET}
     access-token-expiration: 3600
     refresh-token-expiration: 86400
 
@@ -46,7 +46,16 @@ management:
         include: health,info
   endpoint:
     health:
-      show-details: always
+      show-details: when-authorized
+
+springdoc:
+  api-docs:
+    enabled: ${PLM_API_DOCS_ENABLED:false}
+  swagger-ui:
+    enabled: ${PLM_API_DOCS_ENABLED:false}
+
+knife4j:
+  enable: ${PLM_API_DOCS_ENABLED:false}
 
 logging:
   level:

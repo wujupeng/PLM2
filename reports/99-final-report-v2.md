@@ -61,3 +61,5 @@
 - Redis 切换诊断与健康响应：`evidence/PLM2-DEEP-20261120020412-25171/gateway-redis-diagnostic.json`
 - 重跑白名单内静态盘点与 P0 只读探测：`node scripts/deep-test-scan.mjs`
 - 任何目标 URL 都必须命中 `test-data/allowed-hosts.json`；拒绝未列入白名单的地址。脚本没有读取或输出 `.env.local`。
+
+> 第二轮报告保留当时实测基线。后续 WBS 开发状态和持久化 Redis 实施/验证见[第三轮开发进度](./00-development-progress.md)。

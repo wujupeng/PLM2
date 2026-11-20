@@ -19,7 +19,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(
-        properties = "spring.datasource.url=jdbc:h2:mem:plm2_auth_test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"
+        properties = {
+                "spring.datasource.url=jdbc:h2:mem:plm2_auth_test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE",
+                "plm.jwt.secret=plm2-junit-test-secret-0123456789abcdef0123456789"
+        }
 )
 @AutoConfigureMockMvc
 @ActiveProfiles("dev")
@@ -51,6 +54,22 @@ class AuthControllerIntegrationTest {
         mockMvc.perform(get("/auth/me"))
                 .andExpect(status().isUnauthorized());
         mockMvc.perform(get("/system/users"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void onlyMinimalActuatorEndpointsAreAnonymous() throws Exception {
+        mockMvc.perform(get("/actuator/health"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("UP"))
+                .andExpect(jsonPath("$.components").doesNotExist());
+        mockMvc.perform(get("/actuator"))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(get("/actuator/env"))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(get("/v3/api-docs"))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(get("/h2-console"))
                 .andExpect(status().isUnauthorized());
     }
 

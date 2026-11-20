@@ -1,0 +1,131 @@
+{
+  "runId": "PLM2-RETEST-20261120-1120",
+  "evidence": [
+    {
+      "name": "system-health",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8082/actuator/health"
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/vnd.spring-boot.actuator.v3+json",
+        "body": {
+          "status": "UP",
+          "components": {
+            "db": {
+              "status": "UP",
+              "details": {
+                "database": "H2",
+                "validationQuery": "isValid()"
+              }
+            },
+            "diskSpace": {
+              "status": "UP",
+              "details": {
+                "total": 1000240963584,
+                "free": 348120576000,
+                "threshold": 10485760,
+                "path": "$HOME/dev/PLM2/plm-backend/plm-system/.",
+                "exists": true
+              }
+            },
+            "ping": {
+              "status": "UP"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "gateway-health",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8080/actuator/health"
+      },
+      "response": {
+        "status": 503,
+        "contentType": "application/vnd.spring-boot.actuator.v3+json",
+        "body": {
+          "status": "DOWN"
+        }
+      }
+    },
+    {
+      "name": "frontend-root",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:3000/"
+      },
+      "response": {
+        "status": 200,
+        "contentType": "text/html",
+        "bodyBytes": 1114,
+        "bodySha256": "8b61ab835bdf82bc00b43f6023e46b921033192298ef2d63e6582396ab3e4e2d"
+      }
+    },
+    {
+      "name": "anonymous-current-user",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8080/api/auth/me"
+      },
+      "response": {
+        "status": 401,
+        "contentType": null,
+        "bodyBytes": 0,
+        "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "anonymous-user-list",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:8080/api/system/users"
+      },
+      "response": {
+        "status": 401,
+        "contentType": null,
+        "bodyBytes": 0,
+        "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "empty-login",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:8080/api/auth/login",
+        "body": {}
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "body": {
+          "code": 400,
+          "message": "密码不能为空; 用户名不能为空",
+          "timestamp": "2026-11-20 11:21:35"
+        }
+      }
+    },
+    {
+      "name": "unknown-user-login",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:8080/api/auth/login",
+        "body": {
+          "username": "<random-invalid-test-user>",
+          "password": "[REDACTED]"
+        }
+      },
+      "response": {
+        "status": 200,
+        "contentType": "application/json",
+        "body": {
+          "code": 401,
+          "message": "用户名或密码错误",
+          "timestamp": "2026-11-20 11:21:38"
+        }
+      }
+    }
+  ]
+}

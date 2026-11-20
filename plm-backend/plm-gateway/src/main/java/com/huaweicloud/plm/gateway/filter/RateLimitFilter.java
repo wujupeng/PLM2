@@ -1,5 +1,7 @@
 package com.huaweicloud.plm.gateway.filter;
 
+import io.lettuce.core.RedisCommandExecutionException;
+import io.lettuce.core.RedisCommandTimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -10,8 +12,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.time.Duration;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
@@ -22,8 +27,10 @@ public class RateLimitFilter implements GlobalFilter, Ordered {
     private static final Duration WINDOW = Duration.ofSeconds(1);
 
     private final ReactiveStringRedisTemplate redisTemplate;
-    private final AtomicLong localCounter = new AtomicLong(0);
+    private final AtomicBoolean redisUnavailable = new AtomicBoolean();
     private final long localLimit = 1000;
+    private long localWindowStartedAt = System.nanoTime();
+    private long localCounter;
 
     public RateLimitFilter(ReactiveStringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
@@ -34,30 +41,66 @@ public class RateLimitFilter implements GlobalFilter, Ordered {
         String clientIp = extractClientIp(exchange);
         String key = RATE_LIMIT_PREFIX + clientIp;
 
-        return redisTemplate.opsForValue().increment(key)
+        Mono<RateLimitCount> redisCount = redisTemplate.opsForValue().increment(key)
                 .flatMap(count -> {
                     if (count == 1) {
                         return redisTemplate.expire(key, WINDOW)
-                                .then(handleCount(exchange, chain, count));
+                                .thenReturn(count);
                     }
-                    return handleCount(exchange, chain, count);
+                    return Mono.just(count);
                 })
+                .doOnNext(count -> {
+                    if (redisUnavailable.compareAndSet(true, false)) {
+                        log.info("[限流恢复] Redis连接已恢复");
+                    }
+                })
+                .map(count -> new RateLimitCount(count, false));
+
+        return redisCount
                 .onErrorResume(e -> {
-                    log.warn("[限流降级] Redis不可用，启用本地限流, error={}", e.getMessage());
-                    long localCount = localCounter.incrementAndGet();
-                    if (localCount > localLimit) {
+                    if (redisUnavailable.compareAndSet(false, true)) {
+                        log.warn("[限流降级] Redis不可用，启用本地限流，category={}", redisFailureCategory(e));
+                    }
+                    return Mono.just(new RateLimitCount(incrementLocalCounter(), true));
+                })
+                .flatMap(count -> {
+                    if (count.value() > (count.localFallback() ? localLimit : DEFAULT_LIMIT_PER_SECOND)) {
                         return tooManyRequests(exchange);
                     }
                     return chain.filter(exchange);
                 });
     }
 
-    private Mono<Void> handleCount(ServerWebExchange exchange, GatewayFilterChain chain, Long count) {
-        if (count > DEFAULT_LIMIT_PER_SECOND) {
-            log.warn("[限流触发] clientIp={}, count={}", extractClientIp(exchange), count);
-            return tooManyRequests(exchange);
+    private record RateLimitCount(long value, boolean localFallback) {
+    }
+
+    private String redisFailureCategory(Throwable error) {
+        for (Throwable cause = error; cause != null; cause = cause.getCause()) {
+            if (cause instanceof RedisCommandExecutionException) {
+                String message = cause.getMessage();
+                if (message != null && (message.contains("NOAUTH") || message.contains("WRONGPASS"))) {
+                    return "authentication";
+                }
+            }
+            if (cause instanceof RedisCommandTimeoutException
+                    || cause instanceof SocketTimeoutException
+                    || cause instanceof TimeoutException) {
+                return "timeout";
+            }
+            if (cause instanceof ConnectException) {
+                return "connection-refused";
+            }
         }
-        return chain.filter(exchange);
+        return error.getClass().getSimpleName();
+    }
+
+    private synchronized long incrementLocalCounter() {
+        long now = System.nanoTime();
+        if (now - localWindowStartedAt >= WINDOW.toNanos()) {
+            localWindowStartedAt = now;
+            localCounter = 0;
+        }
+        return ++localCounter;
     }
 
     @Override

@@ -44,7 +44,7 @@ test('invalid credentials show the server rejection in the real UI', async ({ pa
 });
 
 const blockedSteps = [
-  ['S01', '管理员创建组织与测试账号', '隔离 dev 环境尚无经系统接口创建的管理员和测试账号。'],
+  ['S01', '管理员创建组织与测试账号', '隔离 H2 中的组织和账号已通过 API 建立并复核，但现有 Gateway health 为 DOWN，且该 Playwright 用例没有真实 UI provisioning 步骤。'],
   ['S02', '研发创建 AF1000、多级 BOM 并发布', '依赖 S01 用户及真实 PLM 主数据操作。'],
   ['S03', '销售创建客户和 500 台订单', '依赖已发布产品、客户和销售岗位账号。'],
   ['S04', '销售经理审批订单', '依赖 S03 的真实订单及审批授权。'],

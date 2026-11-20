@@ -55,6 +55,35 @@
 
 ### 本地启动
 
+网关本地开发使用独立的 loopback Redis（端口 `6381`），启用认证及 AOF/RDB 持久化。先启动 Redis 并在同一个终端导出其本地密码：
+
+   ```bash
+   bash scripts/test-redis.sh start
+   export PLM_REDIS_PASSWORD="$(<.local/redis-test/password)"
+   ```
+
+本地 Redis 数据和密码仅写入 Git 忽略的 `.local/redis-test/`。不要删除或覆盖该目录来“重置”数据；如需清理，请先确认其中仅有可丢弃的本地测试数据。
+
+首次启动本地系统服务前，需提供至少 32 字节的随机 JWT 密钥。若尚无 `.env.local`，在仓库根目录仅执行一次：
+
+```bash
+if [ ! -e .env.local ]; then
+  umask 077
+  printf 'PLM_JWT_SECRET=%s\n' "$(openssl rand -hex 64)" > .env.local
+  chmod 600 .env.local
+else
+  printf '.env.local exists; preserving it.\n'
+fi
+```
+
+不要覆盖已有 `.env.local`；该文件包含本地凭据并已被 Git 忽略。每次启动系统服务前，在同一终端加载它：
+
+```bash
+set -a
+. ./.env.local
+set +a
+```
+
 1. 启动系统服务（默认 `dev` profile 使用内存 H2 数据库）：
 
    ```bash
@@ -62,9 +91,14 @@
    mvn -pl plm-system -am spring-boot:run
    ```
 
-2. 另开终端启动网关：
+2. 另开终端加载本机 JWT 密钥并导出测试 Redis 密码，再启动网关：
 
    ```bash
+   # 在仓库根目录执行
+   set -a
+   . ./.env.local
+   set +a
+   export PLM_REDIS_PASSWORD="$(<.local/redis-test/password)"
    cd plm-backend
    mvn -pl plm-gateway -am spring-boot:run
    ```
@@ -80,6 +114,8 @@
 4. 打开 Vite 输出的本地地址（默认 `http://localhost:3000`）。前端 API 经由网关 `8080` 转发到系统服务 `8082`。
 
 首次启动系统服务时，Flyway 会执行数据库迁移。H2 为内存数据库，进程停止后数据不保留；不要将其用于生产环境。
+完成本地联调并停止网关后，可在终端运行 `bash scripts/test-redis.sh stop` 停止 Redis；正常停止会保留 Redis 数据。
+隔离测试管理员及测试账号的初始化步骤见[运维手册](./docs/运维手册.md#隔离测试账号初始化)；脚本只允许 loopback H2，不要将生成的 `.env.local` 提交或发送到聊天/工单。
 
 ### 构建
 
@@ -95,6 +131,7 @@ npm run build
 ```
 
 构建产物分别位于各后端模块的 `target/` 和前端 `plm-frontend/dist/`。运维部署步骤、环境变量、备份恢复和故障排查见[详细运维手册](docs/运维手册.md)。
+第三轮 WBS 的当前开发状态和验证边界见[开发进度报告](reports/00-development-progress.md)。
 
 ## API 与运行状态
 

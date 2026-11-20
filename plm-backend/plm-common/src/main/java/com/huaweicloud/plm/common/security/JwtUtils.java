@@ -10,6 +10,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * JWT 生成与解析工具。
@@ -26,7 +27,13 @@ public class JwtUtils {
 
     public JwtUtils(JwtProperties properties) {
         this.properties = properties;
-        this.key = Keys.hmacShaKeyFor(properties.getSecret().getBytes(StandardCharsets.UTF_8));
+        String secret = Objects.requireNonNull(properties.getSecret(),
+                "PLM_JWT_SECRET must be configured with at least 32 UTF-8 bytes");
+        byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
+        if (keyBytes.length < 32) {
+            throw new IllegalStateException("PLM_JWT_SECRET must contain at least 32 UTF-8 bytes");
+        }
+        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateAccessToken(Long userId, String username, Map<String, Object> extraClaims) {

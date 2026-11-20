@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "plm.jwt")
 public class JwtProperties {
 
-    /** 签名密钥，生产环境必须通过环境变量注入。 */
-    private String secret = "plm-system-jwt-secret-key-for-hmac-sha256-signing-2024";
+    /** 签名密钥，必须由环境配置注入。 */
+    private String secret;
 
     /** 访问令牌有效期（秒）。 */
     private long accessTokenExpiration = 3600;
