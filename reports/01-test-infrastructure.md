@@ -13,7 +13,7 @@
 
 Playwright HTML 报告：本机 `reports/playwright/html/index.html`（自动生成文件，不纳入 Git）；每轮用例明细保存在被 `.gitignore` 忽略的 `reports/test-runs/<run-id>/`。
 
-## 最新运行结果
+## P1 基线执行结果
 
 - 运行 ID：`PLM2-20261120-082851-58121`
 - 分支/起始提交：`main` / `2b82cd9`（P0 盘点提交）
@@ -26,6 +26,16 @@ Playwright HTML 报告：本机 `reports/playwright/html/index.html`（自动生
 - `npm audit`：13 项依赖公告（4 high、9 moderate、0 critical）。包括当前前端依赖树中的 `@ant-design/pro-components`、`vite`、`react-router-dom`；部分修复建议涉及主要版本升级。本轮未自动执行可能有破坏性的升级。
 - 种子脚本因本机未提供 provisioner 凭据而安全停止；未写入公司、部门、用户或业务数据。
 
+## 后续复验
+
+- 运行 ID：`PLM2-20261120-084104-76174`
+- `scripts/start-dev.sh`：PASS。检查系统服务、网关、前端均 ready；脚本在本机 Redis 未运行时启动仅内存、禁用持久化的 Redis，网关 health 随后为 UP。
+- API 冒烟：6 项 PASS、0 FAIL。
+- Playwright：21 项，1 PASS、20 BLOCKED。
+- 前端构建：PASS。
+- Java 17 离线 Maven：`mvn -o -pl plm-system -am test` 为 2 PASS；聚合模块构建成功。此前全工程没有测试类，现已新增这 2 项真实 H2/Spring 集成测试。
+- ESLint 仍因缺少 flat config 阻塞；总测脚本因此返回非零。后端其余业务域自动化及完整业务闭环仍未通过验收。
+
 ## P1 结论
 
-测试工具链已建立且能够报告真实环境失败；不代表 P1 前置服务已就绪或后端自动化已通过。P2 数据创建、P3 模块 API、P4 业务闭环和 P5 全量异常场景仍须按最终报告中的 BLOCKED/FAIL 项处理。
+测试工具链已建立且能够报告真实环境结果；P2 实际组织/用户数据创建、P3 其余模块 API、P4 业务闭环和 P5 全量异常场景仍须按最终报告中的 BLOCKED 项处理。

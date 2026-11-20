@@ -6,6 +6,11 @@ RUN_ID="PLM2-$(date +%Y%m%d-%H%M%S)-$$"
 RUN_DIR="$ROOT_DIR/reports/test-runs/$RUN_ID"
 mkdir -p "$RUN_DIR"
 
+if [[ -x /usr/libexec/java_home ]]; then
+  export JAVA_HOME="$(/usr/libexec/java_home -v 17)"
+  export PATH="$JAVA_HOME/bin:$PATH"
+fi
+
 export PLM_TEST_RUN_ID="$RUN_ID"
 overall_status=0
 

@@ -48,6 +48,11 @@ test(`anonymous API access is rejected (${runId})`, async () => {
   assert.equal(response.status, 401);
 });
 
+test(`anonymous system user enumeration is rejected (${runId})`, async () => {
+  const response = await get(new URL('/api/system/users', gatewayUrl));
+  assert.equal(response.status, 401);
+});
+
 test(`empty login input returns validation errors in Chinese (${runId})`, async () => {
   const response = await fetch(new URL('/api/auth/login', gatewayUrl), {
     method: 'POST',

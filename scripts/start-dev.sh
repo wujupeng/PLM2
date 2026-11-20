@@ -31,6 +31,33 @@ port_listening() {
   nc -z 127.0.0.1 "$1" >/dev/null 2>&1
 }
 
+start_ephemeral_redis() {
+  if port_listening 6379; then
+    printf 'Redis already listening on :6379\n'
+    return
+  fi
+
+  if ! command -v redis-server >/dev/null 2>&1 || ! command -v redis-cli >/dev/null 2>&1; then
+    printf 'BLOCKED: gateway needs local Redis on :6379; redis-server/redis-cli are unavailable.\n' >&2
+    return 1
+  fi
+
+  redis-server --bind 127.0.0.1 --port 6379 --save '' --appendonly no --dir "$LOG_DIR" \
+    >"$LOG_DIR/redis.log" 2>&1 &
+  printf 'ephemeral Redis started (PID %s); persistence disabled.\n' "$!"
+
+  local seconds=20
+  while (( seconds > 0 )); do
+    if redis-cli -h 127.0.0.1 -p 6379 ping 2>/dev/null | grep -q '^PONG$'; then
+      return
+    fi
+    sleep 1
+    ((seconds -= 1))
+  done
+  printf 'ERROR: local Redis did not become ready; see %s/redis.log\n' "$LOG_DIR" >&2
+  return 1
+}
+
 start_backend_service() {
   local name="$1"
   local module="$2"
@@ -99,6 +126,8 @@ for command_name in curl nc; do
     exit 127
   fi
 done
+
+start_ephemeral_redis
 
 for service_spec in \
   'system:8082:http://127.0.0.1:8082/actuator/health' \
