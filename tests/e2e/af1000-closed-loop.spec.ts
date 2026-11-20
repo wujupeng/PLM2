@@ -8,6 +8,14 @@ test('login screen renders Chinese labels in the real UI', async ({ page }) => {
   await expect(page.getByRole('button', { name: /登\s*录/ })).toBeVisible();
 });
 
+test('invalid credentials show the server rejection in the real UI', async ({ page }) => {
+  await page.goto('/login');
+  await page.getByPlaceholder('用户名').fill(`plm2-invalid-${Date.now()}`);
+  await page.getByPlaceholder('密码').fill('invalid-test-only');
+  await page.getByRole('button', { name: /登\s*录/ }).click();
+  await expect(page.getByText('用户名或密码错误')).toBeVisible();
+});
+
 const blockedSteps = [
   ['S01', '管理员创建组织与测试账号', '隔离 dev 环境尚无经系统接口创建的管理员和测试账号。'],
   ['S02', '研发创建 AF1000、多级 BOM 并发布', '依赖 S01 用户及真实 PLM 主数据操作。'],

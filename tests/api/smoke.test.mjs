@@ -66,3 +66,19 @@ test(`empty login input returns validation errors in Chinese (${runId})`, async 
   assert.match(result.message, /用户名/);
   assert.match(result.message, /密码/);
 });
+
+test(`unknown test identity receives a generic login rejection (${runId})`, async () => {
+  const response = await fetch(new URL('/api/auth/login', gatewayUrl), {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      username: `plm2-invalid-${runId}`,
+      password: 'invalid-test-only',
+    }),
+    signal: AbortSignal.timeout(5000),
+  });
+  assert.equal(response.status, 200);
+  const result = await response.json();
+  assert.equal(result.code, 401);
+  assert.equal(result.message, '用户名或密码错误');
+});
